@@ -10,7 +10,7 @@
 
 package com.example.lit.habit;
 
-import com.example.lit.location.Location;
+import com.example.lit.location.*;
 
 import java.util.Date;
 
@@ -24,6 +24,9 @@ public abstract class Habit implements HabitAddable{
     private Date date;
     public abstract String habitType();
     private Location location;
+    private String comment;
+    private int titleLength;
+    private int commentLength;
 
     public Habit(String title) {
         this.title = title;
@@ -51,6 +54,13 @@ public abstract class Habit implements HabitAddable{
         this.date = date;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
     public void setLocation(Location location){
         this.location = location;
@@ -58,6 +68,20 @@ public abstract class Habit implements HabitAddable{
 
     public Location getLocation(){return this.location;}
 
+    public void setHabitInfoFormat(int titleLength, int commentLength)throws HabitFormatException{
+        if (this.title.length() < titleLength){
+            this.titleLength = titleLength;
+        }else{
+            throw new HabitFormatException();
+        }
+
+        if (this.comment.length() < commentLength){
+            this.commentLength = commentLength;
+        }else {
+            throw new HabitFormatException();
+        }
+
+    }
 
     @Override
     public String toString() {
