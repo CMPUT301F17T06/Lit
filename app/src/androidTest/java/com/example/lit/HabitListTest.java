@@ -6,7 +6,14 @@ package com.example.lit;
 
 import com.example.lit.habit.*;
 
+<<<<<<< HEAD
 import android.test.ActivityInstrumentationTestCase2;
+=======
+import com.example.lit.habit.Habit;
+import com.example.lit.habit.HabitList;
+import com.example.lit.habit.NormalHabit;
+
+>>>>>>> 00e93d27e58297fb50f0cb1dc39901e12db414d6
 import java.util.ArrayList;
 
 public class HabitListTest extends ActivityInstrumentationTestCase2 {

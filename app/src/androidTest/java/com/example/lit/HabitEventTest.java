@@ -2,6 +2,9 @@ package com.example.lit;
 
 import android.test.ActivityInstrumentationTestCase2;
 
+import com.example.lit.habitevent.HabitEvent;
+import com.example.lit.habitevent.NormalHabitEvent;
+
 import java.util.Date;
 
 /**
@@ -11,7 +14,7 @@ import java.util.Date;
 
 public class HabitEventTest extends ActivityInstrumentationTestCase2 {
     public HabitEventTest(){
-        super(com.example.lit.HabitEvent.class);
+        super(HabitEvent.class);
     }
 
     public void testAddHabitEvent(){

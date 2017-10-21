@@ -1,9 +1,13 @@
 package com.example.lit;
 
-import java.util.Calendar;
 import android.test.ActivityInstrumentationTestCase2;
 
+<<<<<<< HEAD
 import com.example.lit.habit.*;
+=======
+import com.example.lit.habit.Habit;
+import com.example.lit.habit.NormalHabit;
+>>>>>>> 00e93d27e58297fb50f0cb1dc39901e12db414d6
 
 import java.util.Date;
 
