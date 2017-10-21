@@ -6,12 +6,16 @@ package com.example.lit;
 
 import android.test.ActivityInstrumentationTestCase2;
 
+import com.example.lit.habit.Habit;
+import com.example.lit.habit.HabitList;
+import com.example.lit.habit.NormalHabit;
+
 import java.util.ArrayList;
 
 public class HabitListTest extends ActivityInstrumentationTestCase2 {
 
     public HabitListTest(){
-        super(com.example.lit.HabitList.class);
+        super(HabitList.class);
     }
 
     public void testAddTweet(){
