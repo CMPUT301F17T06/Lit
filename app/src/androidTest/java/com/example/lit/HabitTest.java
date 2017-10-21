@@ -3,6 +3,8 @@ package com.example.lit;
 import java.util.Calendar;
 import android.test.ActivityInstrumentationTestCase2;
 
+import com.example.lit.habit.*;
+
 import java.util.Date;
 
 /**
@@ -12,7 +14,7 @@ import java.util.Date;
 public class HabitTest extends  ActivityInstrumentationTestCase2{
 
     public HabitTest(){
-        super(com.example.lit.Habit.class);
+        super(Habit.class);
     }
 
     public void testGetTitle() {

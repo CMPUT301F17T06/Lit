@@ -4,14 +4,15 @@ package com.example.lit;
  * Created by weikailu on 2017-10-21.
  */
 
-import android.test.ActivityInstrumentationTestCase2;
+import com.example.lit.habit.*;
 
+import android.test.ActivityInstrumentationTestCase2;
 import java.util.ArrayList;
 
 public class HabitListTest extends ActivityInstrumentationTestCase2 {
 
     public HabitListTest(){
-        super(com.example.lit.HabitList.class);
+        super(HabitList.class);
     }
 
     public void testAddTweet(){
