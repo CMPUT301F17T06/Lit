@@ -2,6 +2,8 @@ package com.example.lit;
 
 import android.test.ActivityInstrumentationTestCase2;
 
+import com.example.lit.habit.Habit;
+import com.example.lit.location.Location;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
@@ -10,7 +12,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class LocationTest extends ActivityInstrumentationTestCase2 {
     public LocationTest() {
-        super(com.example.lit.Habit.class);
+        super(Habit.class);
     }
     public void testgetLocation(){
         LatLng sydney = new LatLng(-33.867, 151.206);
