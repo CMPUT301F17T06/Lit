@@ -2,13 +2,16 @@ package com.example.lit.userprofile;
 
 import android.graphics.Bitmap;
 
+import com.example.lit.habit.Habit;
+import com.example.lit.habitevent.HabitEvent;
+
 import java.util.ArrayList;
 
 /**
  * Created by Riley Dixon on 21/10/2017.
  */
 
-public class UserProfile {
+public abstract class UserProfile {
     private String name; //Assumed to be unique.
     private String profileDescription;
     private Bitmap profileImage;

@@ -37,7 +37,13 @@
 
         <activity
             android:name=".activity.MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps" />
+        <activity android:name=".activity.HomePageActivity" />
+        <activity android:name=".activity.AddHabitActivity" />
+        <activity android:name=".activity.ViewHabitActivity" />
+        <activity android:name=".activity.EditHabitActivity" />
+        <activity android:name=".activity.ViewFriendActivity" />
+        <activity android:name=".activity.AddFriendActivity"></activity>
     </application>
 
 </manifest>
