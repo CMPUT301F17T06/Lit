@@ -1,3 +1,5 @@
+package com.example.lit;
+
 /*
  * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
  *
@@ -29,6 +31,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */ 
 
+
+import android.support.annotation.Dimension;
 
 import java.awt.*;
 import java.awt.event.*;
