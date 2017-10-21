@@ -11,6 +11,14 @@ public class Location {
         this.location = location;
     }
 
+    /*TODO : get the current location working later
+     */
+
+    public  Location (){
+        LatLng currentLocation = new LatLng(0.000, 0.000);
+        this.location = currentLocation;
+    }
+
     public LatLng getLocation() {
         return location;
     }
