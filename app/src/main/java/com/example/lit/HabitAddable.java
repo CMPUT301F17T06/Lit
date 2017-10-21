@@ -8,7 +8,7 @@ import java.util.Date;
 
 public interface HabitAddable {
 
-    public String getHabitName();
+    public String getTitle();
 
     public Date  getDate();
 }
