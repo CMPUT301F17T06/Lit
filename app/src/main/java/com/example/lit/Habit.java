@@ -11,6 +11,7 @@ public abstract class Habit implements HabitAddable{
     private String title;
     private Date date;
     public abstract String habitType();
+    private Location location;
 
     public Habit(String title) {
         this.title = title;
@@ -37,6 +38,14 @@ public abstract class Habit implements HabitAddable{
     public void setDate(Date date) {
         this.date = date;
     }
+
+
+    public void setLocation(Location location){
+        this.location = location;
+    }
+
+    public Location getLocation(){return this.location;}
+
 
     @Override
     public String toString() {

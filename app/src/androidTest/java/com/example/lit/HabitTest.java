@@ -46,4 +46,12 @@ public class HabitTest extends  ActivityInstrumentationTestCase2{
         assertEquals(habit.getDate(),date);
     }
 
+    public void testSetLocation(){
+        // test setLocation
+    }
+
+    public void testGetLocation(){
+        // test getLocation
+    }
+
 }
