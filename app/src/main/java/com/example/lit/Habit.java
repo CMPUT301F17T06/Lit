@@ -8,24 +8,21 @@ import java.util.Date;
 
 public abstract class Habit implements HabitAddable{
 
-    private String habitName;
-    private Date date = new Date();
+    private String title;
+    private Date date;
+    public abstract String habitType();
 
-    public Habit(String habitName, Date date) {
-        this.habitName = habitName;
-        this.date = date;
+    public Habit(String title) {
+        this.title = title;
+        this.date = new Date();
     }
 
-    public Habit(String habitName) {
-        this.habitName = habitName;
+    public String getTitle() {
+        return title;
     }
 
-    public String getHabitName() {
-        return habitName;
-    }
-
-    public void setHabitName(String habitName) {
-        this.habitName = habitName;
+    public void setHabitTitle(String title) {
+        this.title = title;
     }
 
     public Date getDate() {
@@ -39,7 +36,7 @@ public abstract class Habit implements HabitAddable{
     @Override
     public String toString() {
         return "Habit{" +
-                "habitName='" + habitName + '\'' +
+                "habitName='" + title + '\'' +
                 ", date=" + date +
                 '}';
     }

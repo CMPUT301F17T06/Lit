@@ -1,6 +1,8 @@
 package com.example.lit;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 
 /**
  * Created by weikailu on 2017-10-21.
@@ -12,7 +14,15 @@ public class HabitList {
 
     public HabitList(){}
 
-    public ArrayList<Habit> getHabits() {
+    public ArrayList<Habit> getHabits(String sortType) {
+
+        switch (sortType){
+            case "date":
+                Collections.sort(habits, new HabitDateComparator());
+                break;
+            case "frequency":
+                // sort by frequency
+        }
         return habits;
     }
 
