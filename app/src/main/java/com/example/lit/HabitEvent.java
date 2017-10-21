@@ -10,15 +10,11 @@ import java.util.Date;
 public abstract class HabitEvent implements HabitEventAddable{
     public String habitEventName;
     public Date date = new Date();
-    public String habitComment;
-
-    public HabitEvent(String habitEventName, Date date) {
-        this.habitEventName = habitEventName;
-        this.date = date;
-    }
+    public String eventComment;
 
     public HabitEvent(String habitEventName) {
         this.habitEventName = habitEventName;
+        this.date = new Date();
     }
 
     public String getHabitEventName() {
@@ -29,28 +25,28 @@ public abstract class HabitEvent implements HabitEventAddable{
         this.habitEventName = habitEventName;
     }
 
-    public Date getDate() {
+    public Date getEventDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setEventDate(Date date) {
         this.date = date;
     }
 
-    public String getHabitComment() {
-        return habitComment;
+    public String getEventComment() {
+        return eventComment;
     }
 
-    public void setHabitComment(String habitComment) {
-        this.habitComment = habitComment;
+    public void setEventComment(String eventComment) {
+        this.eventComment = eventComment;
     }
 
     @Override
     public String toString() {
         return "Habit Event{" +
                 "habitEventName='" + habitEventName + '\'' +
-                ", date=" + date +
-                ", comment=" + habitComment +
+                ", date=" + date + '\'' +
+                ", comment=" + eventComment +
                 '}';
     }
 

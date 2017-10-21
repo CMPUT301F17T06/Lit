@@ -10,7 +10,7 @@ public interface HabitEventAddable {
 
     public String getHabitEventName();
 
-    public Date getDate();
+    public Date getEventDate();
 
     public String getEventComment();
 }
