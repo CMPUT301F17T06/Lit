@@ -22,6 +22,7 @@ public class HabitList {
                 break;
             case "frequency":
                 // sort by frequency
+                break;
         }
         return habits;
     }

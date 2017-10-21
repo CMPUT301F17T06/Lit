@@ -17,11 +17,16 @@ public abstract class Habit implements HabitAddable{
         this.date = new Date();
     }
 
+    public Habit(String title, Date date) {
+        this.title = title;
+        this.date = date;
+    }
+
     public String getTitle() {
         return title;
     }
 
-    public void setHabitTitle(String title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
