@@ -17,14 +17,19 @@ import java.util.Date;
  * Edited by ammar on 10/21/2017.
  */
 
-public abstract class HabitEvent implements HabitEventAddable{
+public abstract class HabitEvent implements HabitEventAddable, Comparable{
     public String habitEventName;
     public Date date = new Date();
     public String eventComment;
 
+
     public HabitEvent(String habitEventName) {
         this.habitEventName = habitEventName;
         this.date = new Date();
+    }
+
+    public int compareTo(HabitEvent habitEvent){
+        return this.date.compareTo(habitEvent.date);
     }
 
     public String getHabitEventName() {

@@ -40,11 +40,11 @@ public class HabitHistory {
         return habitHistory.contains(habitEvent);
     }
 
-    public void add(HabitEvent habitEvent) {
+    public void addHabitEvent(HabitEvent habitEvent) {
         habitHistory.add(habitEvent);
     }
 
-    public void delete(HabitEvent habitEvent) {
+    public void deleteHabitEvent(HabitEvent habitEvent) {
         habitHistory.remove(habitEvent);
     }
 }
