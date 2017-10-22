@@ -22,7 +22,7 @@ public class HabitListTest extends ActivityInstrumentationTestCase2 {
         super(HabitList.class);
     }
 
-    public void testAddTweet(){
+    public void testAddTweet() throws HabitFormatException{
         HabitList habits = new HabitList();
         Habit habit = new NormalHabit("adding tweet") {
         };
@@ -30,7 +30,7 @@ public class HabitListTest extends ActivityInstrumentationTestCase2 {
         assertTrue(habits.hasHabit(habit));
     }
 
-    public void testDelete(){
+    public void testDelete()throws HabitFormatException{
         HabitList list = new HabitList();
         Habit habit = new NormalHabit("test");
         list.add(habit);
@@ -38,7 +38,7 @@ public class HabitListTest extends ActivityInstrumentationTestCase2 {
         assertFalse(list.hasHabit(habit));
     }
 
-    public void testSetHabits(){
+    public void testSetHabits()throws HabitFormatException{
         HabitList list1 = new HabitList();
         Habit habit1 = new NormalHabit("test habit 1");
         list1.add(habit1);
@@ -51,7 +51,7 @@ public class HabitListTest extends ActivityInstrumentationTestCase2 {
         assertTrue(list1.hasHabit(habit2));
     }
 
-    public void testGetTweet(){
+    public void testGetTweet()throws HabitFormatException{
         HabitList habits = new HabitList(); //
         Habit habit = new NormalHabit("test");
         habits.add(habit);
@@ -59,14 +59,14 @@ public class HabitListTest extends ActivityInstrumentationTestCase2 {
         assertEquals(returnedTweet.getTitle(), habit.getTitle());
     }
 
-    public void testHasTweet(){
+    public void testHasTweet()throws HabitFormatException{
         HabitList list = new HabitList();
         Habit tweet = new NormalHabit("test");
         list.add(tweet);
         assertTrue(list.hasHabit(tweet));
     }
 
-    public void testGetHabits(){
+    public void testGetHabits()throws HabitFormatException{
         HabitList list = new HabitList();
         Habit habit1 = new NormalHabit("test1");
         list.add(habit1);
