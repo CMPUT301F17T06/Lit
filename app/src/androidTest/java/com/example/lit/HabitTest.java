@@ -22,7 +22,7 @@ public class HabitTest extends  ActivityInstrumentationTestCase2{
         assertEquals(habit.getTitle(),title);
     }
 
-    public void testSetTitle(){
+    public void testSetTitle() throws HabitFormatException{
         Habit habit = new NormalHabit("test habit");
         String newTitle = "new habit title";
         habit.setTitle(newTitle);
