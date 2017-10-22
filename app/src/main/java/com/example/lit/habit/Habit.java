@@ -14,6 +14,8 @@ import com.example.lit.location.*;
 
 import java.util.Date;
 
+import io.searchbox.annotations.JestId;
+
 /**
  * Created by weikailu on 10/20/2017.
  */
@@ -27,6 +29,11 @@ public abstract class Habit implements HabitAddable{
     private String comment;
     private int titleLength;
     private int commentLength;
+    @JestId
+    private String id;
+
+    public String getId(){ return id ;}
+    public void setId(String id){ this.id = id ;}
 
     public Habit(String title) {
         this.title = title;
