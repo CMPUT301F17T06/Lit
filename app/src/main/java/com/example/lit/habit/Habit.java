@@ -40,6 +40,19 @@ public abstract class Habit implements HabitAddable{
         this.date = date;
     }
 
+    public Habit(String title, Date date, Location location, String reason) throws HabitFormatException {
+        if (title.length() > this.titleLength){
+            throw new HabitFormatException();
+        }
+        if (reason.length() > this.reasonLength){
+            throw new HabitFormatException();
+        }
+        this.title = title;
+        this.date = date;
+        this.location = location;
+        this.reason = reason;
+    }
+
     public String getTitle() {
         return title;
     }
