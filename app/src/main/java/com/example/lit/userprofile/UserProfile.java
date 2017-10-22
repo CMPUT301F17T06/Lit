@@ -3,14 +3,16 @@ package com.example.lit.userprofile;
 import android.graphics.Bitmap;
 
 import com.example.lit.habit.Habit;
+import com.example.lit.habit.NormalHabit;
 import com.example.lit.habitevent.HabitEvent;
+import com.example.lit.habitevent.NormalHabitEvent;
 
 import java.util.ArrayList;
 
 /**
  * Created by Riley Dixon on 21/10/2017.
  */
-/**
+
 public abstract class UserProfile {
     private String name; //Assumed to be unique.
     private String profileDescription;
@@ -38,27 +40,29 @@ public abstract class UserProfile {
     }
 
     public void setName(String name){
-
+        this.name = name;
     }
 
     public String getName(){
-
+        return this.name;
     }
 
-    public void setProfileDescription(String name){
-
+    public void setProfileDescription(String description){
+        this.profileDescription = description;
     }
 
     public String getProfileDecription(){
-
+        return this.profileDescription;
     }
 
     public void setProfileImage(Bitmap image){
-
+        //this.profileImage.createBitmap(image);
+        this.profileImage = image; //May not work, needs to be tested
     }
 
     public Bitmap getProfileImage(){
-
+        int[] dumbArray = new int[1];
+        return Bitmap.createBitmap(dumbArray, 1, 1, Bitmap.Config.ARGB_8888);
     }
 
     public void setCurrentHabits(ArrayList<Habit> currentHabits){
@@ -66,24 +70,23 @@ public abstract class UserProfile {
     }
 
     public ArrayList<Habit> getCurrentHabits(){
-
+        return new ArrayList<Habit>();
     }
 
     public Habit getHabit(int habitPosition){
-
+        return new NormalHabit("Dummy");
     }
 
-    public void setHabitCompletionHistory(
-            ArrayList<HabitEvent> habitCompletionHistory){
+    public void setHabitCompletionHistory(ArrayList<HabitEvent> habitCompletionHistory){
 
     }
 
     public ArrayList<HabitEvent> getHabitCompletionHistory(){
-
+        return new ArrayList<HabitEvent>();
     }
 
     public HabitEvent getHabitEvent(int eventPosititon){
-
+        return new NormalHabitEvent("Dummy");
     }
 
     public void setFollowingUsers(
@@ -92,11 +95,11 @@ public abstract class UserProfile {
     }
 
     public ArrayList<String> getFollowingUsers(){
-
+        return new ArrayList<String>();
     }
 
     public String getFollowingUser(int userPosition){
-
+        return new String();
     }
 
     public void addHabit(Habit newHabit){
@@ -111,16 +114,15 @@ public abstract class UserProfile {
 
     }
 
-    public Boolean addFollowingUser(String name){
-
+    public boolean addFollowingUser(String name){
+        return true;
     }
     //False if the user is already following
     //True if the user added successfully
 
-    public Boolean removeFollowingUser(){
-
+    public boolean removeFollowingUser(){
+        return true;
     }
 
 
 }
-*/
