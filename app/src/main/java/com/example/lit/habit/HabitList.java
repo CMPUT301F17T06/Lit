@@ -10,9 +10,6 @@
 
 package com.example.lit.habit;
 
-import com.example.lit.habit.Habit;
-import com.example.lit.habit.HabitDateComparator;
-
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -33,7 +30,7 @@ public class HabitList {
                 Collections.sort(habits, new HabitDateComparator());
                 break;
             case "frequency":
-                // sort by frequency
+                // sort by frequency..?
                 break;
         }
         return habits;

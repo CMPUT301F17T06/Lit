@@ -30,7 +30,7 @@ public class HabitListTest extends ActivityInstrumentationTestCase2 {
         assertTrue(habits.hasHabit(habit));
     }
 
-    public void testDelete()throws HabitFormatException{
+    public void testDeleteHabit()throws HabitFormatException{
         HabitList list = new HabitList();
         Habit habit = new NormalHabit("test");
         list.add(habit);
