@@ -11,6 +11,7 @@
 package com.example.lit.habit;
 
 import com.example.lit.location.*;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Date;
 
@@ -76,11 +77,15 @@ public abstract class Habit implements HabitAddable{
         }
     }
 
-    public void setLocation(Location location){
+    public void setLocation(LatLng coordinate){
+        Location location = new Location(coordinate);
         this.location = location;
+
     }
 
-    public Location getLocation(){return this.location;}
+    public Location getLocation(){
+        return this.location;
+    }
 
     @Override
     public String toString() {
