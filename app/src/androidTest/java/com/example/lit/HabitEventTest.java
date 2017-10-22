@@ -17,10 +17,6 @@ public class HabitEventTest extends ActivityInstrumentationTestCase2 {
         super(HabitEvent.class);
     }
 
-    public void testAddHabitEvent(){
-    }
-
-
     public void testGetName() {
         String name = "test name";
         HabitEvent habitEvent = new NormalHabitEvent(name);

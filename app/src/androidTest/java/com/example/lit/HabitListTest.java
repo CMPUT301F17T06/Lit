@@ -4,11 +4,15 @@ package com.example.lit;
  * Created by weikailu on 2017-10-21.
  */
 
+import com.example.lit.habit.*;
+
+
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.example.lit.habit.Habit;
 import com.example.lit.habit.HabitList;
 import com.example.lit.habit.NormalHabit;
+
 
 import java.util.ArrayList;
 
@@ -18,7 +22,7 @@ public class HabitListTest extends ActivityInstrumentationTestCase2 {
         super(HabitList.class);
     }
 
-    public void testAddTweet(){
+    public void testAddHabit(){
         HabitList habits = new HabitList();
         Habit habit = new NormalHabit("adding tweet") {
         };
@@ -26,7 +30,7 @@ public class HabitListTest extends ActivityInstrumentationTestCase2 {
         assertTrue(habits.hasHabit(habit));
     }
 
-    public void testDelete(){
+    public void testDeleteHabit(){
         HabitList list = new HabitList();
         Habit habit = new NormalHabit("test");
         list.add(habit);
@@ -47,19 +51,20 @@ public class HabitListTest extends ActivityInstrumentationTestCase2 {
         assertTrue(list1.hasHabit(habit2));
     }
 
-    public void testGetTweet(){
+    public void testGetHabit(){
         HabitList habits = new HabitList(); //
         Habit habit = new NormalHabit("test");
         habits.add(habit);
-        Habit returnedTweet = habits.getHabit(0);
-        assertEquals(returnedTweet.getTitle(), habit.getTitle());
+        Habit returnedHabit = habits.getHabit(0);
+        assertEquals(returnedHabit.getTitle(), habit.getTitle());
     }
 
-    public void testHasTweet(){
+
+    public void testHasHabit(){
         HabitList list = new HabitList();
-        Habit tweet = new NormalHabit("test");
-        list.add(tweet);
-        assertTrue(list.hasHabit(tweet));
+        Habit habit = new NormalHabit("test");
+        list.add(habit);
+        assertTrue(list.hasHabit(habit));
     }
 
     public void testGetHabits(){

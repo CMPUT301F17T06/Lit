@@ -14,11 +14,14 @@ package com.example.lit.habit;
  * Created by weikailu on 2017-10-20.
  */
 
+import com.example.lit.location.Location;
+
 import java.util.Date;
 
-public interface HabitAddable {
+public interface Habitable {
 
-    public String getTitle();
-
-    public Date  getDate();
+    String getTitle();
+    String getReason();
+    Date  getDate();
+    Location getLocation();
 }

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * Created by Riley Dixon on 21/10/2017.
  */
-
+/**
 public abstract class UserProfile {
     private String name; //Assumed to be unique.
     private String profileDescription;
@@ -123,3 +123,4 @@ public abstract class UserProfile {
 
 
 }
+*/

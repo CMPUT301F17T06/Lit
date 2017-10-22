@@ -10,10 +10,17 @@
 
 package com.example.lit.habitevent;
 
+import android.support.annotation.NonNull;
+
 /**
  * Created by ammar on 21/10/17.
  */
 
 public class NormalHabitEvent extends HabitEvent{
     public NormalHabitEvent(String name){super(name);}
+
+    @Override
+    public int compareTo(@NonNull Object o) {
+        return 0;
+    }
 }

@@ -10,6 +10,8 @@
 
 package com.example.lit.habit;
 
+import com.example.lit.location.Location;
+
 import java.util.Date;
 
 /**
@@ -19,7 +21,11 @@ import java.util.Date;
 public class NormalHabit extends Habit {
     public NormalHabit(String title){super(title);}
 
-    public NormalHabit(String title, Date date) {super(title, date);}
+    public NormalHabit(String title, Date date){super(title, date);}
+
+    public NormalHabit(String title, Date date, Location location, String reason) {
+        super(title, date, location, reason);
+    }
 
     @Override
     public String habitType(){return "Normal";}
