@@ -22,7 +22,7 @@ public class HabitListTest extends ActivityInstrumentationTestCase2 {
         super(HabitList.class);
     }
 
-    public void testAddHabit() throws HabitFormatException{
+    public void testAddHabit(){
         HabitList habits = new HabitList();
         Habit habit = new NormalHabit("adding tweet") {
         };
@@ -30,7 +30,7 @@ public class HabitListTest extends ActivityInstrumentationTestCase2 {
         assertTrue(habits.hasHabit(habit));
     }
 
-    public void testDeleteHabit()throws HabitFormatException{
+    public void testDeleteHabit(){
         HabitList list = new HabitList();
         Habit habit = new NormalHabit("test");
         list.add(habit);
@@ -38,7 +38,7 @@ public class HabitListTest extends ActivityInstrumentationTestCase2 {
         assertFalse(list.hasHabit(habit));
     }
 
-    public void testSetHabits()throws HabitFormatException{
+    public void testSetHabits(){
         HabitList list1 = new HabitList();
         Habit habit1 = new NormalHabit("test habit 1");
         list1.add(habit1);
@@ -51,7 +51,7 @@ public class HabitListTest extends ActivityInstrumentationTestCase2 {
         assertTrue(list1.hasHabit(habit2));
     }
 
-    public void testGetHabit()throws HabitFormatException{
+    public void testGetHabit(){
         HabitList habits = new HabitList(); //
         Habit habit = new NormalHabit("test");
         habits.add(habit);
@@ -60,14 +60,14 @@ public class HabitListTest extends ActivityInstrumentationTestCase2 {
     }
 
 
-    public void testHasHabit()throws HabitFormatException{
+    public void testHasHabit(){
         HabitList list = new HabitList();
         Habit habit = new NormalHabit("test");
         list.add(habit);
         assertTrue(list.hasHabit(habit));
     }
 
-    public void testGetHabits()throws HabitFormatException{
+    public void testGetHabits(){
         HabitList list = new HabitList();
         Habit habit1 = new NormalHabit("test1");
         list.add(habit1);
