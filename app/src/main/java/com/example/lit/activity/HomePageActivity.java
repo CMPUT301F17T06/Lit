@@ -12,10 +12,35 @@ package com.example.lit.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.lit.R;
 
 public class HomePageActivity extends AppCompatActivity {
+
+    ListView currentHabitList;
+    ListView habitHistoryList;
+    ListView friendsList;
+    View mapView; //What kind of view is this supposed to be?
+    View profileView; //What kind of view is this supposed to be?
+    EditText habitHistoryQuery;
+
+    TextView userProfileName;
+    TextView userProfileDescription;
+    ImageView userProfileImage;
+
+    Button editUserProfile;
+    Button addFriendButton;
+    Button addHabitButton;
+    Button searchHistoryByHabitName;
+    Button searchHistoryByComment;
+    Button sortHistoryMenu; //Not sure what kind of View this should be
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
