@@ -19,6 +19,14 @@ public class HabitTest extends  ActivityInstrumentationTestCase2{
         super(Habit.class);
     }
 
+    public void testJestId(){
+        Habit habit = new NormalHabit("test title");
+        String id = "test ID";
+        habit.setId(id);
+
+        assertEquals(habit.getId(),id);
+    }
+
     public void testGetTitle(){
         String title = "test title";
         Habit habit = new NormalHabit(title);
