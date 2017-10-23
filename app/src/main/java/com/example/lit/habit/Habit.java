@@ -20,7 +20,7 @@ import io.searchbox.annotations.JestId;
  * Created by weikailu on 10/20/2017.
  */
 
-public abstract class Habit implements HabitAddable{
+public abstract class Habit implements Habitable{
 
     private String title;
     private Date date;
