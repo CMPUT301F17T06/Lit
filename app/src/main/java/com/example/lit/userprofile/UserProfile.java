@@ -230,6 +230,9 @@ public class UserProfile {
      * @return True is the user is added successfully. False otherwise.
      */
     public boolean addFollowingUser(String name){
+        if(followingUsers == null){
+            followingUsers = new ArrayList<String>();
+        }
         return true;
     }
 
@@ -241,6 +244,16 @@ public class UserProfile {
      */
     public boolean removeFollowingUser(String name){
         return true;
+    }
+
+    /**
+     * Finds if a user is currently following another user given by their name.
+     *
+     * @param name The unique name used by the user that is followed
+     * @return -1 if not found. Otherwise their position in the ArrayList is returned.
+     */
+    public int findFollowingUser(String name){
+        return -1;
     }
 
     /**
