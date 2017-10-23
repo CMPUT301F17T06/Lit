@@ -1,3 +1,12 @@
+/*
+ * Copyright 2017 Max Schafer, Ammar Mahdi, Riley Dixon, Steven Weikai Lu, Jiaxiong Yang
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 package com.example.lit.userprofile;
 
 import android.graphics.Bitmap;
@@ -13,7 +22,7 @@ import java.util.ArrayList;
  * Created by Riley Dixon on 21/10/2017.
  */
 
-public abstract class UserProfile {
+public class UserProfile {
 
     /**
      * The name of the user account. This is assumed to be unique for the app's purposes.
@@ -221,6 +230,9 @@ public abstract class UserProfile {
      * @return True is the user is added successfully. False otherwise.
      */
     public boolean addFollowingUser(String name){
+        if(followingUsers == null){
+            followingUsers = new ArrayList<String>();
+        }
         return true;
     }
 
@@ -232,6 +244,16 @@ public abstract class UserProfile {
      */
     public boolean removeFollowingUser(String name){
         return true;
+    }
+
+    /**
+     * Finds if a user is currently following another user given by their name.
+     *
+     * @param name The unique name used by the user that is followed
+     * @return -1 if not found. Otherwise their position in the ArrayList is returned.
+     */
+    public int findFollowingUser(String name){
+        return -1;
     }
 
     /**
