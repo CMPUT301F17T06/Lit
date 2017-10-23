@@ -12,10 +12,19 @@ package com.example.lit.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.view.menu.ListMenuItemView;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.lit.R;
 
 public class ViewFriendActivity extends AppCompatActivity {
+
+    ImageView friendProfileImage;
+    TextView friendProfileName;
+    TextView friendProfileDescription;
+    ListView friendProfileHabits;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
