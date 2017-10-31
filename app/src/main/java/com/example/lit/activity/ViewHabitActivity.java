@@ -12,10 +12,22 @@ package com.example.lit.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.lit.R;
 
 public class ViewHabitActivity extends AppCompatActivity {
+
+    ImageView habitImage;
+    TextView habitName;
+    TextView habitComment;
+    TextView habitDateStarted;
+    TextView habitDateCompleted;
+
+    Button editHabit;
+    Button habitDoneToday; //Not sure what this should be, Button is a placeholder.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

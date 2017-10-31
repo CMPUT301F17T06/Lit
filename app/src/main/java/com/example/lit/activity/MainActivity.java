@@ -12,10 +12,16 @@ package com.example.lit.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.example.lit.R;
 
 public class MainActivity extends AppCompatActivity {
+
+    EditText userName;
+    Button loginButton;
+    Button newAccountButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

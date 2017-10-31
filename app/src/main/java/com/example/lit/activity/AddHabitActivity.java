@@ -12,10 +12,23 @@ package com.example.lit.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.example.lit.R;
 
 public class AddHabitActivity extends AppCompatActivity {
+
+    private EditText habitName;
+    private EditText habitComment;
+    private EditText habitDateStarted;
+    private EditText habitFrequency;
+    private ImageView habitImage;
+    private Button editImage;
+    private Button saveHabit;
+    private Button cancelHabit;
+    private Button locationCheck; //This should not be a button, its currently a placeholder
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

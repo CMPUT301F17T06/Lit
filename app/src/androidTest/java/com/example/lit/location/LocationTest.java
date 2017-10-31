@@ -8,24 +8,35 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.example.lit.activity;
+package com.example.lit.location;
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
+import android.test.ActivityInstrumentationTestCase2;
 
-import com.example.lit.R;
+import com.example.lit.habit.Habit;
+import com.example.lit.location.Location;
+import com.google.android.gms.maps.model.LatLng;
 
-public class AddFriendActivity extends AppCompatActivity {
+/**
+ * Created by damon on 10/21/2017.
+ */
 
-    private EditText friendName;
-    private Button confirmFriend;
-    private Button cancel;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_friend);
+public class LocationTest extends ActivityInstrumentationTestCase2 {
+    public LocationTest() {
+        super(Habit.class);
     }
+    public void testgetLocation(){
+        LatLng sydney = new LatLng(-33.867, 151.206);
+        Location location = new Location(sydney);
+        assertTrue(location.getLocation().equals(sydney));
+    }
+    public void testsetLocation(){
+        LatLng sydney = new LatLng(-33.867, 151.206);
+        LatLng newlocation = new LatLng(-30.000,150.200);
+        Location location = new Location(sydney);
+        location.setLocation(newlocation);
+        assertTrue(location.getLocation().equals(newlocation));
+    }
+
+
 }
+
