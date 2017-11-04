@@ -17,15 +17,78 @@ import java.util.ArrayList;
  */
 
 public class FollowManager {
+    //Follow Manager should not exist without being constructed with an accompanying UserProfile
+    String currentUsersName;
     ArrayList<String> followingUsers;
     ArrayList<String> followedUsers;
     ArrayList<String> requestToFollow;
     ArrayList<String> requestedToFollow;
 
-    FollowManager(){
+    FollowManager(UserProfile userProfile){
+        currentUsersName = userProfile.getName();
         followedUsers = new ArrayList<String>();
         followingUsers = new ArrayList<String>();
-        
+        requestToFollow = new ArrayList<String>();
+        requestedToFollow = new ArrayList<String>();
+    }
+
+    FollowManager(UserProfile userProfile, ArrayList<String> followingUsers,
+                  ArrayList<String> followedUsers, ArrayList<String> requestToFollow,
+                  ArrayList<String> requestedToFollow){
+
+        currentUsersName = userProfile.getName();
+        this.followingUsers = followingUsers;
+        this.followedUsers = followedUsers;
+        this.requestToFollow = requestToFollow;
+        this.requestedToFollow = requestedToFollow;
+    }
+
+    public ArrayList<String> getFollowingUsers() {
+        return followingUsers;
+    }
+
+    public void setFollowingUsers(ArrayList<String> followingUsers) {
+        this.followingUsers = followingUsers;
+    }
+
+    public ArrayList<String> getFollowedUsers() {
+        return followedUsers;
+    }
+
+    public void setFollowedUsers(ArrayList<String> followedUsers) {
+        this.followedUsers = followedUsers;
+    }
+
+    public ArrayList<String> getRequestToFollow() {
+        return requestToFollow;
+    }
+
+    public void setRequestToFollow(ArrayList<String> requestToFollow) {
+        this.requestToFollow = requestToFollow;
+    }
+
+    public ArrayList<String> getRequestedToFollow() {
+        return requestedToFollow;
+    }
+
+    public void setRequestedToFollow(ArrayList<String> requestedToFollow) {
+        this.requestedToFollow = requestedToFollow;
+    }
+
+    public void requestToFollowUser(String requestingToFollowThisUser){
+        requestToFollow.add(requestingToFollowThisUser);
+        //TODO: Get the requestingToFollowUser's requestedToFollowArrayList and add requestingUser
+        //TODO: Save the modified requestToFollow and requestedToFollow
+    }
+
+    public void cancelRequestToFollow(String requestingToFollowThisUser){
+        requestToFollow.remove(requestingToFollowThisUser);
+        //TODO: Get the requestingToFollowUser's requestedToFollowArrayList and remove requestingUser
+        //TODO: Save the modified requestToFollow and requestedToFollow
+    }
+
+    public void approveFollowRequest(String requestedUser){
+
     }
 
 
