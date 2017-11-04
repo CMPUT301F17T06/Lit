@@ -10,9 +10,23 @@
 
 package com.example.lit.userprofile;
 
+import java.util.ArrayList;
+
 /**
  * Created by Riley Dixon on 31/10/2017.
  */
 
 public class FollowManager {
+    ArrayList<String> followingUsers;
+    ArrayList<String> followedUsers;
+    ArrayList<String> requestToFollow;
+    ArrayList<String> requestedToFollow;
+
+    FollowManager(){
+        followedUsers = new ArrayList<String>();
+        followingUsers = new ArrayList<String>();
+        
+    }
+
+
 }
