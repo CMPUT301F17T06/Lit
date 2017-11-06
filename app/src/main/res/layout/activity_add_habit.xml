@@ -16,4 +16,87 @@
     android:layout_height="match_parent"
     tools:context="com.example.lit.activity.AddHabitActivity">
 
+    <EditText
+        android:id="@+id/Comment_EditText"
+        android:layout_width="200dp"
+        android:layout_height="123dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="8dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/SaveHabit"
+        app:layout_constraintEnd_toEndOf="@+id/Habit_EditText"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/CommentTitle"
+        app:layout_constraintTop_toTopOf="@+id/CommentTitle"
+        app:layout_constraintVertical_bias="0.0"
+        android:layout_marginLeft="8dp" />
+
+    <TextView
+        android:id="@+id/CommentTitle"
+        android:layout_width="112dp"
+        android:layout_height="35dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="24dp"
+        android:text="Comment: "
+        android:textSize="18sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/HabitTitle" />
+
+    <TextView
+        android:id="@+id/HabitTitle"
+        android:layout_width="112dp"
+        android:layout_height="35dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="192dp"
+        android:text="Habit Name: "
+        android:textSize="18sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/Habit_EditText"
+        android:layout_width="200dp"
+        android:layout_height="35dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="32dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="@+id/HabitTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/HabitTitle"
+        app:layout_constraintTop_toTopOf="@+id/HabitTitle"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/setSchedule"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="60dp"
+        android:layout_marginStart="40dp"
+        android:text="Set Schedule"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="40dp" />
+
+    <Button
+        android:id="@+id/saveHabit"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="60dp"
+        android:layout_marginEnd="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.721"
+        app:layout_constraintStart_toEndOf="@+id/setSchedule"
+        android:layout_marginRight="40dp"
+        android:text="Save"/>
+
 </android.support.constraint.ConstraintLayout>

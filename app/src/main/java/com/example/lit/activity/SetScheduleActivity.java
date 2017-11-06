@@ -12,35 +12,30 @@ package com.example.lit.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.Button;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.Spinner;
 
 import com.example.lit.R;
 
-public class AddHabitActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.stream.IntStream;
 
-    private EditText habitName;
-    private EditText habitComment;
-    private EditText habitDateStarted;
-    private EditText habitFrequency;
-    private ImageView habitImage;
-    private Button editImage;
-    private Button saveHabit;
-    private Button cancelHabit;
-    private Button setSchedule;
-    private Button locationCheck; //This should not be a button, its currently a placeholder
+public class SetScheduleActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_habit);
+        setContentView(R.layout.activity_set_schedule);
 
-        habitName = (EditText) findViewById(R.id.Habit_EditText);
-        habitComment = (EditText) findViewById(R.id.Comment_EditText);
+        Spinner weekday_spinner = findViewById(R.id.weekday_spinner);
+        String[] weekdays = new String[]{"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
+        ArrayAdapter<String> weekday_adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,weekdays);
+        weekday_spinner.setAdapter(weekday_adapter);
+       // Taken 2017/11/06 from https://stackoverflow.com/questions/13377361/how-to-create-a-drop-down-list
 
-        saveHabit = (Button) findViewById(R.id.SaveHabit);
-        setSchedule = (Button) findViewById(R.id.setSchedule);
-
+        EditText hour_EditText = findViewById(R.id.hour);
+        EditText minute_EditText = findViewById(R.id.minute);
     }
 }
