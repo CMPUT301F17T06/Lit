@@ -18,65 +18,44 @@
 
     <EditText
         android:id="@+id/Comment_EditText"
-        android:layout_width="200dp"
+        android:layout_width="0dp"
         android:layout_height="74dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginStart="8dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/SaveHabit"
-        app:layout_constraintEnd_toEndOf="@+id/Habit_EditText"
-        app:layout_constraintHorizontal_bias="0.333"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/CommentTitle"
-        app:layout_constraintTop_toTopOf="@+id/CommentTitle"
-        app:layout_constraintVertical_bias="0.0"
-        tools:ignore="UnknownId"
-        android:layout_marginLeft="8dp" />
-
-    <TextView
-        android:id="@+id/CommentTitle"
-        android:layout_width="112dp"
-        android:layout_height="35dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="24dp"
-        android:text="Comment: "
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/HabitTitle" />
-
-    <TextView
-        android:id="@+id/HabitTitle"
-        android:layout_width="112dp"
-        android:layout_height="35dp"
-        android:layout_marginLeft="24dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="112dp"
-        android:text="Habit Name: "
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/Habit_EditText"
-        android:layout_width="200dp"
-        android:layout_height="35dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="32dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
+        android:hint="@string/habit_comment_field"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="@+id/HabitTitle"
+        android:singleLine="false"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/SaveHabit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/HabitTitle"
-        app:layout_constraintTop_toTopOf="@+id/HabitTitle"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Habit_EditText"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="UnknownId" />
+
+    <EditText
+        android:id="@+id/Habit_EditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="64dp"
+        android:ems="10"
+        android:hint="@string/habit_name_field"
+        android:inputType="textPersonName"
+        android:singleLine="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/discard_button"
@@ -84,7 +63,7 @@
         android:layout_height="50dp"
         android:layout_marginBottom="60dp"
         android:layout_marginStart="40dp"
-        android:text="Discard"
+        android:text="@string/discard_changes_button"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -95,12 +74,11 @@
         android:layout_height="50dp"
         android:layout_marginBottom="60dp"
         android:layout_marginEnd="40dp"
+        android:text="@string/save_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.721"
-        app:layout_constraintStart_toEndOf="@+id/discard_button"
-        android:layout_marginRight="40dp"
-        android:text="Save"/>
+        app:layout_constraintStart_toEndOf="@+id/discard_button" />
 
     <com.example.lit.Utilities.MultiSelectionSpinner
         android:id="@+id/weekday_spinner"
@@ -108,10 +86,11 @@
         android:layout_height="50dp"
         android:layout_margin="2dp"
         android:layout_marginBottom="168dp"
-        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/hour"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/weekday_title"
         app:layout_constraintVertical_bias="0.0" />
@@ -126,6 +105,7 @@
         android:inputType="textPersonName"
         android:textAlignment="textEnd"
         app:layout_constraintBottom_toBottomOf="@+id/weekday_spinner"
+        app:layout_constraintEnd_toStartOf="@+id/semi_colon"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toEndOf="@+id/weekday_spinner"
         app:layout_constraintTop_toBottomOf="@+id/weekday_title"
@@ -136,23 +116,22 @@
         android:layout_width="60dp"
         android:layout_height="50dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="56dp"
+        android:layout_marginEnd="16dp"
         android:ems="10"
+        android:gravity="start"
         android:inputType="textPersonName"
         android:textAlignment="textStart"
         app:layout_constraintBottom_toBottomOf="@+id/hour"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/semi_colon"
         app:layout_constraintTop_toTopOf="@+id/hour"
-        app:layout_constraintVertical_bias="0.0"
-        android:layout_marginRight="56dp"
-        android:gravity="start" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/semi_colon"
         android:layout_width="17dp"
         android:layout_height="50dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
         android:text=":"
         android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="@+id/hour"
@@ -160,28 +139,27 @@
         app:layout_constraintHorizontal_bias="0.823"
         app:layout_constraintStart_toEndOf="@+id/hour"
         app:layout_constraintTop_toTopOf="@+id/hour"
-        app:layout_constraintVertical_bias="0.25"
-        android:layout_marginRight="8dp" />
+        app:layout_constraintVertical_bias="0.25" />
 
     <TextView
         android:id="@+id/weekday_title"
-        android:layout_width="141dp"
+        android:layout_width="0dp"
         android:layout_height="36dp"
-        android:layout_marginTop="60dp"
-        android:text="Repeat:"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/habit_scheduled_prompt"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/CommentTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/Comment_EditText" />
 
-    <TextView
-        android:id="@+id/add_habit_title"
-        android:layout_width="184dp"
-        android:layout_height="50dp"
+    <CheckBox
+        android:id="@+id/locationCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:text="Adding Habit"
-        android:textSize="18sp"
+        android:layout_marginTop="8dp"
+        android:text="@string/habit_check_location"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/weekday_spinner" />
 
 </android.support.constraint.ConstraintLayout>

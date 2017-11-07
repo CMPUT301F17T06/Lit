@@ -2,8 +2,13 @@
     <string name="app_name">Lit</string>
     <string name="title_activity_maps">Map</string>
     <string name="habit_title">Habit</string>
+    <string name="habit_name_field">Habit Name</string>
+    <string name="habit_comment_field">Habit Comment</string>
+    <string name="habit_scheduled_prompt">When should the Habit take place:</string>
+    <string name="habit_check_location">Track Habit Location</string>
     <string name="set_schedule_button">Set Schedule</string>
-    <string name="save_button">SAVE</string>
+    <string name="save_button">Save</string>
+    <string name="discard_changes_button">Discard</string>
     <string name="action_settings">Settings</string>
     <string name="week_day_title">Repeat</string>
     <string name="time_title">Time</string>
