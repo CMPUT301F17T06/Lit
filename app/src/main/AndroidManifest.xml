@@ -44,7 +44,6 @@
         <activity android:name=".activity.EditHabitActivity" />
         <activity android:name=".activity.ViewFriendActivity" />
         <activity android:name=".activity.AddFriendActivity" />
-        <activity android:name=".activity.SetScheduleActivity"></activity>
     </application>
 
 </manifest>
