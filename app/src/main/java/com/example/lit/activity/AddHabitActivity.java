@@ -110,6 +110,10 @@ public class AddHabitActivity extends AppCompatActivity {
         Intent newHabitIntent = new Intent();
         Habit newHabit = new NormalHabit(habitNameString, habitStartDate,
                 null, commentString);
+
+        newHabitIntent.putExtra(CLASS_KEY, newHabit); //Habit needs serializable.
+        setResult(Activity.RESULT_OK, newHabitIntent);
+        finish();
     }
 
 
