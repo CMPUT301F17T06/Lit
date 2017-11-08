@@ -30,7 +30,11 @@ dependencies {
      */
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.google.android.gms:play-services-maps:10.0.1'
+
+
     compile 'io.searchbox:jest-droid:1.0.0'
+
+    compile 'com.google.android.gms:play-services-maps:9.2.0'
+
     testCompile 'junit:junit:4.12'
 }
