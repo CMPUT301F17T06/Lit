@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 /**
  * Created by Riley Dixon on 21/10/2017.
+ * edited by Damon on 08/11/2017
  */
 
 public class UserProfile {
@@ -37,14 +38,8 @@ public class UserProfile {
     //is that of the current user
     //private ArrayList<String> followedUsers; Depending on how we manage this
 
-    /**
-     * A dummy constructor, should be used for debugging only.
-     * If creating a new UserProfile object for a purpose other than
-     * debugging, use the other two constructors.
-     */
-    public UserProfile() { //Dummy Constructor, sets nullable.
 
-    }
+
 
     /**
      * Intended to be used for when a new account is created.
@@ -52,6 +47,7 @@ public class UserProfile {
      * @param name The user account's name.
      */
     public UserProfile(String name){ //New Account
+        this.name = name;
 
     }
 
@@ -68,11 +64,18 @@ public class UserProfile {
      * @see Bitmap for information reguarding the profile image.
      */
     public UserProfile(String name, String profileDescription,
-                       Bitmap profileImage, ArrayList<Habit> currentHabits,
-                       ArrayList<HabitEvent> habitCompletionHistory,
+                       Bitmap profileImage, HabitList currentHabits,
+                       HabitHistory habitCompletionHistory,
                        ArrayList<String> followingUsers){
+        this.name = name;
+        this. profileDescription = profileDescription;
+        this.profileImage = profileImage;
+        this.currentHabits = currentHabits;
+        this.habitCompletionHistory = habitCompletionHistory;
+        this.followingUsers = followingUsers;
 
     }
+
 
     /**
      * Sets the account name of the UserProfile. The name shouldn't be allowed to be changed.
@@ -80,6 +83,7 @@ public class UserProfile {
      * @param name The name the UserProfile should now be associated with.
      */
     protected void setName(String name){
+
         this.name = name;
     }
 
@@ -89,6 +93,7 @@ public class UserProfile {
      * @return The name the UserProfile is associated with.
      */
     public String getName(){
+
         return this.name;
     }
 
@@ -99,7 +104,10 @@ public class UserProfile {
      */
     public void setProfileDescription(String description){
         this.profileDescription = description;
+
     }
+
+
 
     /**
      * Returns the description associated with the profile.
@@ -107,6 +115,7 @@ public class UserProfile {
      * @return The description associated with the profile.
      */
     public String getProfileDecription(){
+
         return this.profileDescription;
     }
 
@@ -120,7 +129,11 @@ public class UserProfile {
     public void setProfileImage(Bitmap image){
         //this.profileImage.createBitmap(image);
         this.profileImage = image; //May not work, needs to be tested
+
     }
+
+
+
 
     /**
      * Returns the bitmap image that is associated with the UserProfile.
@@ -130,6 +143,7 @@ public class UserProfile {
      * @see Bitmap
      */
     public Bitmap getProfileImage(){
+
         //int[] dumbArray = new int[1];
         //return Bitmap.createBitmap(dumbArray, 1, 1, Bitmap.Config.ARGB_8888);
 
@@ -177,6 +191,7 @@ public class UserProfile {
      */
     public HabitHistory getHabitCompletionHistory(){
         return this.habitCompletionHistory;
+
     }
 
     /**
@@ -196,6 +211,7 @@ public class UserProfile {
      */
     public ArrayList<String> getFollowingUsers(){
         return this.followingUsers;
+
     }
 
     /**
@@ -207,6 +223,7 @@ public class UserProfile {
      * @see UserProfile#getFollowingUserProfile(int) if the UserProfile is desired instead.
      */
     public String getFollowingUser(int userPosition){
+
         return this.followingUsers.get(userPosition);
     }
 
@@ -232,8 +249,16 @@ public class UserProfile {
     public boolean addFollowingUser(String name){
         if(followingUsers == null){
             followingUsers = new ArrayList<String>();
+            followingUsers.add(name);
+            return true;
         }
-        return true;
+        if(followingUsers.contains(name)){
+            return false;}
+
+        else{
+            followingUsers.add(name);
+            return true;
+            }
     }
 
     /**
@@ -243,7 +268,14 @@ public class UserProfile {
      * @return True if the user has been revoked permissions successfully. False otherwise.
      */
     public boolean removeFollowingUser(String name){
-        return true;
+        if(followingUsers.contains(name)){
+            followingUsers.remove(name);
+            return true;
+        }
+        else{
+            return false;
+        }
+
     }
 
     /**
@@ -253,8 +285,16 @@ public class UserProfile {
      * @return -1 if not found. Otherwise their position in the ArrayList is returned.
      */
     public int findFollowingUser(String name){
-        return -1;
+        if(followingUsers.contains(name)){
+            return followingUsers.indexOf(name);
+        }
+        else{
+            return -1;
+        }
+
+
     }
+
 
     /**
      * Respond to whether a current request to follow the user.
@@ -262,6 +302,7 @@ public class UserProfile {
      * @param decision True if the user approves the follow request. False otherwise.
      */
     public void respondToFollowRequest(boolean decision){
+
 
     }
 
