@@ -7,7 +7,7 @@
     tools:context="com.example.lit.activity.MainActivity">
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/Login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -34,7 +34,7 @@
         app:srcCompat="@drawable/lit" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
