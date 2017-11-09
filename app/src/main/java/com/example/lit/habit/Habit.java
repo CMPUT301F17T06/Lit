@@ -14,13 +14,14 @@ import com.example.lit.location.*;
 import com.google.android.gms.maps.model.LatLng;
 import io.searchbox.annotations.JestId;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by weikailu on 10/20/2017.
  */
 
-public abstract class Habit implements Habitable {
+public abstract class Habit implements Habitable , Serializable{
 
     private String title;
     private Date date;
@@ -37,23 +38,24 @@ public abstract class Habit implements Habitable {
     public void setId(String id){ this.id = id ;}
 
 
-    public Habit(String title){
-        this.title = title;
-        this.date = new Date();
+    public Habit(String title)throws HabitFormatException{
+        this.setTitle(title);
+        this.setDate(new Date());
     }
 
-    public Habit(String title, Date date){
-
-        this.title = title;
-        this.date = date;
+    public Habit(String title, Date date) throws HabitFormatException{
+        this.setTitle(title);
+        this.setDate(date);
     }
 
-    public Habit(String title, Date date, Location location, String reason) {
-        this.title = title;
-        this.date = date;
-        this.location = location;
-        this.reason = reason;
+    public Habit(String title, Date date, Location location, String reason) throws HabitFormatException {
+        this.setTitle(title);
+        this.setDate(date);
+        this.setLocation(location);
+        this.setReason(reason);
     }
+
+    // TODO: Constructor with JestID
 
     public String getTitle() {
         return title;
@@ -90,7 +92,10 @@ public abstract class Habit implements Habitable {
     public void setLocation(LatLng coordinate){
         Location location = new Location(coordinate);
         this.location = location;
+    }
 
+    public void setLocation(Location location){
+        this.location = location;
     }
 
     public Location getLocation(){

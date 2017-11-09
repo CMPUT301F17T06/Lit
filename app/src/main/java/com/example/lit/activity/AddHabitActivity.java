@@ -17,14 +17,18 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.lit.Utilities.MultiSelectionSpinner;
 import com.example.lit.R;
 import com.example.lit.habit.Habit;
+import com.example.lit.habit.HabitFormatException;
 import com.example.lit.habit.NormalHabit;
 
 import java.util.ArrayList;
@@ -38,23 +42,23 @@ public class AddHabitActivity extends AppCompatActivity {
 
     private EditText habitName;
     private EditText habitComment;
-    //private EditText habitFrequency;
     private ImageView habitImage;
     private Button editImage;
     private Button saveHabit;
     private Button cancelHabit;
     private CheckBox locationCheck; //This should not be a button, its currently a placeholder
     private MultiSelectionSpinner weekday_spinner;
+    private Spinner hour_spinner;
+    private Spinner minute_spinner;
+    //TODO: Implement image feature
     //TODO: Implement location feature
 
     private Date habitStartDate;
     private String habitNameString;
     private String commentString;
     private List<String> weekdays;
-    private EditText hour_view;
-    private EditText minute_view;
-    private  int hour;
-    private int minute;
+    private Integer hour;
+    private Integer minute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,13 +72,22 @@ public class AddHabitActivity extends AppCompatActivity {
         habitComment.setLines(3); //Maximum lines our comment should be able to show at once.
         saveHabit = (Button) findViewById(R.id.SaveHabit);
         cancelHabit = (Button) findViewById(R.id.discard_button);
-        hour_view = (EditText) findViewById(R.id.hour);
-        minute_view = (EditText)findViewById(R.id.minute);
+        hour_spinner = (Spinner) findViewById(R.id.hour_spinner);
+        minute_spinner = (Spinner) findViewById(R.id.minute_spinner);
         weekday_spinner = (MultiSelectionSpinner) findViewById(R.id.weekday_spinner);
         locationCheck = (CheckBox) findViewById(R.id.locationCheckBox);
 
         // Set up weekday selection
         weekday_spinner.setItems(createWeekdayList());
+        // Set up hour selection
+        ArrayAdapter<String> hourAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,createHourList());
+        hourAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        hour_spinner.setAdapter(hourAdapter);
+        // Set up minute selection
+        ArrayAdapter<String> minuteAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,createMinuteList());
+        minuteAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        hour_spinner.setAdapter(minuteAdapter);
+
 
         saveHabit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,28 +105,27 @@ public class AddHabitActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-
     }
 
     public void returnNewHabit(View saveNewHabitButton){
         habitNameString = habitName.getText().toString();
         commentString = habitComment.getText().toString();
         habitStartDate = Calendar.getInstance().getTime();
-        hour = Integer.parseInt(hour_view.getText().toString());
-        minute = Integer.parseInt(minute_view.getText().toString());
+        hour = Integer.parseInt(hour_spinner.getSelectedItem().toString());
+        minute = Integer.parseInt(minute_spinner.getSelectedItem().toString());
         weekdays = weekday_spinner.getSelectedStrings();
-
         //TODO: missing location parameter. Currently null pointer.
-        //TODO: What if the habit throws an exception.
 
         Intent newHabitIntent = new Intent();
-        Habit newHabit = new NormalHabit(habitNameString, habitStartDate,
+        try {Habit newHabit = new NormalHabit(habitNameString, habitStartDate,
                 null, commentString);
+            newHabitIntent.putExtra(CLASS_KEY, newHabit); //Habit needs serializable.
+            setResult(Activity.RESULT_OK, newHabitIntent);
+            finish();
+        } catch (HabitFormatException e){
+            Toast.makeText(AddHabitActivity.this,"Error: Illegal Habit information!",Toast.LENGTH_LONG).show();
+        }
 
-        newHabitIntent.putExtra(CLASS_KEY, newHabit); //Habit needs serializable.
-        setResult(Activity.RESULT_OK, newHabitIntent);
-        finish();
     }
 
 
@@ -140,6 +152,25 @@ public class AddHabitActivity extends AppCompatActivity {
         weekdayList.add("Sunday");
 
         return weekdayList;
+    }
+
+    private List<String> createHourList(){
+        List<String> hourList = new ArrayList<String>() {
+        };
+        for (int i=1;i<=24;i++){
+            hourList.add(Integer.toString(i));
+        }
+
+        return hourList;
+    }
+
+    private List<String> createMinuteList(){
+        List<String> hourList = new ArrayList<String>();
+        for (int i=0;i<=60;i++){
+            hourList.add(Integer.toString(i));
+        }
+
+        return hourList;
     }
 
     /**
