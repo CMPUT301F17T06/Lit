@@ -33,9 +33,7 @@ public class UserProfile {
     private HabitList currentHabits;
     private HabitHistory habitCompletionHistory;
     private ArrayList<String> followingUsers;
-    //followingUsers should be NULL unless the profile being viewed
-    //is that of the current user
-    //private ArrayList<String> followedUsers; Depending on how we manage this
+    private FollowManager followManager;
 
     /**
      * A dummy constructor, should be used for debugging only.
@@ -63,14 +61,14 @@ public class UserProfile {
      * @param profileImage The optional profile image attached to the account.
      * @param currentHabits The list of Habits currently associated with the account.
      * @param habitCompletionHistory The list of HabitEvents currently associated with the account.
-     * @param followingUsers The list of the users that this account has been approved to follow.
+     * @param followManager This object manages who is following who and who has requested to follow.
      *
      * @see Bitmap for information reguarding the profile image.
      */
     public UserProfile(String name, String profileDescription,
                        Bitmap profileImage, ArrayList<Habit> currentHabits,
                        ArrayList<HabitEvent> habitCompletionHistory,
-                       ArrayList<String> followingUsers){
+                       FollowManager followManager){
 
     }
 

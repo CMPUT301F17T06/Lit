@@ -8,35 +8,18 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.example.lit.activity;
+package com.example.lit.userprofile;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+/**
+ * Created by Riley Dixon on 07/11/2017.
+ */
 
-import com.example.lit.R;
+public class UserProfileNotFoundException extends Exception {
+    UserProfileNotFoundException(){
+        super();
+    }
 
-public class MainActivity extends AppCompatActivity {
-
-    private EditText username;
-    private Button loginButton;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        username = (EditText) findViewById(R.id.username);
-        loginButton = (Button) findViewById(R.id.Login);
-
-        loginButton.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-                setResult(RESULT_OK);
-                Intent intent = new Intent(v.getContext(), HomePageActivity.class);
-                startActivityForResult(intent,1);
-            }});
-            }
+    UserProfileNotFoundException(String message){
+        super(message);
+    }
 }
