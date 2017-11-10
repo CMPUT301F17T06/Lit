@@ -16,4 +16,117 @@
     android:layout_height="match_parent"
     tools:context="com.example.lit.activity.ViewHabitActivity">
 
+
+    <TextView
+        android:id="@+id/Comment_TextView"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:ems="10"
+        android:singleLine="false"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/SaveHabit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/comment_title"
+        tools:ignore="UnknownId" />
+
+    <TextView
+        android:id="@+id/habit_title_TextView"
+        android:layout_width="351dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginStart="16dp"
+        android:ems="10"
+        android:singleLine="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/habit_title" />
+
+    <Button
+        android:id="@+id/delete_habit_button"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="60dp"
+        android:layout_marginStart="40dp"
+        android:text="@string/delete_habit_button"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="40dp" />
+
+    <Button
+        android:id="@+id/edit_habit_button"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="60dp"
+        android:layout_marginEnd="40dp"
+        android:text="@string/habit_edit_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.721"
+        app:layout_constraintStart_toEndOf="@+id/delete_habit_button"
+        android:layout_marginRight="40dp" />
+
+
+    <TextView
+        android:id="@+id/habit_schedule_title"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:text="@string/habit_schedule_title"
+        android:textSize="12sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Comment_TextView" />
+
+    <TextView
+        android:id="@+id/comment_title"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="@string/habit_comment_field"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/habit_title_TextView" />
+
+    <TextView
+        android:id="@+id/habit_title"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="156dp"
+        android:text="@string/habit_name_field"
+        android:textSize="12sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/habit_started_date_TextView"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/habit_schedule_title" />
+
 </android.support.constraint.ConstraintLayout>

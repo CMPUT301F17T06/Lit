@@ -12,6 +12,9 @@
     <string name="action_settings">Settings</string>
     <string name="week_day_title">Repeat</string>
     <string name="time_title">Time</string>
+    <string name="habit_edit_button">Edit</string>
+    <string name="delete_habit_button">Delete</string>
+    <string name="habit_schedule_title">Habit takes place:</string>
 
 
 </resources>

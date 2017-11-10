@@ -12,7 +12,7 @@ package com.example.lit.habit;
 
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.example.lit.habit.*;
+import com.example.lit.exception.HabitFormatException;
 import com.example.lit.location.*;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -43,7 +43,7 @@ public class HabitTest extends  ActivityInstrumentationTestCase2{
         assertEquals(habit.getTitle(),title);
     }
 
-    public void testSetTitle() throws HabitFormatException{
+    public void testSetTitle() throws HabitFormatException {
         Habit habit = new NormalHabit("test habit");
         String newTitle = "new habit title";
         habit.setTitle(newTitle);

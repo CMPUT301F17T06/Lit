@@ -10,6 +10,7 @@
 
 package com.example.lit.habit;
 
+import com.example.lit.exception.HabitFormatException;
 import com.example.lit.location.*;
 import com.google.android.gms.maps.model.LatLng;
 import io.searchbox.annotations.JestId;
@@ -38,7 +39,7 @@ public abstract class Habit implements Habitable , Serializable{
     public void setId(String id){ this.id = id ;}
 
 
-    public Habit(String title)throws HabitFormatException{
+    public Habit(String title)throws HabitFormatException {
         this.setTitle(title);
         this.setDate(new Date());
     }

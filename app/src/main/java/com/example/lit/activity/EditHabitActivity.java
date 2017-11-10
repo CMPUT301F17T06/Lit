@@ -17,9 +17,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.example.lit.R;
+import com.example.lit.exception.*;
+import com.example.lit.habit.Habit;
+
+import java.io.Serializable;
 
 public class EditHabitActivity extends AppCompatActivity {
 
+    private Serializable serializable;
+    private Habit currentHabit;
     private EditText habitName;
     private EditText habitComment;
     private EditText habitDateStarted;
@@ -34,5 +40,15 @@ public class EditHabitActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_habit);
+
+        try{
+            serializable = getIntent().getExtras().getSerializable("habit");
+            if (serializable instanceof Habit) throw new LoadHabitException();
+        }catch (LoadHabitException e){
+            //TODO: handle LoadHabitException
+        }
+        currentHabit = (Habit) serializable;
+
+
     }
 }

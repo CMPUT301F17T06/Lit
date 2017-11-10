@@ -28,7 +28,7 @@ import android.widget.Toast;
 import com.example.lit.Utilities.MultiSelectionSpinner;
 import com.example.lit.R;
 import com.example.lit.habit.Habit;
-import com.example.lit.habit.HabitFormatException;
+import com.example.lit.exception.HabitFormatException;
 import com.example.lit.habit.NormalHabit;
 
 import java.util.ArrayList;
@@ -42,14 +42,15 @@ public class AddHabitActivity extends AppCompatActivity {
 
     private EditText habitName;
     private EditText habitComment;
-    private ImageView habitImage;
-    private Button editImage;
     private Button saveHabit;
     private Button cancelHabit;
     private CheckBox locationCheck; //This should not be a button, its currently a placeholder
     private MultiSelectionSpinner weekday_spinner;
     private Spinner hour_spinner;
     private Spinner minute_spinner;
+
+    private ImageView habitImage;
+    private Button editImage;
     //TODO: Implement image feature
     //TODO: Implement location feature
 
@@ -155,21 +156,12 @@ public class AddHabitActivity extends AppCompatActivity {
     }
 
     private List<String> createHourList(){
-        List<String> hourList = new ArrayList<String>() {
-        };
-        for (int i=1;i<=24;i++){
-            hourList.add(Integer.toString(i));
-        }
-
+        List<String> hourList = createNumberList(1,24,1);
         return hourList;
     }
 
     private List<String> createMinuteList(){
-        List<String> hourList = new ArrayList<String>();
-        for (int i=0;i<=60;i++){
-            hourList.add(Integer.toString(i));
-        }
-
+        List<String> hourList = createNumberList(1,60,1);
         return hourList;
     }
 
