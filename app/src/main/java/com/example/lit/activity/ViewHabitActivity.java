@@ -57,7 +57,7 @@ public class ViewHabitActivity extends AppCompatActivity {
 
         try{
             serializable = getIntent().getExtras().getSerializable("habit");
-            if (serializable instanceof Habit) throw new LoadHabitException();
+            if (!(serializable instanceof Habit)) throw new LoadHabitException();
         }catch (LoadHabitException e){
             //TODO: handle LoadHabitException
         }

@@ -5,7 +5,7 @@
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
-         location permissions for the 'MyLocation' functionality. 
+         location permissions for the 'MyLocation' functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
@@ -16,7 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.MainActivity" android:label="Login to Lit">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,7 +29,7 @@
              Note that the API key is linked to the encryption key used to sign the APK.
              You need a different API key for each encryption key, including the release key that is used to
              sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -38,31 +38,13 @@
         <activity
             android:name=".activity.MapsActivity"
             android:label="@string/title_activity_maps" />
-        <activity android:name=".activity.HomePageActivity" android:label="Home Page"
-            android:parentActivityName=".activity.MainActivity">
-            <meta-data android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity"/></activity>
-        <activity android:name=".activity.AddHabitActivity" android:label="Add a New Habit"
-            android:parentActivityName=".activity.HomePageActivity">
-            <meta-data android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.HomePageActivity"/></activity>
-        <activity android:name=".activity.ViewHabitActivity" android:label="Viewing a Habit"
-            android:parentActivityName=".activity.HomePageActivity">
-            <meta-data android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.HomePageActivity"/></activity>
-        <activity android:name=".activity.EditHabitActivity" android:label="Editting a Habit"
-            android:parentActivityName=".activity.ViewHabitActivity">
-            <meta-data android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.ViewHabitActivity"/></activity>
-        <activity android:name=".activity.ViewFriendActivity" android:label="Viewing a Friend"
-                android:parentActivityName=".activity.HomePageActivity">
-            <meta-data android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.HomePageActivity"/></activity>
-        <activity android:name=".activity.AddFriendActivity"
-            android:label="Requesting to be a Friend"
-            android:parentActivityName=".activity.HomePageActivity">
-            <meta-data android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.HomePageActivity"/></activity>
+        <activity android:name=".activity.HomePageActivity" />
+        <activity android:name=".activity.AddHabitActivity" />
+        <activity android:name=".activity.ViewHabitActivity" />
+        <activity android:name=".activity.EditHabitActivity" />
+        <activity android:name=".activity.ViewFriendActivity" />
+        <activity android:name=".activity.AddFriendActivity" />
+        <activity android:name=".activity.ProfileActivity"></activity>
     </application>
 
 </manifest>

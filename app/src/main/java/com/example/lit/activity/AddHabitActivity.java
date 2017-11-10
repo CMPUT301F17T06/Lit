@@ -115,6 +115,7 @@ public class AddHabitActivity extends AppCompatActivity {
         hour = Integer.parseInt(hour_spinner.getSelectedItem().toString());
         minute = Integer.parseInt(minute_spinner.getSelectedItem().toString());
         weekdays = weekday_spinner.getSelectedStrings();
+        //TODO: Set habit repeating schedule
         //TODO: missing location parameter. Currently null pointer.
 
         Intent newHabitIntent = new Intent();
@@ -163,6 +164,11 @@ public class AddHabitActivity extends AppCompatActivity {
     private List<String> createMinuteList(){
         List<String> hourList = createNumberList(1,60,1);
         return hourList;
+    }
+
+    //TODO: should be able to set habit image
+    private void setHabitImage(ImageView habitImage){
+
     }
 
     /**

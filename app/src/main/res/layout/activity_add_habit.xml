@@ -129,7 +129,7 @@
         android:layout_width="17dp"
         android:layout_height="50dp"
         android:layout_marginBottom="8dp"
-        android:text=":"
+        android:text="@string/colon"
         android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="@+id/hour_spinner"
         app:layout_constraintEnd_toStartOf="@+id/minute_spinner"
@@ -158,6 +158,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/habit_check_location"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/weekday_spinner" />
+        app:layout_constraintTop_toBottomOf="@+id/weekday_spinner"
+        android:layout_marginStart="16dp" />
 
 </android.support.constraint.ConstraintLayout>
