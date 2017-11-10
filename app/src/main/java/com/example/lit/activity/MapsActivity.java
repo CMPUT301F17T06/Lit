@@ -11,6 +11,7 @@
 package com.example.lit.activity;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -20,6 +21,8 @@ import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import com.example.lit.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -36,11 +39,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LocationManager manager;
     private LocationListener locationListener;
     private GoogleMap mMap;
+    private Button BackMain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+
+        /*Learn from https://www.youtube.com/watch?v=qS1E-Vrk60E
+        **2017/11/10 by Damon(jiaxiong)
+         */
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -104,6 +114,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } else {
             manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
         }
+        BackMain = (Button) findViewById(R.id.MapMain);
+
+        BackMain.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                setResult(RESULT_OK);
+                Intent intent = new Intent(v.getContext(), HomePageActivity.class);
+                startActivityForResult(intent,1);
+            }});
     }
 
 

@@ -43,7 +43,8 @@
         <activity android:name=".activity.ViewHabitActivity" />
         <activity android:name=".activity.EditHabitActivity" />
         <activity android:name=".activity.ViewFriendActivity" />
-        <activity android:name=".activity.AddFriendActivity"></activity>
+        <activity android:name=".activity.AddFriendActivity" />
+        <activity android:name=".activity.ProfileActivity"></activity>
     </application>
 
 </manifest>
