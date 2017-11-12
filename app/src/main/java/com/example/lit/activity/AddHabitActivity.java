@@ -118,8 +118,7 @@ public class AddHabitActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.i("AddHabitActivity", "Save Button pressed.");
                 returnNewHabit(view);
-                Intent intent = new Intent(view.getContext(), HomePageActivity.class);
-                startActivityForResult(intent,1);
+
                 finish();
             }
         });
@@ -187,14 +186,24 @@ public class AddHabitActivity extends AppCompatActivity {
             } else {
                 manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
             }
+            super.onPause();
+            manager.removeUpdates(locationListener);
+            Log.i("onPause...","paused");
+
+
+
         }
+        else{
+            habitLocation =null;
+        }
+
 
         //TODO: Set habit repeating schedule
 
         Intent newHabitIntent = new Intent();
         try {Habit newHabit = new NormalHabit(habitNameString, habitStartDate,
                 habitLocation, commentString);
-            newHabitIntent.putExtra(CLASS_KEY, newHabit); //Habit needs serializable.
+            newHabitIntent.putExtra("HABIT", newHabit); //Habit needs serializable.
             setResult(Activity.RESULT_OK, newHabitIntent);
             finish();
         } catch (HabitFormatException e){
@@ -202,6 +211,7 @@ public class AddHabitActivity extends AppCompatActivity {
         }
 
     }
+
 
 
     @Override
@@ -264,4 +274,4 @@ public class AddHabitActivity extends AppCompatActivity {
         return numberList;
     }
 
-}
+   }

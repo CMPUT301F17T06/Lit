@@ -68,6 +68,7 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <ListView
+        android:id="@+id/oldHabitList"
         android:layout_width="409dp"
         android:layout_height="379dp"
         android:layout_marginLeft="8dp"
