@@ -42,13 +42,12 @@ public class AddHabitActivity extends AppCompatActivity {
 
     private EditText habitName;
     private EditText habitComment;
-    private Button saveHabit;
-    private Button cancelHabit;
     private CheckBox locationCheck; //This should not be a button, its currently a placeholder
     private MultiSelectionSpinner weekday_spinner;
     private Spinner hour_spinner;
     private Spinner minute_spinner;
-
+    private Button saveHabit;
+    private Button cancelHabit;
     private ImageView habitImage;
     private Button editImage;
     //TODO: Implement image feature
@@ -66,6 +65,8 @@ public class AddHabitActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_habit);
         setTitle("Adding A New Habit");
+
+
 
         // Activity components
         habitName = (EditText) findViewById(R.id.Habit_EditText);
@@ -87,22 +88,24 @@ public class AddHabitActivity extends AppCompatActivity {
         // Set up minute selection
         ArrayAdapter<String> minuteAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,createMinuteList());
         minuteAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        hour_spinner.setAdapter(minuteAdapter);
+        minute_spinner.setAdapter(minuteAdapter);
 
 
-        saveHabit.setOnClickListener(new View.OnClickListener() {
+        //TODO: Error here
+        /*saveHabit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i("AddHabitActivity", "Save Button pressed.");
                 returnNewHabit(view);
+                finish();
             }
-        });
+        });*/
 
         cancelHabit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i("AddHabitActivity", "Cancel button pressed. Habit creation cancelled.");
-                setResult(Activity.RESULT_CANCELED);
+                //setResult(Activity.RESULT_CANCELED);
                 finish();
             }
         });
