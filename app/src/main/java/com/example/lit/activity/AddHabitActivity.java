@@ -12,6 +12,8 @@ package com.example.lit.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 
@@ -35,6 +37,7 @@ import android.widget.Toast;
 import com.example.lit.Utilities.MultiSelectionSpinner;
 import com.example.lit.R;
 
+import com.example.lit.Utilities.SchduledTask;
 import com.example.lit.habit.Habit;
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.habit.NormalHabit;
@@ -52,6 +55,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 
 public class AddHabitActivity extends AppCompatActivity {
 
@@ -144,7 +149,6 @@ public class AddHabitActivity extends AppCompatActivity {
         }catch (ParseException e){
             //TODO: handle exception
         }
-        //TODO: Set habit repeating schedule
 
         /*if checkbox checked return current location*/
         if (locationCheck.isChecked()){
@@ -196,9 +200,7 @@ public class AddHabitActivity extends AppCompatActivity {
         } catch (HabitFormatException e){
             Toast.makeText(AddHabitActivity.this,"Error: Illegal Habit information!",Toast.LENGTH_LONG).show();
         }
-
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem selection){
@@ -245,6 +247,10 @@ public class AddHabitActivity extends AppCompatActivity {
             calendar.set(Calendar.HOUR_OF_DAY,hour);
             calendar.set(Calendar.MINUTE,minute);
             calendarList.add(calendar);
+
+            // Periodic Timer, only a prototype now
+            Timer timer = new Timer();
+            timer.schedule(new SchduledTask(), calendar.getTime());
         }
         return calendarList;
     }

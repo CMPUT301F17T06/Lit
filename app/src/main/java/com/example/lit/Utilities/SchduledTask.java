@@ -24,5 +24,6 @@ public class SchduledTask extends TimerTask {
     @Override
     public void run() {
         now = new Date();
+        // TODO: Do something when the habit is happening now
     }
 }

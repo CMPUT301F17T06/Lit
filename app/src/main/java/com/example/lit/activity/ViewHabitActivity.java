@@ -44,8 +44,6 @@ public class ViewHabitActivity extends AppCompatActivity {
 
     // TODO: Habit image feature
     ImageView habitImage;
-
-    TextView habitDateCompleted;    // Not sure the meaning of this
     Button habitDoneToday;          //Not sure what this should be, Button is a placeholder.
 
 

@@ -32,10 +32,12 @@ import com.example.lit.habit.Habit;
 import com.example.lit.habit.NormalHabit;
 
 import java.io.Serializable;
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class EditHabitActivity extends AppCompatActivity {
 
@@ -60,12 +62,13 @@ public class EditHabitActivity extends AppCompatActivity {
     Date habitStartDate;
     String habitNameString;
     String commentString;
-    List<String> weekdays;
+    int[] weekdays;
     Integer hour;
     Integer minute;
     String habitTitleString;
     String habitCommentString;
     Date habitDate;
+    List<Calendar> calendarList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +85,15 @@ public class EditHabitActivity extends AppCompatActivity {
         habitTitleString = currentHabit.getTitle();
         habitCommentString = currentHabit.getReason();
         habitDate = currentHabit.getDate();
+        calendarList = currentHabit.getCalendars();
+        hour = calendarList.get(0).getTime().getHours();
+        minute = calendarList.get(0).getTime().getHours();
+        int i = 0;
+        for (Calendar calendar:calendarList
+             ) {
+            int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+            weekdays[i]=dayOfWeek;
+        }
 
         // Activity components
         habitName = (EditText) findViewById(R.id.Habit_EditText);
@@ -108,12 +120,14 @@ public class EditHabitActivity extends AppCompatActivity {
         // Set up components initial info
         habitName.setText(habitTitleString);
         habitComment.setText(habitCommentString);
-        //TODO: Habit repeat alarm
+        weekday_spinner.setSelection(weekdays);
+        hour_spinner.setSelection(hour);
+        minute_spinner.setSelection(minute);
 
         saveHabit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("AddHabitActivity", "Save Button pressed.");
+                Log.i("EditHabitActivity", "Save Button pressed.");
                 returnNewHabit(view);
             }
         });
@@ -121,7 +135,7 @@ public class EditHabitActivity extends AppCompatActivity {
         cancelHabit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("AddHabitActivity", "Cancel button pressed. Habit creation cancelled.");
+                Log.i("EditHabitActivity", "Cancel button pressed. Habit creation cancelled.");
                 setResult(Activity.RESULT_CANCELED);
                 finish();
             }
@@ -134,8 +148,7 @@ public class EditHabitActivity extends AppCompatActivity {
         habitStartDate = Calendar.getInstance().getTime();
         hour = Integer.parseInt(hour_spinner.getSelectedItem().toString());
         minute = Integer.parseInt(minute_spinner.getSelectedItem().toString());
-        weekdays = weekday_spinner.getSelectedStrings();
-        //TODO: missing location parameter. Currently null pointer.
+        //weekdays = weekday_spinner.getSelectedStrings();
 
         //TODO: should be able to edit habit within this activity
     }
@@ -177,9 +190,7 @@ public class EditHabitActivity extends AppCompatActivity {
     }
 
     //TODO: should be able to set habit image
-    private void setHabitImage(ImageView habitImage){
-
-    }
+    private void setHabitImage(ImageView habitImage){}
 
     /**
      * Returns an array list of numbers in a string format. This list is from low to high
@@ -193,11 +204,9 @@ public class EditHabitActivity extends AppCompatActivity {
      */
     private ArrayList<String> createNumberList(int low, int high, int interval){
         ArrayList<String> numberList = new ArrayList<>();
-
         for(int i = low; i <= high; i += interval){
             numberList.add(String.valueOf(i));
         }
-
         return numberList;
     }
 
