@@ -137,16 +137,7 @@ public class EditHabitActivity extends AppCompatActivity {
         weekdays = weekday_spinner.getSelectedStrings();
         //TODO: missing location parameter. Currently null pointer.
 
-        Intent newHabitIntent = new Intent();
-        try {Habit newHabit = new NormalHabit(habitNameString, habitStartDate,
-                null, commentString);
-            newHabitIntent.putExtra(CLASS_KEY, newHabit); //Habit needs serializable.
-            setResult(Activity.RESULT_OK, newHabitIntent);
-            finish();
-        } catch (HabitFormatException e){
-            Toast.makeText(EditHabitActivity.this,"Error: Illegal Habit information!",Toast.LENGTH_LONG).show();
-        }
-
+        //TODO: should be able to edit habit within this activity
     }
 
 

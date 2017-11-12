@@ -16,7 +16,14 @@ import com.google.android.gms.maps.model.LatLng;
 import io.searchbox.annotations.JestId;
 
 import java.io.Serializable;
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by weikailu on 10/20/2017.
@@ -31,6 +38,7 @@ public abstract class Habit implements Habitable , Serializable{
     private String reason;
     private int titleLength = 20;
     private int reasonLength = 30;
+    private List<Calendar> calendars;
     @JestId
     private String id;
 
@@ -39,7 +47,7 @@ public abstract class Habit implements Habitable , Serializable{
     public void setId(String id){ this.id = id ;}
 
 
-    public Habit(String title)throws HabitFormatException {
+    public Habit(String title) throws HabitFormatException {
         this.setTitle(title);
         this.setDate(new Date());
     }
@@ -49,11 +57,12 @@ public abstract class Habit implements Habitable , Serializable{
         this.setDate(date);
     }
 
-    public Habit(String title, Date date, HabitLocation habitLocation, String reason) throws HabitFormatException {
+    public Habit(String title, Date date, HabitLocation habitLocation, String reason, List<Calendar> calendarList) throws HabitFormatException {
         this.setTitle(title);
         this.setDate(date);
         this.setLocation(habitLocation);
         this.setReason(reason);
+        this.setCalendars(calendarList);
     }
 
     // TODO: Constructor with JestID
@@ -90,6 +99,13 @@ public abstract class Habit implements Habitable , Serializable{
         }
     }
 
+    public List<Calendar> getCalendars() {
+        return calendars;
+    }
+
+    public void setCalendars(List<Calendar> calendars) {
+        this.calendars = calendars;
+    }
 
     public void setLocation(HabitLocation habitLocation){
         this.habitLocation = habitLocation;
@@ -99,6 +115,7 @@ public abstract class Habit implements Habitable , Serializable{
         return this.habitLocation;
     }
 
+
     @Override
     public String toString() {
         return "Habit{" +
@@ -106,4 +123,5 @@ public abstract class Habit implements Habitable , Serializable{
                 ", date=" + date +
                 '}';
     }
+
 }

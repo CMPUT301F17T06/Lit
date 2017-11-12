@@ -45,10 +45,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class AddHabitActivity extends AppCompatActivity {
 
@@ -60,23 +63,22 @@ public class AddHabitActivity extends AppCompatActivity {
     private MultiSelectionSpinner weekday_spinner;
     private Spinner hour_spinner;
     private Spinner minute_spinner;
-    private Button saveHabit;
-    private Button cancelHabit;
+    Button saveHabit;
+    Button cancelHabit;
     private ImageView habitImage;
     private Button editImage;
     //TODO: Implement image feature
 
 
-    private Date habitStartDate;
-    private String habitNameString;
-    private String commentString;
-    private List<String> weekdays;
-    private Integer hour;
-    private Integer minute;
-
-    /*for location*/
-    private LocationManager manager;
-    private LocationListener locationListener;
+    Date habitStartDate;
+    String habitNameString;
+    String commentString;
+    List<String> weekdays;
+    Integer hour;
+    Integer minute;
+    List<Calendar> calendarList;
+    LocationManager manager;
+    LocationListener locationListener;
     private HabitLocation habitLocation;
 
 
@@ -85,8 +87,6 @@ public class AddHabitActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_habit);
         setTitle("Adding A New Habit");
-
-
 
         // Activity components
         habitName = (EditText) findViewById(R.id.Habit_EditText);
@@ -111,8 +111,6 @@ public class AddHabitActivity extends AppCompatActivity {
         minute_spinner.setAdapter(minuteAdapter);
 
 
-
-
         saveHabit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -132,12 +130,6 @@ public class AddHabitActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-
-
-
-
-
 }
 
     public void returnNewHabit(View saveNewHabitButton){
@@ -147,6 +139,13 @@ public class AddHabitActivity extends AppCompatActivity {
         hour = Integer.parseInt(hour_spinner.getSelectedItem().toString());
         minute = Integer.parseInt(minute_spinner.getSelectedItem().toString());
         weekdays = weekday_spinner.getSelectedStrings();
+        try{
+            calendarList = buildCalender(weekdays,hour,minute);
+        }catch (ParseException e){
+            //TODO: handle exception
+        }
+        //TODO: Set habit repeating schedule
+
         /*if checkbox checked return current location*/
         if (locationCheck.isChecked()){
             //get the location service
@@ -164,7 +163,6 @@ public class AddHabitActivity extends AppCompatActivity {
                     double longitude = location.getLongitude();
                     LatLng latLng = new LatLng(latitude, longitude);
                     habitLocation = new HabitLocation(latLng);
-
                 }
 
                 @Override
@@ -189,11 +187,9 @@ public class AddHabitActivity extends AppCompatActivity {
             }
         }
 
-        //TODO: Set habit repeating schedule
-
         Intent newHabitIntent = new Intent();
         try {Habit newHabit = new NormalHabit(habitNameString, habitStartDate,
-                habitLocation, commentString);
+                habitLocation, commentString, calendarList);
             newHabitIntent.putExtra(CLASS_KEY, newHabit); //Habit needs serializable.
             setResult(Activity.RESULT_OK, newHabitIntent);
             finish();
@@ -237,6 +233,31 @@ public class AddHabitActivity extends AppCompatActivity {
     private List<String> createMinuteList(){
         List<String> hourList = createNumberList(1,60,1);
         return hourList;
+    }
+
+    private List<Calendar> buildCalender(List<String> weekdays, int hour, int minute)throws ParseException{
+        List<Calendar> calendarList = new ArrayList<Calendar>();
+        for (String weekday:weekdays
+             ) {
+            Calendar calendar = Calendar.getInstance();
+            int weekOfDay = parseDayOfWeek(weekday,Locale.CANADA);
+            calendar.set(Calendar.DAY_OF_WEEK,weekOfDay);
+            calendar.set(Calendar.HOUR_OF_DAY,hour);
+            calendar.set(Calendar.MINUTE,minute);
+            calendarList.add(calendar);
+        }
+        return calendarList;
+    }
+
+    // Taken https://stackoverflow.com/questions/18232340/convert-string-to-day-of-week-not-exact-date
+    private static int parseDayOfWeek(String day, Locale locale)
+            throws ParseException {
+        SimpleDateFormat dayFormat = new SimpleDateFormat("E", locale);
+        Date date = dayFormat.parse(day);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        return dayOfWeek;
     }
 
     //TODO: should be able to set habit image
