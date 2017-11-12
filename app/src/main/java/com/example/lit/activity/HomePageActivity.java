@@ -10,10 +10,12 @@
 
 package com.example.lit.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -22,9 +24,26 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.lit.R;
+import com.example.lit.exception.HabitFormatException;
+import com.example.lit.habit.Habit;
+import com.example.lit.habit.NormalHabit;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 public class HomePageActivity extends AppCompatActivity {
 
+    private static final String FILENAME = "habitFile.sav";
     ListView currentHabitList;
     ListView habitHistoryList;
     ListView friendsList;
@@ -46,6 +65,9 @@ public class HomePageActivity extends AppCompatActivity {
     private Button Friends;
     private Button Profile;
 
+    private ListView habitsListView;
+    private ArrayList<Habit> habitArrayList;
+    ArrayAdapter<Habit> habitAdapter;
 
 
     @Override
@@ -58,6 +80,20 @@ public class HomePageActivity extends AppCompatActivity {
         Friends  = (Button) findViewById(R.id.Friend);
         Profile = (Button) findViewById(R.id.Profile);
 
+        habitArrayList = new ArrayList<>();
+        habitsListView = (ListView)findViewById(R.id.habit_ListView);
+        habitAdapter = new ArrayAdapter<Habit>(this,R.layout.list_item,habitArrayList);
+        habitsListView.setAdapter(habitAdapter);
+
+        //Set up a dummy habit for testing
+        try {
+            Habit habit = new NormalHabit("Testing habit");
+            habitArrayList.add(habit);
+        }catch (HabitFormatException e){
+
+        }
+
+        habitAdapter.notifyDataSetChanged();
 
         HabitHistory.setOnClickListener(new View.OnClickListener() {
 
@@ -98,8 +134,39 @@ public class HomePageActivity extends AppCompatActivity {
                 Intent intent = new Intent(v.getContext(), AddHabitActivity.class);
                 startActivityForResult(intent,1);
             }});
-
-
     }
 
+    private void loadFromFile() {
+        try {
+            FileInputStream fis = openFileInput(FILENAME);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            Gson gson = new Gson();
+            // Taken from https://stackoverflow.com/questions/12384064/gson-convert-from-json-to-a-typed-arraylistt
+            //2017-09-19
+            Type listType = new TypeToken<ArrayList<Habit>>(){}.getType();
+            habitArrayList = gson.fromJson(in, listType);
+
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            habitArrayList = new ArrayList<Habit>();
+        }
+    }
+
+    private void saveInFile() {
+        try {
+            FileOutputStream fos = openFileOutput(FILENAME,
+                    Context.MODE_PRIVATE);
+            BufferedWriter out = new BufferedWriter((new OutputStreamWriter(fos)));
+            Gson gson = new Gson();
+            gson.toJson(habitArrayList,out);
+            out.flush();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException();
+        }
+    }
 }

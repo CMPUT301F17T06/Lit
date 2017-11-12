@@ -118,10 +118,8 @@ public abstract class Habit implements Habitable , Serializable{
 
     @Override
     public String toString() {
-        return "Habit{" +
-                "habitName='" + title + '\'' +
-                ", date=" + date +
-                '}';
+        return "Habit Name: '" + this.getTitle() + '\n' +
+                "Started From: " + this.getDate();
     }
 
 }
