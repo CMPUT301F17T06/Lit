@@ -72,7 +72,7 @@ public class AddHabitActivity extends AppCompatActivity {
         habitName = (EditText) findViewById(R.id.Habit_EditText);
         habitComment = (EditText) findViewById(R.id.Comment_EditText);
         habitComment.setLines(3); //Maximum lines our comment should be able to show at once.
-        saveHabit = (Button) findViewById(R.id.SaveHabit);
+        saveHabit = (Button) findViewById(R.id.save_button);
         cancelHabit = (Button) findViewById(R.id.discard_button);
         hour_spinner = (Spinner) findViewById(R.id.hour_spinner);
         minute_spinner = (Spinner) findViewById(R.id.minute_spinner);
@@ -91,15 +91,14 @@ public class AddHabitActivity extends AppCompatActivity {
         minute_spinner.setAdapter(minuteAdapter);
 
 
-        //TODO: Error here
-        /*saveHabit.setOnClickListener(new View.OnClickListener() {
+        saveHabit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i("AddHabitActivity", "Save Button pressed.");
                 returnNewHabit(view);
                 finish();
             }
-        });*/
+        });
 
         cancelHabit.setOnClickListener(new View.OnClickListener() {
             @Override
