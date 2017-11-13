@@ -62,7 +62,7 @@ public class EditHabitActivity extends AppCompatActivity {
     Date habitStartDate;
     String habitNameString;
     String commentString;
-    int[] weekdays;
+    ArrayList<Integer> weekdays;
     Integer hour;
     Integer minute;
     String habitTitleString;
@@ -88,18 +88,18 @@ public class EditHabitActivity extends AppCompatActivity {
         calendarList = currentHabit.getCalendars();
         hour = calendarList.get(0).getTime().getHours();
         minute = calendarList.get(0).getTime().getHours();
-        int i = 0;
+        weekdays = new ArrayList<>();
         for (Calendar calendar:calendarList
              ) {
             int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-            weekdays[i]=dayOfWeek;
+            weekdays.add(dayOfWeek);
         }
 
         // Activity components
         habitName = (EditText) findViewById(R.id.Habit_EditText);
         habitComment = (EditText) findViewById(R.id.Comment_EditText);
         habitComment.setLines(3); //Maximum lines our comment should be able to show at once.
-        saveHabit = (Button) findViewById(R.id.SaveHabit);
+        saveHabit = (Button) findViewById(R.id.save_habit_button);
         cancelHabit = (Button) findViewById(R.id.discard_button);
         hour_spinner = (Spinner) findViewById(R.id.hour_spinner);
         minute_spinner = (Spinner) findViewById(R.id.minute_spinner);
@@ -120,7 +120,7 @@ public class EditHabitActivity extends AppCompatActivity {
         // Set up components initial info
         habitName.setText(habitTitleString);
         habitComment.setText(habitCommentString);
-        weekday_spinner.setSelection(weekdays);
+        weekday_spinner.setSelection(convertIntegers(weekdays));
         hour_spinner.setSelection(hour);
         minute_spinner.setSelection(minute);
 
@@ -135,7 +135,7 @@ public class EditHabitActivity extends AppCompatActivity {
         cancelHabit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("EditHabitActivity", "Cancel button pressed. Habit creation cancelled.");
+                Log.i("EditHabitActivity", "Cancel button pressed. Habit edit cancelled.");
                 setResult(Activity.RESULT_CANCELED);
                 finish();
             }
@@ -210,4 +210,13 @@ public class EditHabitActivity extends AppCompatActivity {
         return numberList;
     }
 
+    public static int[] convertIntegers(List<Integer> integers)
+    {
+        int[] ret = new int[integers.size()];
+        for (int i=0; i < ret.length; i++)
+        {
+            ret[i] = integers.get(i).intValue();
+        }
+        return ret;
+    }
 }
