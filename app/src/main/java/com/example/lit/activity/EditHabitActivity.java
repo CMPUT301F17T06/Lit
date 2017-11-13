@@ -39,6 +39,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+
+/**
+ * This activity is used for editing a existing habit.
+ * Transition from this activity should be from ViewHabitActivity
+ * @see ViewHabitActivity
+ * @author Steven Weikai Lu
+ *
+ * @throws LoadHabitException when fail to load habit passed from ViewHabitActivity
+ * */
 public class EditHabitActivity extends AppCompatActivity {
 
     private static final String CLASS_KEY = "com.example.lit.activity.EditHabitActivity";
@@ -142,6 +151,9 @@ public class EditHabitActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * @param saveNewHabitButton the view currently in
+     * */
     public void returnNewHabit(View saveNewHabitButton){
         habitNameString = habitName.getText().toString();
         commentString = habitComment.getText().toString();
@@ -165,6 +177,9 @@ public class EditHabitActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     *@return returns an array list of string from Monday to Sunday
+     * */
     private ArrayList<String> createWeekdayList(){
         ArrayList<String> weekdayList = new ArrayList<String>();
         weekdayList.add("None");
@@ -179,11 +194,19 @@ public class EditHabitActivity extends AppCompatActivity {
         return weekdayList;
     }
 
+    /**
+     * @return  return an array list of number from 1 to 24 in string format
+     * */
     private List<String> createHourList(){
         List<String> hourList = createNumberList(1,24,1);
         return hourList;
     }
 
+    /**
+     * Returns an array list of number from 1 to 60 in string format
+     *
+     * @return  An array list of number fom 1 to 60 in string format
+     * */
     private List<String> createMinuteList(){
         List<String> hourList = createNumberList(1,60,1);
         return hourList;
@@ -194,7 +217,7 @@ public class EditHabitActivity extends AppCompatActivity {
 
     /**
      * Returns an array list of numbers in a string format. This list is from low to high
-     * inclusively. Each number is seperated by each other as defined by the interval.
+     * inclusively. Each number is separated by each other as defined by the interval.
      * Should low > high then the list returned is empty.
      *
      * @param low The beginning of the range of numbers to be added to the list.
