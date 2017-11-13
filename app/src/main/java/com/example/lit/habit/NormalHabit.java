@@ -10,9 +10,12 @@
 
 package com.example.lit.habit;
 
+import android.os.Parcel;
+
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.location.HabitLocation;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -21,7 +24,7 @@ import java.util.List;
  * Created by weikailu on 2017-10-21.
  */
 
-public class NormalHabit extends Habit {
+public class NormalHabit extends Habit implements Serializable {
     public NormalHabit(String title)throws HabitFormatException {super(title);}
 
     public NormalHabit(String title, Date date)throws HabitFormatException {super(title, date);}
@@ -32,4 +35,6 @@ public class NormalHabit extends Habit {
 
     @Override
     public String habitType(){return "Normal";}
+
+
 }

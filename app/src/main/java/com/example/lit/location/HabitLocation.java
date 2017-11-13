@@ -13,8 +13,11 @@ package com.example.lit.location;
 /**
  * Created by damon on 10/20/2017.
  */
+
 import com.google.android.gms.maps.model.LatLng;
-public class HabitLocation {
+public  class HabitLocation  {
+
+
     private LatLng location;
 
     public HabitLocation(LatLng location){
@@ -36,4 +39,5 @@ public class HabitLocation {
     public void setLocation(LatLng location) {
         this.location = location;
     }
+
 }

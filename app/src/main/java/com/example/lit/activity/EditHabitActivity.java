@@ -30,6 +30,8 @@ import com.example.lit.Utilities.MultiSelectionSpinner;
 import com.example.lit.exception.*;
 import com.example.lit.habit.Habit;
 import com.example.lit.habit.NormalHabit;
+import com.example.lit.location.HabitLocation;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
@@ -54,7 +56,7 @@ public class EditHabitActivity extends AppCompatActivity {
 
     private static final String CLASS_KEY = "com.example.lit.activity.EditHabitActivity";
 
-    Serializable serializable;
+
     Habit currentHabit;
     EditText habitName;
     EditText habitComment;
@@ -88,12 +90,21 @@ public class EditHabitActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_habit);
 
         try{
-            serializable = getIntent().getExtras().getSerializable("habit");
-            if (!(serializable instanceof Habit)) throw new LoadHabitException();
+
+            Bundle bundle = getIntent().getExtras();
+            currentHabit = (Habit)bundle.getSerializable("habit");
+            double lat = bundle.getDouble("lat");
+            double lng = bundle.getDouble("lng");
+            LatLng latLng = new LatLng(lat, lng);
+            HabitLocation habitLocation= new HabitLocation(latLng);
+
+            currentHabit.setLocation(habitLocation);
+
+            if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
         }catch (LoadHabitException e){
             //TODO: handle LoadHabitException
         }
-        currentHabit = (Habit) serializable;
+
         habitTitleString = currentHabit.getTitle();
         habitCommentString = currentHabit.getReason();
         habitDate = currentHabit.getDate();

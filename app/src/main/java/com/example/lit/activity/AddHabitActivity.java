@@ -14,12 +14,15 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Parcel;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,12 +45,16 @@ import com.example.lit.habit.Habit;
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.habit.NormalHabit;
 import com.example.lit.location.HabitLocation;
+
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -58,7 +65,7 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 
-public class AddHabitActivity extends AppCompatActivity {
+public class AddHabitActivity extends AppCompatActivity  {
 
     private static final String CLASS_KEY = "com.example.lit.activity.AddHabitActivity";
 
@@ -82,9 +89,12 @@ public class AddHabitActivity extends AppCompatActivity {
     Integer hour;
     Integer minute;
     List<Calendar> calendarList;
+
     LocationManager manager;
-    LocationListener locationListener;
     private HabitLocation habitLocation;
+    private String provider;
+    double latitude;
+    double longitude;
 
 
     @Override
@@ -134,7 +144,8 @@ public class AddHabitActivity extends AppCompatActivity {
             }
         });
 
-}
+    }
+
     /**
      * This function is called when user click on save button.
      * This function will build a NormalHabit based on user inputs.
@@ -142,69 +153,59 @@ public class AddHabitActivity extends AppCompatActivity {
      * @see HomePageActivity
      * @param saveNewHabitButton the current view.
      * */
-    public void returnNewHabit(View saveNewHabitButton){
+    public void returnNewHabit(View saveNewHabitButton) {
         habitNameString = habitName.getText().toString();
         commentString = habitComment.getText().toString();
         habitStartDate = Calendar.getInstance().getTime();
         hour = Integer.parseInt(hour_spinner.getSelectedItem().toString());
         minute = Integer.parseInt(minute_spinner.getSelectedItem().toString());
         weekdays = weekday_spinner.getSelectedStrings();
-        try{
-            calendarList = buildCalender(weekdays,hour,minute);
-        }catch (ParseException e){
+        try {
+            calendarList = buildCalender(weekdays, hour, minute);
+        } catch (ParseException e) {
             //TODO: handle exception
         }
 
         /*if checkbox checked return current location*/
-        if (locationCheck.isChecked()){
-            //get the location service
-            manager = (LocationManager) getSystemService(LOCATION_SERVICE);
-            //request the location update thru location manager
+        if (locationCheck.isChecked() == true) {
+            manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            // Define the criteria how to select the locatioin provider -> use
+            // default
+            Criteria criteria = new Criteria();
+            provider = manager.getBestProvider(criteria, false);
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
                 return;
             }
-            locationListener = new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    //get the latitude and longitude from the location
-                    double latitude = location.getLatitude();
-                    double longitude = location.getLongitude();
-                    LatLng latLng = new LatLng(latitude, longitude);
-                    habitLocation = new HabitLocation(latLng);
-                }
+            Location location = manager.getLastKnownLocation(provider);
+            if (location != null) {
+                /*get the latitude and longitude from the location*/
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
 
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {
 
-                }
 
-                @Override
-                public void onProviderEnabled(String provider) {
-
-                }
-
-                @Override
-                public void onProviderDisabled(String provider) {
-
-                }
-            };
-            if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-            } else {
-                manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-            }
-        }
+            }}
         else{
-            habitLocation = null;
+            habitLocation =null;
         }
+
 
         Intent newHabitIntent = new Intent(AddHabitActivity.this, HomePageActivity.class);
         try {Habit newHabit = new NormalHabit(habitNameString, habitStartDate,
-                habitLocation, commentString, calendarList);
+                null, commentString, calendarList);
             Bundle bundle = new Bundle();
             bundle.putSerializable("habit", newHabit);
+            bundle.putDouble("lat",latitude);
+            bundle.putDouble("lng",longitude);
             newHabitIntent.putExtras(bundle);
+
             setResult(Activity.RESULT_OK, newHabitIntent);
             finish();
         } catch (HabitFormatException e){
@@ -300,5 +301,7 @@ public class AddHabitActivity extends AppCompatActivity {
 
         return numberList;
     }
+
+
 
 }

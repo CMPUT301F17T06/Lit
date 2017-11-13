@@ -38,7 +38,7 @@ import java.util.List;
  * Created by ammar on 12/11/17.
  */
 
-public class AddHabitEventActivity extends AppCompatActivity {
+public class AddHabitEventActivity extends AppCompatActivity  {
     private static final String CLASS_KEY = "com.example.lit.activity.AddHabitEventActivity";
 
     Serializable serializable;

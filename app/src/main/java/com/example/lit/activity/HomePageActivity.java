@@ -31,6 +31,7 @@ import com.example.lit.habit.Habit;
 import com.example.lit.habit.HabitList;
 import com.example.lit.habit.NormalHabit;
 import com.example.lit.location.HabitLocation;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -75,6 +76,7 @@ public class HomePageActivity extends AppCompatActivity {
     private ListView habitsListView;
     private ArrayList<Habit> habitArrayList;
     ArrayAdapter<Habit> habitAdapter;
+    private HabitLocation habitLocation;
 
 
     @Override
@@ -138,7 +140,18 @@ public class HomePageActivity extends AppCompatActivity {
                 Intent intent = new Intent(HomePageActivity.this,ViewHabitActivity.class);
                 Bundle bundle = new Bundle();
                 Habit selectedHabit = habitArrayList.get(i);
+
+                HabitLocation location=selectedHabit.getHabitLocation();
+                LatLng latLng = location.getLocation();
+                double latitude = latLng.latitude;
+                double longitude =latLng.longitude;
+
+                selectedHabit.setLocation(null);
+
                 bundle.putSerializable("habit", selectedHabit);
+
+                bundle.putDouble("lat",latitude);
+                bundle.putDouble("lng",longitude);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,1);
             }
@@ -175,7 +188,15 @@ public class HomePageActivity extends AppCompatActivity {
             /**Take from https://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
              * 2017/11/12
              */
-            Habit habit = (Habit)data.getSerializableExtra("habit");
+            Bundle bundle = data.getExtras();
+            Habit habit = (Habit)bundle.getSerializable("habit");
+            double lat = bundle.getDouble("lat");
+            double lng = bundle.getDouble("lng");
+            LatLng latLng = new LatLng(lat, lng);
+            habitLocation= new HabitLocation(latLng);
+
+            habit.setLocation(habitLocation);
+
             habitArrayList.add(habit);
 
             habitAdapter.notifyDataSetChanged();

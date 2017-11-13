@@ -10,6 +10,8 @@
 
 package com.example.lit.habit;
 
+import android.os.Parcelable;
+
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.location.*;
 import com.google.android.gms.maps.model.LatLng;
