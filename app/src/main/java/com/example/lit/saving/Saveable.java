@@ -13,11 +13,9 @@ package com.example.lit.saving;
 /**
  * Created by Riley Dixon on 12/11/2017.
  */
-<<<<<<< HEAD
-/**
-=======
+
 /*
->>>>>>> origin/master
+
 public interface Saveable {
     public DataHandler dataHandler;
 
@@ -25,8 +23,8 @@ public interface Saveable {
     abstract public boolean loadData();
 
 }
-<<<<<<< HEAD
+
 **/
-=======
-*/
->>>>>>> origin/master
+
+
+

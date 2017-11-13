@@ -31,11 +31,10 @@ import static android.provider.Telephony.Mms.Part.FILENAME;
 /**
  * Created by Riley Dixon on 12/11/2017.
  */
-<<<<<<< HEAD
+
 /**
-=======
-/*
->>>>>>> origin/master
+
+
 public class DataHandler {
     private long lastOfflineSave;
     private long lastOnlineSave;
@@ -128,8 +127,6 @@ public class DataHandler {
     }
 
 }
-<<<<<<< HEAD
+
 **/
-=======
-*/
->>>>>>> origin/master
+
