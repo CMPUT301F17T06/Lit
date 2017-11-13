@@ -78,7 +78,6 @@ public class AddHabitEventActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_add_habit_event);
         setTitle("Adding A New Habit Event");
 
-
         try{
             Bundle bundle = getIntent().getExtras();
             currentHabit = (Habit)bundle.getSerializable("habit");
@@ -94,7 +93,6 @@ public class AddHabitEventActivity extends AppCompatActivity  {
         }
 
         // Retrieve habit info
-
         habitTitleString = currentHabit.getTitle();
 
         // Activity components
@@ -105,7 +103,6 @@ public class AddHabitEventActivity extends AppCompatActivity  {
         cancelHabitEvent = (Button) findViewById(R.id.discard_button);
         locationCheck = (CheckBox) findViewById(R.id.locationCheckBox);
         habitEventName.setText(habitTitleString);
-
 
 
         saveHabitEvent.setOnClickListener(new View.OnClickListener() {
@@ -121,17 +118,15 @@ public class AddHabitEventActivity extends AppCompatActivity  {
             @Override
             public void onClick(View view) {
                 Log.i("AddHabitEventActivity", "Cancel button pressed. Habit Event creation cancelled.");
+                setResult(Activity.RESULT_CANCELED);
                 finish();
             }
         });
-
     }
+
     public void returnNewHabitEvent(View saveNewHabitButton) {
         habitNameString = habitEventName.getText().toString();
         commentString = habitEventComment.getText().toString();
-
-
-
         Intent newHabitEventIntent = new Intent(AddHabitEventActivity.this, ViewHabitActivity.class);
         Bundle bundle = new Bundle();
         try{
@@ -146,9 +141,9 @@ public class AddHabitEventActivity extends AppCompatActivity  {
         catch (NullPointerException e){
             //TODO: handle when location is null
         }
+
         try {
             HabitEvent newHabitEvent = new NormalHabitEvent(habitNameString, commentString,null);
-
             bundle.putSerializable("event", newHabitEvent);
             newHabitEventIntent.putExtras(bundle);
             setResult(Activity.RESULT_OK, newHabitEventIntent);
@@ -157,8 +152,9 @@ public class AddHabitEventActivity extends AppCompatActivity  {
             Toast.makeText(AddHabitEventActivity.this, "Error: Illegal Habit Event information!", Toast.LENGTH_LONG).show();
         }
     }
-        //TODO: should be able to set habit image
-         private void setHabitImage(ImageView habitImage){}
+
+    //TODO: should be able to set habit image
+    private void setHabitImage(ImageView habitImage){}
 
     private Location buildLocation(CheckBox locationCheck){
                 /*if checkbox checked return current location*/

@@ -10,6 +10,7 @@
 
 package com.example.lit.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -67,10 +68,13 @@ public class HistoryActivity extends AppCompatActivity {
             public void onClick(View v) {
                 setResult(RESULT_OK);
                 Intent intent = new Intent(v.getContext(), HomePageActivity.class);
-                startActivity(intent);
+                setResult(Activity.RESULT_CANCELED);
+                finish();
             }});
 
     }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
@@ -102,7 +106,6 @@ public class HistoryActivity extends AppCompatActivity {
         // TODO Auto-generated method stub
         super.onStart();
         loadFromFile();
-
 
         eventAdapter = new ArrayAdapter<HabitEvent>(this,
                 R.layout.list_item, eventArrayList);
