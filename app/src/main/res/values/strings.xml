@@ -16,6 +16,10 @@
     <string name="delete_habit_button">Delete</string>
     <string name="habit_schedule_title">Habit takes place:</string>
     <string name="colon">:</string>
+    <string name="habit_event_name_field">Habit Event Name</string>
+    <string name="habit_event_comment_field">Habit Event Comment</string>
+    <string name="habit_event_scheduled_prompt">When did you complete the Habit:</string>
+    <string name="habit_event_schedule_title">Habit takes place:</string>
 
 
 </resources>
