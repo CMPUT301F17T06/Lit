@@ -51,7 +51,7 @@ import java.util.List;
 public class HomePageActivity extends AppCompatActivity {
 
     private static final String FILENAME = "habitFile.sav";
-    ListView currentHabitList;
+    /**ListView currentHabitList;
     ListView habitHistoryList;
     ListView friendsList;
     View mapView; //What kind of view is this supposed to be?
@@ -64,13 +64,13 @@ public class HomePageActivity extends AppCompatActivity {
     Button searchHistoryByHabitName;
     Button searchHistoryByComment;
     Button sortHistoryMenu; //Not sure what kind of View this should be
+**/
 
-
-    ImageButton addHabitButton;
-    Button Maps;
-    Button HabitHistory;
-    Button Friends;
-    Button Profile;
+    private ImageButton addHabitButton;
+    private Button Maps;
+    private Button HabitHistory;
+    private Button Friends;
+    private Button Profile;
 
     private ListView habitsListView;
     private ArrayList<Habit> habitArrayList;
@@ -90,22 +90,6 @@ public class HomePageActivity extends AppCompatActivity {
         habitsListView = (ListView)findViewById(R.id.habit_ListView);
         habitAdapter = new ArrayAdapter<Habit>(this,R.layout.list_item,habitArrayList);
         habitsListView.setAdapter(habitAdapter);
-
-        //Set up a dummy habit for testing
-        try {
-            Habit habit = new NormalHabit("Drink Water", new Date());
-            habit.setReason("Just chilling...");
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.DAY_OF_WEEK,1);
-            List<Calendar> calendarList = new ArrayList<Calendar>();
-            calendarList.add(calendar);
-            habit.setCalendars(calendarList);
-            habitArrayList.add(habit);
-        }catch (HabitFormatException e){
-
-        }
-
-        habitAdapter.notifyDataSetChanged();
 
         HabitHistory.setOnClickListener(new View.OnClickListener() {
 
@@ -159,5 +143,83 @@ public class HomePageActivity extends AppCompatActivity {
                 startActivityForResult(intent,1);
             }
         });
+    }
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        loadFromFile();
+
+
+        habitAdapter = new ArrayAdapter<Habit>(this,
+                R.layout.list_item, habitArrayList);
+        habitsListView.setAdapter(habitAdapter);
+
+    }
+    @Override
+
+    //return from the Detail activity
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //if return success update the values of item
+        if(resultCode == RESULT_OK) {
+            /**Take from https://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
+             * 2017/11/12
+             */
+            Habit habit = (Habit)data.getSerializableExtra("habit");
+            habitArrayList.add(habit);
+
+            habitAdapter.notifyDataSetChanged();
+            saveInFile();
+        }
+        else {
+            //not return success do nothing
+            habitAdapter.notifyDataSetChanged();
+            saveInFile();
+        }
+
+
+    }
+    private void loadFromFile() {
+        try {
+            FileInputStream fis = openFileInput(FILENAME);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+
+            Gson gson = new Gson();
+
+            //Taken from https://stackoverflow.com/questions/12384064/gson-convert-from-json-to-a-typed-arraylistt
+            //2017/09/19
+            Type listType = new TypeToken<ArrayList<NormalHabit>>() {}.getType();
+            habitArrayList = gson.fromJson(in, listType);
+
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            habitArrayList = new ArrayList<Habit>();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException();
+        }
+    }
+
+    private void saveInFile() {
+        try {
+            FileOutputStream fos = openFileOutput(FILENAME,
+                    Context.MODE_PRIVATE);
+
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
+
+            Gson gson = new Gson();
+            gson.toJson(habitArrayList,out);
+            out.flush();
+
+            fos.close();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException();
+        }
     }
 }

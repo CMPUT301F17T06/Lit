@@ -121,6 +121,7 @@ public class AddHabitActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.i("AddHabitActivity", "Save Button pressed.");
                 returnNewHabit(view);
+                finish();
             }
         });
 
@@ -193,11 +194,16 @@ public class AddHabitActivity extends AppCompatActivity {
                 manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
             }
         }
+        else{
+            habitLocation = null;
+        }
 
         Intent newHabitIntent = new Intent(AddHabitActivity.this, HomePageActivity.class);
         try {Habit newHabit = new NormalHabit(habitNameString, habitStartDate,
                 habitLocation, commentString, calendarList);
-            newHabitIntent.putExtra(CLASS_KEY, newHabit);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("habit", newHabit);
+            newHabitIntent.putExtras(bundle);
             setResult(Activity.RESULT_OK, newHabitIntent);
             finish();
         } catch (HabitFormatException e){
