@@ -15,9 +15,8 @@ package com.example.lit.saving;
  */
 
 public interface Saveable {
-    public DataHandler dataHandler;
 
-    abstract public boolean saveData();
-    abstract public boolean loadData();
+    public boolean saveData();
+    public boolean loadData();
 
 }
