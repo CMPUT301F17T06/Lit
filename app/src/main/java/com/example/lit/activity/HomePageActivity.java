@@ -10,10 +10,8 @@
 
 package com.example.lit.activity;
 
-<<<<<<< HEAD
-import android.content.ClipData;
-=======
->>>>>>> master
+
+
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -28,10 +26,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.lit.R;
-<<<<<<< HEAD
-=======
+
 import com.example.lit.exception.HabitFormatException;
->>>>>>> master
+
 import com.example.lit.habit.Habit;
 import com.example.lit.habit.NormalHabit;
 import com.google.gson.Gson;
@@ -72,17 +69,12 @@ public class HomePageActivity extends AppCompatActivity {
     private Button Friends;
     private Button Profile;
 
-<<<<<<< HEAD
-    //create ArrayList and adapter to save habit object
-    private ArrayList<Habit> HabitList;
-    private ArrayAdapter<Habit> adapter;
-    private static final String FILENAME = "file.sav";
-    private ListView oldhabitList;
-=======
+
+
     private ListView habitsListView;
     private ArrayList<Habit> habitArrayList;
     ArrayAdapter<Habit> habitAdapter;
->>>>>>> master
+
 
 
     @Override
@@ -94,7 +86,7 @@ public class HomePageActivity extends AppCompatActivity {
         HabitHistory =  (Button) findViewById(R.id.HabitHistory) ;
         Friends  = (Button) findViewById(R.id.Friend);
         Profile = (Button) findViewById(R.id.Profile);
-        oldhabitList = (ListView) findViewById(R.id.oldHabitList);
+
 
         habitArrayList = new ArrayList<>();
         habitsListView = (ListView)findViewById(R.id.habit_ListView);
@@ -152,33 +144,8 @@ public class HomePageActivity extends AppCompatActivity {
             }});
     }
 
-    private void loadFromFile() {
-        try {
-            FileInputStream fis = openFileInput(FILENAME);
-            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
-            Gson gson = new Gson();
-            // Taken from https://stackoverflow.com/questions/12384064/gson-convert-from-json-to-a-typed-arraylistt
-            //2017-09-19
-            Type listType = new TypeToken<ArrayList<Habit>>(){}.getType();
-            habitArrayList = gson.fromJson(in, listType);
-
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            habitArrayList = new ArrayList<Habit>();
-        }
-    }
-    @Override
-    protected void onStart() {
-        // TODO Auto-generated method stub
-        super.onStart();
-        loadFromFile();
 
 
-        adapter = new ArrayAdapter<Habit>(this,
-                R.layout.list_item, HabitList);
-        oldhabitList.setAdapter(adapter);
-
-    }
     @Override
 
     //return from the activity
@@ -194,12 +161,12 @@ public class HomePageActivity extends AppCompatActivity {
             */
             Habit newhabit = (Habit)data.getSerializableExtra("HABIT");
 
-            HabitList.add(newhabit);
-            adapter.notifyDataSetChanged();
+            habitArrayList.add(newhabit);
+            habitAdapter.notifyDataSetChanged();
             saveInFile();}
         else {
             //not return success do nothing
-            adapter.notifyDataSetChanged();
+            habitAdapter.notifyDataSetChanged();
             saveInFile();
         }
 
@@ -217,11 +184,11 @@ public class HomePageActivity extends AppCompatActivity {
             //Taken from https://stackoverflow.com/questions/12384064/gson-convert-from-json-to-a-typed-arraylistt
             //2017/09/19
             Type listType = new TypeToken<ArrayList<Habit>>() {}.getType();
-            HabitList = gson.fromJson(in, listType);
+            habitArrayList = gson.fromJson(in, listType);
 
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
-            HabitList = new ArrayList<Habit>();
+            habitArrayList = new ArrayList<Habit>();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             throw new RuntimeException();
@@ -236,27 +203,9 @@ public class HomePageActivity extends AppCompatActivity {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
 
             Gson gson = new Gson();
-            gson.toJson(HabitList,out);
-            out.flush();
-
-            fos.close();
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException();
-        }
-    }
-
-    private void saveInFile() {
-        try {
-            FileOutputStream fos = openFileOutput(FILENAME,
-                    Context.MODE_PRIVATE);
-            BufferedWriter out = new BufferedWriter((new OutputStreamWriter(fos)));
-            Gson gson = new Gson();
             gson.toJson(habitArrayList,out);
             out.flush();
+
             fos.close();
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
@@ -266,4 +215,6 @@ public class HomePageActivity extends AppCompatActivity {
             throw new RuntimeException();
         }
     }
+
+
 }
