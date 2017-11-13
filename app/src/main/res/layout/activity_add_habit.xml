@@ -105,6 +105,7 @@
         android:layout_margin="2dp"
         android:layout_marginBottom="168dp"
         android:layout_marginTop="8dp"
+        android:dropDownWidth="80dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.527"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -118,12 +119,12 @@
         android:layout_height="50dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="16dp"
+        android:dropDownWidth="80dp"
         app:layout_constraintBottom_toBottomOf="@+id/hour_spinner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/semi_colon"
         app:layout_constraintTop_toTopOf="@+id/hour_spinner"
-        app:layout_constraintVertical_bias="0.0"
-        android:layout_marginRight="16dp" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/semi_colon"

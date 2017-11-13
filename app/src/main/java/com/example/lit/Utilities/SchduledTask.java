@@ -8,33 +8,22 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.example.lit.habit;
+package com.example.lit.Utilities;
 
-import com.example.lit.exception.HabitFormatException;
-import com.example.lit.location.Location;
-
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
+import java.util.TimerTask;
 
 /**
- * Created by weikailu on 2017-10-21.
+ * Created by weikailu on 2017-11-12.
  */
 
-public class NormalHabit extends Habit {
-    public NormalHabit(String title)throws HabitFormatException {super(title);}
+public class SchduledTask extends TimerTask {
 
-    public NormalHabit(String title, Date date)throws HabitFormatException {super(title, date);}
-
-<<<<<<< HEAD
-    public NormalHabit(String title, Date date, Location location, String reason) throws HabitFormatException {
-        super(title, date, location, reason);
-=======
-    public NormalHabit(String title, Date date, HabitLocation habitLocation, String reason, List<Calendar> calenderList) throws HabitFormatException {
-        super(title, date, habitLocation, reason, calenderList);
->>>>>>> master
-    }
+    Date now;
 
     @Override
-    public String habitType(){return "Normal";}
+    public void run() {
+        now = new Date();
+        // TODO: Do something when the habit is happening now
+    }
 }

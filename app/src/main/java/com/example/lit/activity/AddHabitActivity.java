@@ -11,6 +11,8 @@
 package com.example.lit.activity;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,14 +29,28 @@ import android.widget.Toast;
 
 import com.example.lit.Utilities.MultiSelectionSpinner;
 import com.example.lit.R;
+<<<<<<< HEAD
+=======
+
+import com.example.lit.Utilities.SchduledTask;
+>>>>>>> master
 import com.example.lit.habit.Habit;
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.habit.NormalHabit;
 
+<<<<<<< HEAD
+=======
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+>>>>>>> master
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 
 public class AddHabitActivity extends AppCompatActivity {
 
@@ -46,27 +62,39 @@ public class AddHabitActivity extends AppCompatActivity {
     private MultiSelectionSpinner weekday_spinner;
     private Spinner hour_spinner;
     private Spinner minute_spinner;
-    private Button saveHabit;
-    private Button cancelHabit;
+    Button saveHabit;
+    Button cancelHabit;
     private ImageView habitImage;
     private Button editImage;
     //TODO: Implement image feature
     //TODO: Implement location feature
 
+<<<<<<< HEAD
     private Date habitStartDate;
     private String habitNameString;
     private String commentString;
     private List<String> weekdays;
     private Integer hour;
     private Integer minute;
+=======
+    Date habitStartDate;
+    String habitNameString;
+    String commentString;
+    List<String> weekdays;
+    Integer hour;
+    Integer minute;
+    List<Calendar> calendarList;
+    LocationManager manager;
+    LocationListener locationListener;
+    private HabitLocation habitLocation;
+
+>>>>>>> master
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_habit);
         setTitle("Adding A New Habit");
-
-
 
         // Activity components
         habitName = (EditText) findViewById(R.id.Habit_EditText);
@@ -112,7 +140,11 @@ public class AddHabitActivity extends AppCompatActivity {
                 finish();
             }
         });
+<<<<<<< HEAD
     }
+=======
+}
+>>>>>>> master
 
     public void returnNewHabit(View saveNewHabitButton){
         habitNameString = habitName.getText().toString();
@@ -122,6 +154,15 @@ public class AddHabitActivity extends AppCompatActivity {
         minute = Integer.parseInt(minute_spinner.getSelectedItem().toString());
         weekdays = weekday_spinner.getSelectedStrings();
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+        try{
+            calendarList = buildCalender(weekdays,hour,minute);
+        }catch (ParseException e){
+            //TODO: handle exception
+        }
+
+>>>>>>> master
         /*if checkbox checked return current location*/
         if (locationCheck.isChecked()){
             //get the location service
@@ -139,7 +180,6 @@ public class AddHabitActivity extends AppCompatActivity {
                     double longitude = location.getLongitude();
                     LatLng latLng = new LatLng(latitude, longitude);
                     habitLocation = new HabitLocation(latLng);
-
                 }
 
                 @Override
@@ -173,6 +213,7 @@ public class AddHabitActivity extends AppCompatActivity {
             habitLocation =null;
         }
 
+<<<<<<< HEAD
 
 =======
 >>>>>>> parent of e636c53... Add the Attached current location function to AddHabitactivity
@@ -186,6 +227,11 @@ public class AddHabitActivity extends AppCompatActivity {
             newHabitIntent.putExtra("HABIT", newHabit); //Habit needs serializable.
 =======
                 null, commentString);
+=======
+        Intent newHabitIntent = new Intent();
+        try {Habit newHabit = new NormalHabit(habitNameString, habitStartDate,
+                habitLocation, commentString, calendarList);
+>>>>>>> master
             newHabitIntent.putExtra(CLASS_KEY, newHabit); //Habit needs serializable.
 >>>>>>> parent of e636c53... Add the Attached current location function to AddHabitactivity
             setResult(Activity.RESULT_OK, newHabitIntent);
@@ -193,11 +239,13 @@ public class AddHabitActivity extends AppCompatActivity {
         } catch (HabitFormatException e){
             Toast.makeText(AddHabitActivity.this,"Error: Illegal Habit information!",Toast.LENGTH_LONG).show();
         }
-
     }
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> master
     @Override
     public boolean onOptionsItemSelected(MenuItem selection){
         switch (selection.getItemId()){
@@ -231,6 +279,35 @@ public class AddHabitActivity extends AppCompatActivity {
     private List<String> createMinuteList(){
         List<String> hourList = createNumberList(1,60,1);
         return hourList;
+    }
+
+    private List<Calendar> buildCalender(List<String> weekdays, int hour, int minute)throws ParseException{
+        List<Calendar> calendarList = new ArrayList<Calendar>();
+        for (String weekday:weekdays
+             ) {
+            Calendar calendar = Calendar.getInstance();
+            int weekOfDay = parseDayOfWeek(weekday,Locale.CANADA);
+            calendar.set(Calendar.DAY_OF_WEEK,weekOfDay);
+            calendar.set(Calendar.HOUR_OF_DAY,hour);
+            calendar.set(Calendar.MINUTE,minute);
+            calendarList.add(calendar);
+
+            // Periodic Timer, only a prototype now
+            Timer timer = new Timer();
+            timer.schedule(new SchduledTask(), calendar.getTime());
+        }
+        return calendarList;
+    }
+
+    // Taken https://stackoverflow.com/questions/18232340/convert-string-to-day-of-week-not-exact-date
+    private static int parseDayOfWeek(String day, Locale locale)
+            throws ParseException {
+        SimpleDateFormat dayFormat = new SimpleDateFormat("E", locale);
+        Date date = dayFormat.parse(day);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        return dayOfWeek;
     }
 
     //TODO: should be able to set habit image
