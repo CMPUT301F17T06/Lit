@@ -10,6 +10,7 @@
 
 package com.example.lit.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,10 +20,16 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.lit.R;
+import com.example.lit.exception.HabitFormatException;
 import com.example.lit.exception.LoadHabitException;
 import com.example.lit.habit.Habit;
+import com.example.lit.habitevent.HabitEvent;
+import com.example.lit.habitevent.NormalHabitEvent;
+import com.example.lit.location.HabitLocation;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
 
@@ -30,7 +37,7 @@ public class ViewHabitActivity extends AppCompatActivity {
 
     private static final String CLASS_KEY = "com.example.lit.activity.ViewHabitActivity";
 
-    Serializable serializable;
+
     Habit currentHabit;
     String habitTitleString;
     String habitCommentString;
@@ -56,14 +63,21 @@ public class ViewHabitActivity extends AppCompatActivity {
         addHabitEventButton = (Button) findViewById(R.id.AddHabitEvent);
 
         try{
-            serializable = getIntent().getExtras().getSerializable("habit");
-            if (!(serializable instanceof Habit)) throw new LoadHabitException();
+            Bundle bundle = getIntent().getExtras();
+            currentHabit = (Habit)bundle.getSerializable("habit");
+            double lat = bundle.getDouble("lat");
+            double lng = bundle.getDouble("lng");
+            LatLng latLng = new LatLng(lat, lng);
+            HabitLocation habitLocation= new HabitLocation(latLng);
+
+            currentHabit.setLocation(habitLocation);
+
+            if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
         }catch (LoadHabitException e){
             //TODO: handle LoadHabitException
         }
-
         // Retrieve habit info
-        currentHabit = (Habit) serializable;
+
         habitTitleString = currentHabit.getTitle();
         habitCommentString = currentHabit.getReason();
         habitDateStartedString = currentHabit.getDate().toString();
@@ -84,7 +98,7 @@ public class ViewHabitActivity extends AppCompatActivity {
         editHabit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toEditHabitActivity(serializable);
+                toEditHabitActivity(currentHabit);
             }
         });
 
@@ -100,6 +114,14 @@ public class ViewHabitActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), AddHabitEventActivity.class);
                 Bundle bundle = new Bundle();
+                HabitLocation location = currentHabit.getHabitLocation();
+                LatLng latLng = location.getLocation();
+                double latitude = latLng.latitude;
+                double longitude = latLng.longitude;
+                currentHabit.setLocation(null);
+                bundle.putDouble("lat", latitude);
+                bundle.putDouble("lng", longitude);
+
                 bundle.putSerializable("habit", currentHabit);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,1);
@@ -124,4 +146,26 @@ public class ViewHabitActivity extends AppCompatActivity {
     public void deleteHabit(Habit habit){
         //
     }
-}
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //if return success update the values of item
+        if(resultCode == RESULT_OK) {
+            /**Take from https://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
+             * 2017/11/12
+             */
+            Bundle bundle = data.getExtras();
+            HabitEvent habitevent = (HabitEvent) bundle.getSerializable("event");
+            double lat = bundle.getDouble("lat");
+            double lng = bundle.getDouble("lng");
+            Intent EventIntent = new Intent(ViewHabitActivity.this, HomePageActivity.class);
+
+            Bundle bundle2 = new Bundle();
+            bundle2.putSerializable("event", habitevent);
+            EventIntent.putExtras(bundle2);
+            setResult(Activity.RESULT_OK, EventIntent);
+            finish();
+
+        }
+}}

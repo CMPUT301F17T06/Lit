@@ -10,6 +10,7 @@
 
 package com.example.lit.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -30,6 +31,7 @@ import com.example.lit.exception.HabitFormatException;
 import com.example.lit.habit.Habit;
 import com.example.lit.habit.HabitList;
 import com.example.lit.habit.NormalHabit;
+import com.example.lit.habitevent.HabitEvent;
 import com.example.lit.location.HabitLocation;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
@@ -51,7 +53,9 @@ import java.util.List;
 
 public class HomePageActivity extends AppCompatActivity {
 
+
     private static final String FILENAME = "habitFile.sav";
+
     /*ListView currentHabitList;
     ListView habitHistoryList;
     ListView friendsList;
@@ -81,6 +85,7 @@ public class HomePageActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
         addHabitButton = (ImageButton) findViewById(R.id.AddHabit);
@@ -96,9 +101,9 @@ public class HomePageActivity extends AppCompatActivity {
         HabitHistory.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                setResult(RESULT_OK);
-                Intent intent = new Intent(v.getContext(), ViewHabitActivity.class);
-                startActivityForResult(intent,1);
+
+                Intent intent = new Intent(HomePageActivity.this, HistoryActivity.class);
+                startActivity(intent);
             }});
 
         Friends.setOnClickListener(new View.OnClickListener() {
@@ -153,7 +158,7 @@ public class HomePageActivity extends AppCompatActivity {
                 }
                 bundle.putSerializable("habit", selectedHabit);
                 intent.putExtras(bundle);
-                startActivityForResult(intent,1);
+                startActivityForResult(intent,2);
             }
         });
     }
@@ -182,32 +187,50 @@ public class HomePageActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1){
 
-        //if return success update the values of item
-        if(resultCode == RESULT_OK) {
-            /**Take from https://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
-             * 2017/11/12
-             */
-            Bundle bundle = data.getExtras();
-            Habit habit = (Habit) bundle.getSerializable("habit");
-            try {
-                double lat = bundle.getDouble("lat");
-                double lng = bundle.getDouble("lng");
-                LatLng latLng = new LatLng(lat, lng);
-                habitLocation = new HabitLocation(latLng);
-                habit.setLocation(habitLocation);
-            }catch (Exception e){
-                //
+            //if return success update the values of item
+            if(resultCode == RESULT_OK) {
+                /**Take from https://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
+                 * 2017/11/12
+                 */
+                Bundle bundle = data.getExtras();
+                Habit habit = (Habit) bundle.getSerializable("habit");
+                try {
+                    double lat = bundle.getDouble("lat");
+                    double lng = bundle.getDouble("lng");
+                    LatLng latLng = new LatLng(lat, lng);
+                    habitLocation = new HabitLocation(latLng);
+                    habit.setLocation(habitLocation);
+                }catch (Exception e){
+                    //
+                }
+                habitArrayList.add(habit);
+                habitAdapter.notifyDataSetChanged();
+                saveInFile();
             }
-            habitArrayList.add(habit);
-            habitAdapter.notifyDataSetChanged();
-            saveInFile();
+            else {
+                //not return success do nothing
+                habitAdapter.notifyDataSetChanged();
+                saveInFile();
+            }
         }
-        else {
-            //not return success do nothing
-            habitAdapter.notifyDataSetChanged();
-            saveInFile();
+        //dealing with the habit event
+        if(requestCode == 2){
+            Bundle bundle = data.getExtras();
+            HabitEvent habitEvent = (HabitEvent) bundle.getSerializable("event");
+            double lat = bundle.getDouble("lat");
+            double lng = bundle.getDouble("lng");
+            Intent EventIntent = new Intent(HomePageActivity.this,  HistoryActivity.class);
+
+            Bundle bundle2 = new Bundle();
+            bundle2.putSerializable("event", habitEvent);
+            EventIntent.putExtras(bundle2);
+            startActivityForResult(EventIntent,1);
+            finish();
+
         }
+
     }
 
     /**

@@ -10,14 +10,22 @@
 
 package com.example.lit.activity;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,6 +36,8 @@ import com.example.lit.exception.LoadHabitException;
 import com.example.lit.habit.Habit;
 import com.example.lit.habitevent.HabitEvent;
 import com.example.lit.habitevent.NormalHabitEvent;
+import com.example.lit.location.HabitLocation;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -41,11 +51,12 @@ import java.util.List;
 public class AddHabitEventActivity extends AppCompatActivity  {
     private static final String CLASS_KEY = "com.example.lit.activity.AddHabitEventActivity";
 
-    Serializable serializable;
+
     Habit currentHabit;
     String habitTitleString;
     private TextView habitEventName;
     private EditText habitEventComment;
+    private CheckBox locationCheck;
     Button saveHabitEvent;
     Button cancelHabitEvent;
     private ImageView habitImage;
@@ -54,6 +65,11 @@ public class AddHabitEventActivity extends AppCompatActivity  {
 
     String habitNameString;
     String commentString;
+    LocationManager manager;
+    private HabitLocation habitLocation;
+    private String provider;
+    double latitude;
+    double longitude;
 
 
     @Override
@@ -64,14 +80,21 @@ public class AddHabitEventActivity extends AppCompatActivity  {
 
 
         try{
-            serializable = getIntent().getExtras().getSerializable("habit");
-            if (!(serializable instanceof Habit)) throw new LoadHabitException();
+            Bundle bundle = getIntent().getExtras();
+            currentHabit = (Habit)bundle.getSerializable("habit");
+            double lat = bundle.getDouble("lat");
+            double lng = bundle.getDouble("lng");
+            LatLng latLng = new LatLng(lat, lng);
+            HabitLocation habitLocation= new HabitLocation(latLng);
+
+            currentHabit.setLocation(habitLocation);
+            if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
         }catch (LoadHabitException e){
             //TODO: handle LoadHabitException
         }
 
         // Retrieve habit info
-        currentHabit = (Habit) serializable;
+
         habitTitleString = currentHabit.getTitle();
 
         // Activity components
@@ -80,6 +103,7 @@ public class AddHabitEventActivity extends AppCompatActivity  {
         habitEventComment.setLines(3); //Maximum lines our comment should be able to show at once.
         saveHabitEvent = (Button) findViewById(R.id.save_button);
         cancelHabitEvent = (Button) findViewById(R.id.discard_button);
+        locationCheck = (CheckBox) findViewById(R.id.locationCheckBox);
         habitEventName.setText(habitTitleString);
 
 
@@ -106,10 +130,27 @@ public class AddHabitEventActivity extends AppCompatActivity  {
         habitNameString = habitEventName.getText().toString();
         commentString = habitEventComment.getText().toString();
 
+
+
         Intent newHabitEventIntent = new Intent(AddHabitEventActivity.this, ViewHabitActivity.class);
+        Bundle bundle = new Bundle();
+        try{
+            Location location = buildLocation(locationCheck);
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+            if (!(location == null)){
+                bundle.putDouble("lat",latitude);
+                bundle.putDouble("lng",longitude);
+            }
+        }
+        catch (NullPointerException e){
+            //TODO: handle when location is null
+        }
         try {
-            HabitEvent newHabitEvent = new NormalHabitEvent(habitNameString, commentString);
-            newHabitEventIntent.putExtra(CLASS_KEY, newHabitEvent);
+            HabitEvent newHabitEvent = new NormalHabitEvent(habitNameString, commentString,null);
+
+            bundle.putSerializable("event", newHabitEvent);
+            newHabitEventIntent.putExtras(bundle);
             setResult(Activity.RESULT_OK, newHabitEventIntent);
             finish();
         } catch (HabitFormatException e) {
@@ -119,6 +160,37 @@ public class AddHabitEventActivity extends AppCompatActivity  {
         //TODO: should be able to set habit image
          private void setHabitImage(ImageView habitImage){}
 
+    private Location buildLocation(CheckBox locationCheck){
+                /*if checkbox checked return current location*/
+        Location returnLocation = null;
+        if  (locationCheck.isChecked()){
+            manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            // Define the criteria how to select the locatioin provider -> use
+            // default
+            Criteria criteria = new Criteria();
+            provider = manager.getBestProvider(criteria, false);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return null;
+            }
+            Location location = manager.getLastKnownLocation(provider);
+            if (location != null) {
+                /*get the latitude and longitude from the location*/
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+                returnLocation = location;
+            }}
+        else{
+            returnLocation = null;
+        }
+        return returnLocation;
+    }
 
 }
 
