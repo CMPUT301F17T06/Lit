@@ -12,17 +12,13 @@ package com.example.lit.activity;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 
 import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Parcel;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -46,15 +42,6 @@ import com.example.lit.exception.HabitFormatException;
 import com.example.lit.habit.NormalHabit;
 import com.example.lit.location.HabitLocation;
 
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
-
-import java.io.IOException;
-import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -63,7 +50,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
-import java.util.concurrent.TimeUnit;
 
 public class AddHabitActivity extends AppCompatActivity  {
 
@@ -166,46 +152,26 @@ public class AddHabitActivity extends AppCompatActivity  {
             //TODO: handle exception
         }
 
-        /*if checkbox checked return current location*/
-        if (locationCheck.isChecked() == true) {
-            manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            // Define the criteria how to select the locatioin provider -> use
-            // default
-            Criteria criteria = new Criteria();
-            provider = manager.getBestProvider(criteria, false);
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
-            }
-            Location location = manager.getLastKnownLocation(provider);
-            if (location != null) {
-                /*get the latitude and longitude from the location*/
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
-
-
-
-            }}
-        else{
-            habitLocation =null;
-        }
-
 
         Intent newHabitIntent = new Intent(AddHabitActivity.this, HomePageActivity.class);
+        Bundle bundle = new Bundle();
+        try{
+            Location location = buildLocation(locationCheck);
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+            if (!(location == null)){
+                bundle.putDouble("lat",latitude);
+                bundle.putDouble("lng",longitude);
+            }
+        }
+        catch (NullPointerException e){
+            //TODO: handle when location is null
+        }
+
         try {Habit newHabit = new NormalHabit(habitNameString, habitStartDate,
                 null, commentString, calendarList);
-            Bundle bundle = new Bundle();
             bundle.putSerializable("habit", newHabit);
-            bundle.putDouble("lat",latitude);
-            bundle.putDouble("lng",longitude);
             newHabitIntent.putExtras(bundle);
-
             setResult(Activity.RESULT_OK, newHabitIntent);
             finish();
         } catch (HabitFormatException e){
@@ -302,6 +268,43 @@ public class AddHabitActivity extends AppCompatActivity  {
         return numberList;
     }
 
-
+    /**
+     * This function will return a Location object containing Latitude and Longitude attribute
+     *
+     * @param locationCheck location checkbox in AddHabitActivity
+     *
+     * @return A location object
+     * */
+    private Location buildLocation(CheckBox locationCheck){
+                /*if checkbox checked return current location*/
+        Location returnLocation = null;
+        if  (locationCheck.isChecked()){
+            manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            // Define the criteria how to select the locatioin provider -> use
+            // default
+            Criteria criteria = new Criteria();
+            provider = manager.getBestProvider(criteria, false);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return null;
+            }
+            Location location = manager.getLastKnownLocation(provider);
+            if (location != null) {
+                /*get the latitude and longitude from the location*/
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+                returnLocation = location;
+            }}
+        else{
+            returnLocation = null;
+        }
+        return returnLocation;
+    }
 
 }
