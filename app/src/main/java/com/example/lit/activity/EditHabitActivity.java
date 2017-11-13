@@ -158,7 +158,7 @@ public class EditHabitActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem selection){
         switch (selection.getItemId()){
             case android.R.id.home: //Up button pressed
-                Log.i("AddHabitActivity", "Up button pressed. Habit creation cancelled.");
+                Log.i("AddHabitActivity", "Up button pressed. Habit edit cancelled.");
                 setResult(Activity.RESULT_CANCELED);
                 finish();
         }
