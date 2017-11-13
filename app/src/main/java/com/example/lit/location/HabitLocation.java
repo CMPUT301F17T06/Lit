@@ -11,7 +11,18 @@
 package com.example.lit.location;
 
 /**
- * Created by damon on 10/20/2017.
+ * Habitlocation implement the location object in the habitevent
+ * Version 1.0
+ *
+ * Nov.13 2017
+ *
+ *
+ * @author : damon
+ *
+ *
+ * Copyright 2017 Team 6, CMPUT301, University of Alberta-All Rights Reserved.
+ * You may use distribute, or modify this code under terms and conditions of the Code of Student Behaviour at University of Alberta.
+ * you may find a copy of the license in the project. Otherwise please contact jiaxiong@ualberta.ca
  */
 
 import com.google.android.gms.maps.model.LatLng;

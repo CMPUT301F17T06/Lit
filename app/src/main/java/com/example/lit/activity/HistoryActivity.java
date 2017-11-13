@@ -41,7 +41,21 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-
+/**
+ * Version 1.0
+ *
+ * Nov.13 2017
+ * HistoryActivity
+ *This class is showing the habit event list and can edited the habitevent
+ * Transition from this activity should be from HomepageActivity and AddHabitEventActivity
+ * @see AddHabitEventActivity
+ * @author : damon
+ *
+ *
+ * Copyright 2017 Team 6, CMPUT301, University of Alberta-All Rights Reserved.
+ * You may use distribute, or modify this code under terms and conditions of the Code of Student Behaviour at University of Alberta.
+ * you may find a copy of the license in the project. Otherwise please contact jiaxiong@ualberta.ca
+ */
 public class HistoryActivity extends AppCompatActivity {
     private static final String FILENAME = "habiteventfile.sav";
     private Button BackMain;
@@ -69,7 +83,11 @@ public class HistoryActivity extends AppCompatActivity {
             }});
 
     }
-
+/**
+ * called when the activity start
+ * @throw Excepetion e
+ * @see AddHabitEventActivity
+ */
     @Override
     protected void onStart() {
         // TODO Auto-generated method stub
@@ -103,6 +121,7 @@ public class HistoryActivity extends AppCompatActivity {
     }
     /**
      * This function load data from local file to HomePageActivity habit list view.
+     * @throws FileNotFoundException
      * */
     private void loadFromFile() {
         try {
@@ -124,6 +143,8 @@ public class HistoryActivity extends AppCompatActivity {
 
     /**
      * This function save data when new habit object is instantiated.
+     * @throws FileNotFoundException
+     * @throws IOException
      * */
     private void saveInFile() {
         try {
