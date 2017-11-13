@@ -10,7 +10,6 @@
 
 package com.example.lit.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -47,7 +46,6 @@ public class ViewHabitActivity extends AppCompatActivity {
     Button habitDoneToday;          //Not sure what this should be, Button is a placeholder.
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,16 +57,17 @@ public class ViewHabitActivity extends AppCompatActivity {
         }catch (LoadHabitException e){
             //TODO: handle LoadHabitException
         }
+
         // Retrieve habit info
         currentHabit = (Habit) serializable;
         habitTitleString = currentHabit.getTitle();
         habitCommentString = currentHabit.getReason();
-        habitDateCompletedString = currentHabit.getDate().toString();
+        habitDateStartedString = currentHabit.getDate().toString();
 
         // Set up view components
         habitTitle = (TextView) findViewById(R.id.habit_title_TextView);
         habitComment = (TextView) findViewById(R.id.Comment_TextView);
-        habitDateStarted = (TextView) findViewById(R.id.habit_started_date_TextView);
+        habitDateStarted = (TextView) findViewById(R.id.date_started_TextView);
         habitTitle.setText(habitTitleString);
         habitComment.setText(habitCommentString);
         habitDateStarted.setText(habitDateStartedString);
