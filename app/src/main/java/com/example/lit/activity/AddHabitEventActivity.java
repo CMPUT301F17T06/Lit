@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,6 +29,8 @@ import com.example.lit.exception.LoadHabitException;
 import com.example.lit.habit.Habit;
 import com.example.lit.habitevent.HabitEvent;
 import com.example.lit.habitevent.NormalHabitEvent;
+import com.example.lit.location.HabitLocation;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -41,11 +44,12 @@ import java.util.List;
 public class AddHabitEventActivity extends AppCompatActivity  {
     private static final String CLASS_KEY = "com.example.lit.activity.AddHabitEventActivity";
 
-    Serializable serializable;
+
     Habit currentHabit;
     String habitTitleString;
     private TextView habitEventName;
     private EditText habitEventComment;
+    private CheckBox locationCheck;
     Button saveHabitEvent;
     Button cancelHabitEvent;
     private ImageView habitImage;
@@ -64,14 +68,21 @@ public class AddHabitEventActivity extends AppCompatActivity  {
 
 
         try{
-            serializable = getIntent().getExtras().getSerializable("habit");
-            if (!(serializable instanceof Habit)) throw new LoadHabitException();
+            Bundle bundle = getIntent().getExtras();
+            currentHabit = (Habit)bundle.getSerializable("habit");
+            double lat = bundle.getDouble("lat");
+            double lng = bundle.getDouble("lng");
+            LatLng latLng = new LatLng(lat, lng);
+            HabitLocation habitLocation= new HabitLocation(latLng);
+
+            currentHabit.setLocation(habitLocation);
+            if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
         }catch (LoadHabitException e){
             //TODO: handle LoadHabitException
         }
 
         // Retrieve habit info
-        currentHabit = (Habit) serializable;
+
         habitTitleString = currentHabit.getTitle();
 
         // Activity components
@@ -80,6 +91,7 @@ public class AddHabitEventActivity extends AppCompatActivity  {
         habitEventComment.setLines(3); //Maximum lines our comment should be able to show at once.
         saveHabitEvent = (Button) findViewById(R.id.save_button);
         cancelHabitEvent = (Button) findViewById(R.id.discard_button);
+        locationCheck = (CheckBox) findViewById(R.id.locationCheckBox);
         habitEventName.setText(habitTitleString);
 
 
@@ -109,7 +121,10 @@ public class AddHabitEventActivity extends AppCompatActivity  {
         Intent newHabitEventIntent = new Intent(AddHabitEventActivity.this, ViewHabitActivity.class);
         try {
             HabitEvent newHabitEvent = new NormalHabitEvent(habitNameString, commentString);
-            newHabitEventIntent.putExtra(CLASS_KEY, newHabitEvent);
+
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("event", newHabitEvent);
+            newHabitEventIntent.putExtras(bundle);
             setResult(Activity.RESULT_OK, newHabitEventIntent);
             finish();
         } catch (HabitFormatException e) {

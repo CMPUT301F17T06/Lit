@@ -51,7 +51,9 @@ import java.util.List;
 
 public class HomePageActivity extends AppCompatActivity {
 
+
     private static final String FILENAME = "habitFile.sav";
+
     /*ListView currentHabitList;
     ListView habitHistoryList;
     ListView friendsList;
@@ -81,6 +83,7 @@ public class HomePageActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
         addHabitButton = (ImageButton) findViewById(R.id.AddHabit);
@@ -153,7 +156,7 @@ public class HomePageActivity extends AppCompatActivity {
                 bundle.putDouble("lat",latitude);
                 bundle.putDouble("lng",longitude);
                 intent.putExtras(bundle);
-                startActivityForResult(intent,1);
+                startActivityForResult(intent,2);
             }
         });
     }

@@ -11,6 +11,7 @@
 package com.example.lit.habitevent;
 
 import com.example.lit.exception.HabitFormatException;
+import com.example.lit.location.HabitLocation;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -22,6 +23,7 @@ import java.util.Date;
 
 public abstract class HabitEvent implements HabitEventAddable, Comparable, Serializable {
     private String habitEventName;
+    private HabitLocation habitLocation;
     private Date date = new Date();
     private String eventComment;
     private int commentLength = 20;
@@ -34,6 +36,12 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Seria
 
     public HabitEvent(String habitEventName, String habitEventComment) throws HabitFormatException{
         this.habitEventName = habitEventName;
+        this.date = new Date();
+        this.eventComment= habitEventComment;
+    }
+    public HabitEvent(String habitEventName, String habitEventComment,HabitLocation location) throws HabitFormatException{
+        this.habitEventName = habitEventName;
+        this.habitLocation = location;
         this.date = new Date();
         this.eventComment= habitEventComment;
     }
@@ -68,6 +76,13 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Seria
         else {
             throw new HabitFormatException();
         }
+    }
+    public void setLocation(HabitLocation habitLocation){
+        this.habitLocation = habitLocation;
+    }
+
+    public HabitLocation getHabitLocation(){
+        return this.habitLocation;
     }
 
     @Override
