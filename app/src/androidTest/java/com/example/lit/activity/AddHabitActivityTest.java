@@ -42,18 +42,20 @@ public class AddHabitActivityTest extends ActivityInstrumentationTestCase2 {
     public void testAddHabit(){
         solo.assertCurrentActivity("Wrong Activity",AddHabitActivity.class);
         solo.enterText((EditText) solo.getView(R.id.Habit_EditText),"Test Habit!");
-        solo.clickOnView((Button)solo.getView(R.id.save_button));
+        solo.clickOnButton("Save");
 
-        solo.waitForActivity(HomePageActivity.class);
-        solo.waitForText("Test Habit!");
+        solo.assertCurrentActivity("Wrong Activity",HomePageActivity.class);
+        assertTrue(solo.waitForText("Test Habit!"));
     }
 
     public void testDiscardHabit(){
         solo.assertCurrentActivity("Wrong Activity",AddHabitActivity.class);
-        solo.clickOnView((Button)solo.getView(R.id.discard_button));
+        solo.clickOnButton("Discard");
 
-        solo.waitForActivity(HomePageActivity.class);
+        solo.assertCurrentActivity("Wrong Activity",HomePageActivity.class);
     }
 
-
+    public void tearDown(){
+        solo.finishOpenedActivities();
+    }
 }
