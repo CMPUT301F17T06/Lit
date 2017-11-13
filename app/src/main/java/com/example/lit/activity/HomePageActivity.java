@@ -187,8 +187,8 @@ public class HomePageActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1){
 
+        if(requestCode == 1){
             //if return success update the values of item
             if(resultCode == RESULT_OK) {
                 /**Take from https://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
@@ -214,21 +214,22 @@ public class HomePageActivity extends AppCompatActivity {
                 habitAdapter.notifyDataSetChanged();
                 saveInFile();
             }
+
         }
-        //dealing with the habit event
-        if(requestCode == 2){
-            Bundle bundle = data.getExtras();
-            HabitEvent habitEvent = (HabitEvent) bundle.getSerializable("event");
-            double lat = bundle.getDouble("lat");
-            double lng = bundle.getDouble("lng");
-            Intent EventIntent = new Intent(HomePageActivity.this,  HistoryActivity.class);
-
-            Bundle bundle2 = new Bundle();
-            bundle2.putSerializable("event", habitEvent);
-            EventIntent.putExtras(bundle2);
-            startActivityForResult(EventIntent,1);
-            finish();
-
+        // TODO: Not sure the functionality of this block and why entering HistoryActivity
+        // Comment out for normal transition for now
+        else if(requestCode == 2){ // Deal with habit event
+            if (resultCode == RESULT_OK) {
+                Bundle bundle = data.getExtras();
+                HabitEvent habitEvent = (HabitEvent) bundle.getSerializable("event");
+                double lat = bundle.getDouble("lat");
+                double lng = bundle.getDouble("lng");
+                Intent EventIntent = new Intent(HomePageActivity.this, HistoryActivity.class);
+                Bundle bundle2 = new Bundle();
+                bundle2.putSerializable("event", habitEvent);
+                EventIntent.putExtras(bundle2);
+                //startActivityForResult(EventIntent, 1);
+            }
         }
 
     }
