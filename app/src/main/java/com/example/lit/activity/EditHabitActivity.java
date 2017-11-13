@@ -249,6 +249,15 @@ public class EditHabitActivity extends AppCompatActivity {
         return numberList;
     }
 
+    /**
+     * Convert a integer ArrayList to integer list.
+     * An interface function.
+     *
+     * @param integers an integer ArrayList
+     * @return ret a int[]
+     * @see ArrayList
+     * @see Array
+     * */
     public static int[] convertIntegers(List<Integer> integers)
     {
         int[] ret = new int[integers.size()];

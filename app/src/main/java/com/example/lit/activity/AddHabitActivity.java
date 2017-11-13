@@ -41,6 +41,7 @@ import com.example.lit.habit.Habit;
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.habit.NormalHabit;
 import com.example.lit.location.HabitLocation;
+import com.example.lit.saving.DataHandler;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -209,6 +210,16 @@ public class AddHabitActivity extends AppCompatActivity  {
         return hourList;
     }
 
+    /**
+     * Return a calender list. The field in Calender set: weekdays, hour, minute.
+     *
+     * @param hour hour time
+     * @param minute minute time
+     * @param weekdays weekday
+     * @throws ParseException thrown when fail to parse weekday string
+     * @return A Calender list.
+     * @see Calendar
+     * */
     private List<Calendar> buildCalender(List<String> weekdays, int hour, int minute)throws ParseException{
         List<Calendar> calendarList = new ArrayList<Calendar>();
         for (String weekday:weekdays
@@ -227,7 +238,17 @@ public class AddHabitActivity extends AppCompatActivity  {
         return calendarList;
     }
 
-    // Taken https://stackoverflow.com/questions/18232340/convert-string-to-day-of-week-not-exact-date
+    /**
+     * This function will parse a weekday string (e.g. "Monday") to corresponding integer.
+     *
+     * Taken https://stackoverflow.com/questions/18232340/convert-string-to-day-of-week-not-exact-date
+     *
+     * @param day weekday string.
+     * @param locale weekday string format
+     * @throws ParseException when day is not a weekday string
+     * @return dayOfWeek a integer representing day of week in Calender.
+     * @see Calendar
+     * */
     private static int parseDayOfWeek(String day, Locale locale)
             throws ParseException {
         SimpleDateFormat dayFormat = new SimpleDateFormat("E", locale);
@@ -255,20 +276,18 @@ public class AddHabitActivity extends AppCompatActivity  {
      */
     private ArrayList<String> createNumberList(int low, int high, int interval){
         ArrayList<String> numberList = new ArrayList<>();
-
         for(int i = low; i <= high; i += interval){
             numberList.add(String.valueOf(i));
         }
-
         return numberList;
     }
 
     /**
-     * This function will return a Location object containing Latitude and Longitude attribute
+     * This function will return a Location object containing Latitude and Longitude attribute.
      *
-     * @param locationCheck location checkbox in AddHabitActivity
+     * @param locationCheck location checkbox in AddHabitActivity.
      *
-     * @return A location object
+     * @return A location object, null if fail to initialize location.
      * */
     private Location buildLocation(CheckBox locationCheck){
                 /*if checkbox checked return current location*/
@@ -300,5 +319,12 @@ public class AddHabitActivity extends AppCompatActivity  {
             returnLocation = null;
         }
         return returnLocation;
+    }
+
+
+    //TODO: A function used to add new Habit into corresponding user file
+    private void writeInFile(String user, Habit habit, Context view){
+        DataHandler datahandler = new DataHandler(user,"habit",view);
+        datahandler.saveSingularElement(habit);
     }
 }

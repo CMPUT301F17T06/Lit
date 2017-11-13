@@ -14,17 +14,13 @@ package com.example.lit.saving;
  * Created by Riley Dixon on 12/11/2017.
  */
 
-/*
-
 public interface Saveable {
-    public DataHandler dataHandler;
 
-    abstract public boolean saveData();
-    abstract public boolean loadData();
+    public boolean saveData();
+    public boolean loadData();
 
 }
 
-**/
 
 
 
