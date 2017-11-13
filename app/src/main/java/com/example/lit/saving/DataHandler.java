@@ -47,7 +47,6 @@ public class DataHandler<T> {
     private long lastOfflineSave;
     private long lastOnlineSave;
     private String FILENAME;
-    private Type typeOfDataBeingStored;
 
     /**
      * Builds a handler that is used to save data to both local storage for offline use as
@@ -70,7 +69,7 @@ public class DataHandler<T> {
      *
      * @see Gson
      */
-    DataHandler(String username, String savedObject, Context context, Type typeOfDataBeingStored){
+    DataHandler(String username, String savedObject, Context context){
         this.FILENAME = context.getFilesDir().getAbsolutePath() + File.separator
                 + username;
 
@@ -82,90 +81,130 @@ public class DataHandler<T> {
         }
 
         FILENAME += File.separator + savedObject + ".sav";
-        this.typeOfDataBeingStored = typeOfDataBeingStored;
-
     }
 
-    public void setTypeOfDataBeingStored(Type typeOfDataBeingStored){
-        this.typeOfDataBeingStored = typeOfDataBeingStored;
-    }
 
     public void saveArrayList(ArrayList<T> arrayListToBeSaved){
-
-    }
-
-    public void saveSingularElement(Object element){
-        
-    }
-
-    public void loadArrayList(ArrayList<T> arrayListToBeLoaded){
-
-    }
-
-    public Object loadSingularElement(){
-
-    }
-
-    private void saveArrayToOffline(ArrayList<T> arrayListToSave){
-        try {
-            FileOutputStream fos = new FileOutputStream(new File(FILENAME));
-            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
-            Type typeOfArrayList = new TypeToken<ArrayList<T>>(){}.getType();
-            //Write to the stream.
-            Gson gson = new Gson();
-            gson.toJson(arrayListToSave, typeOfArrayList, out); //OBJECT, TYPE, APPENDABLE
-            //Close the writing stream.
-            out.flush();
-            fos.close();
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
+        long currentTime = System.currentTimeMillis();
+        try{
+            saveArrayToOffline(arrayListToBeSaved);
+            lastOfflineSave = currentTime;
+        }catch (IOException e) {
             throw new RuntimeException();
         }
+        //TODO: Online part
+    }
+
+    public void saveSingularElement(T element){
+        long currentTime = System.currentTimeMillis();
+        try{
+            saveSingularElementToOffline(element);
+            lastOfflineSave = currentTime;
+        }catch (IOException e){
+            throw new RuntimeException();
+        }
+        //TODO: Online part
+    }
+
+    public ArrayList<T> loadArrayList(){
+        long currentTime = System.currentTimeMillis();
+        ArrayList<T> loadedList;
+        //TODO: Compare offline and online file, then decide which file to load from
+        //TODO: If the files timestamps are different, sync with the newer file
+        try{
+            loadedList = loadArrayFromOffline();
+        }catch (IOException e){
+            throw new RuntimeException();
+        }
+        return loadedList;
+    }
+
+    public T loadSingularElement(){
+        long currentTime = System.currentTimeMillis();
+        T loadedElement;
+        //TODO: Compare offline and online file, then decide which file to load from
+        //TODO: If the files timestamps are different, sync with the newer file
+        try{
+            loadedElement = loadSingularElementFromOffline();
+        }catch (IOException e){
+            throw new RuntimeException();
+        }
+        return loadedElement;
+    }
+
+    private void saveArrayToOffline(ArrayList<T> arrayListToSave)throws IOException{
+        FileOutputStream fos = new FileOutputStream(new File(FILENAME));
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
+        Type typeOfArrayList = new TypeToken<ArrayList<T>>(){}.getType();
+        //Write to the stream.
+        Gson gson = new Gson();
+        gson.toJson(arrayListToSave, typeOfArrayList, out); //OBJECT, TYPE, APPENDABLE
+        //Close the writing stream.
+        out.flush();
+        fos.close();
+
     }
 
     private void saveArrayToOnline(){
 
     }
 
-    private void saveSingularElementToOffline(){
-
+    private void saveSingularElementToOffline(T singleElementToSave) throws IOException{
+        FileOutputStream fos = new FileOutputStream(new File(FILENAME));
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
+        Type typeOfElement = new TypeToken<T>(){}.getType();
+        //Write to the stream.
+        Gson gson = new Gson();
+        gson.toJson(singleElementToSave, typeOfElement, out); //OBJECT, TYPE, APPENDABLE
+        //Close the writing stream.
+        out.flush();
+        fos.close();
     }
 
     private void saveSingularElementToOnline(){
 
     }
 
-    private ArrayList<T> loadArrayToOffline(ArrayList<T> arrayListToLoad){
+    private ArrayList<T> loadArrayFromOffline() throws IOException{
+        ArrayList<T> loadedList;
         try {
             FileInputStream fis = new FileInputStream(new File(FILENAME));
             BufferedReader in = new BufferedReader(new InputStreamReader(fis));
             Type typeOfArrayList = new TypeToken<ArrayList<T>>(){}.getType();
-
+            //Read from the stream
             Gson gson = new Gson();
-            ArrayList<T> arrayList = gson.fromJson(in, typeOfArrayList);
-
+            loadedList = gson.fromJson(in, typeOfArrayList);
+            //Close the stream
+            fis.close();
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
-            counterArrayList = new ArrayList<T>();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException();
+             return new ArrayList<T>();
         }
+        return loadedList;
     }
 
-    private void loadArrayToOffline(){
-
+    private ArrayList<T> loadArrayFromOnline(){
+        return null;
     }
 
-    private void loadSingularElementToOffline(){
+    private T loadSingularElementFromOffline() throws IOException{
+        T loadedElement;
 
+        //Build the FileInputStream
+        FileInputStream fis = new FileInputStream(new File(FILENAME));
+        BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+        Type typeOfElement = new TypeToken<T>(){}.getType();
+        //Read from inputstream
+        Gson gson = new Gson();
+        loadedElement = gson.fromJson(in, typeOfElement);
+        //Close stream
+        fis.close();
+
+        return loadedElement;
     }
 
-    private void loadSingularElementToOnline(){
-
+    private T loadSingularElementFromOnline(){
+        return null;
     }
 
 }
