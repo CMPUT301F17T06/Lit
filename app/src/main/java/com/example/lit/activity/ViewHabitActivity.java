@@ -114,6 +114,14 @@ public class ViewHabitActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), AddHabitEventActivity.class);
                 Bundle bundle = new Bundle();
+                HabitLocation location = currentHabit.getHabitLocation();
+                LatLng latLng = location.getLocation();
+                double latitude = latLng.latitude;
+                double longitude = latLng.longitude;
+                currentHabit.setLocation(null);
+                bundle.putDouble("lat", latitude);
+                bundle.putDouble("lng", longitude);
+
                 bundle.putSerializable("habit", currentHabit);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,1);

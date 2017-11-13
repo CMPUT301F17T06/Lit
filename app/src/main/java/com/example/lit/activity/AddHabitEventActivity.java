@@ -10,9 +10,16 @@
 
 package com.example.lit.activity;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -58,6 +65,11 @@ public class AddHabitEventActivity extends AppCompatActivity  {
 
     String habitNameString;
     String commentString;
+    LocationManager manager;
+    private HabitLocation habitLocation;
+    private String provider;
+    double latitude;
+    double longitude;
 
 
     @Override
@@ -118,11 +130,25 @@ public class AddHabitEventActivity extends AppCompatActivity  {
         habitNameString = habitEventName.getText().toString();
         commentString = habitEventComment.getText().toString();
 
-        Intent newHabitEventIntent = new Intent(AddHabitEventActivity.this, ViewHabitActivity.class);
-        try {
-            HabitEvent newHabitEvent = new NormalHabitEvent(habitNameString, commentString);
 
-            Bundle bundle = new Bundle();
+
+        Intent newHabitEventIntent = new Intent(AddHabitEventActivity.this, ViewHabitActivity.class);
+        Bundle bundle = new Bundle();
+        try{
+            Location location = buildLocation(locationCheck);
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+            if (!(location == null)){
+                bundle.putDouble("lat",latitude);
+                bundle.putDouble("lng",longitude);
+            }
+        }
+        catch (NullPointerException e){
+            //TODO: handle when location is null
+        }
+        try {
+            HabitEvent newHabitEvent = new NormalHabitEvent(habitNameString, commentString,null);
+
             bundle.putSerializable("event", newHabitEvent);
             newHabitEventIntent.putExtras(bundle);
             setResult(Activity.RESULT_OK, newHabitEventIntent);
@@ -134,6 +160,37 @@ public class AddHabitEventActivity extends AppCompatActivity  {
         //TODO: should be able to set habit image
          private void setHabitImage(ImageView habitImage){}
 
+    private Location buildLocation(CheckBox locationCheck){
+                /*if checkbox checked return current location*/
+        Location returnLocation = null;
+        if  (locationCheck.isChecked()){
+            manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            // Define the criteria how to select the locatioin provider -> use
+            // default
+            Criteria criteria = new Criteria();
+            provider = manager.getBestProvider(criteria, false);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return null;
+            }
+            Location location = manager.getLastKnownLocation(provider);
+            if (location != null) {
+                /*get the latitude and longitude from the location*/
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+                returnLocation = location;
+            }}
+        else{
+            returnLocation = null;
+        }
+        return returnLocation;
+    }
 
 }
 

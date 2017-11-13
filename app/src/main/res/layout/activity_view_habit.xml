@@ -60,24 +60,34 @@
         android:id="@+id/delete_habit_button"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="56dp"
-        android:layout_marginStart="36dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
         android:text="@string/delete_habit_button"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.077"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/edit_habit_button"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="56dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="8dp"
         android:text="@string/habit_edit_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.055"
-        app:layout_constraintStart_toEndOf="@+id/delete_habit_button" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/delete_habit_button"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
 
     <TextView
@@ -160,12 +170,15 @@
         android:id="@+id/AddHabitEvent"
         android:layout_width="105dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="56dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="8dp"
         android:text="COMPLETED"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.428"
-        app:layout_constraintStart_toEndOf="@+id/edit_habit_button" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/edit_habit_button"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
