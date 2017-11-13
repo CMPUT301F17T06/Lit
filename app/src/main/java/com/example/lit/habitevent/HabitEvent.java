@@ -10,6 +10,9 @@
 
 package com.example.lit.habitevent;
 
+import com.example.lit.exception.HabitFormatException;
+
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -17,10 +20,11 @@ import java.util.Date;
  * Edited by ammar on 10/21/2017.
  */
 
-public abstract class HabitEvent implements HabitEventAddable, Comparable{
-    public String habitEventName;
-    public Date date = new Date();
-    public String eventComment;
+public abstract class HabitEvent implements HabitEventAddable, Comparable, Serializable {
+    private String habitEventName;
+    private Date date = new Date();
+    private String eventComment;
+    private int commentLength = 20;
 
 
     public HabitEvent(String habitEventName) {
@@ -28,6 +32,11 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable{
         this.date = new Date();
     }
 
+    public HabitEvent(String habitEventName, String habitEventComment) throws HabitFormatException{
+        this.habitEventName = habitEventName;
+        this.date = new Date();
+        this.eventComment= habitEventComment;
+    }
     public int compareTo(HabitEvent habitEvent){
         return this.date.compareTo(habitEvent.date);
     }
@@ -52,8 +61,13 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable{
         return eventComment;
     }
 
-    public void setEventComment(String eventComment) {
-        this.eventComment = eventComment;
+    public void setEventComment(String eventComment) throws HabitFormatException {
+        if (eventComment.length() < this.commentLength) {
+            this.eventComment = eventComment;
+        }
+        else {
+            throw new HabitFormatException();
+        }
     }
 
     @Override

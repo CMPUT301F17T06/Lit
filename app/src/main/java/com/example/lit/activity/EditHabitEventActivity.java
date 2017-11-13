@@ -10,9 +10,11 @@
 
 package com.example.lit.activity;
 
+import android.support.v7.app.AppCompatActivity;
+
 /**
  * Created by ammar on 12/11/17.
  */
 
-public class EditHabitEventActivity {
+public class EditHabitEventActivity extends AppCompatActivity {
 }

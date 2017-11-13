@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -44,12 +45,13 @@ public class ViewHabitActivity extends AppCompatActivity {
     // TODO: Habit image feature
     ImageView habitImage;
     Button habitDoneToday;          //Not sure what this should be, Button is a placeholder.
-
+    Button addHabitEventButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_habit);
+        addHabitEventButton = (Button) findViewById(R.id.AddHabitEvent);
 
         try{
             serializable = getIntent().getExtras().getSerializable("habit");
@@ -89,6 +91,13 @@ public class ViewHabitActivity extends AppCompatActivity {
                 deleteHabit(currentHabit);
             }
         });
+        addHabitEventButton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                setResult(RESULT_OK);
+                Intent intent = new Intent(v.getContext(), AddHabitEventActivity.class);
+                startActivityForResult(intent,1);
+            }});
 
     }
 

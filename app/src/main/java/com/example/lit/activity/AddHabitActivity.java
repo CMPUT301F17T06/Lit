@@ -107,11 +107,11 @@ public class AddHabitActivity extends AppCompatActivity {
         // Set up weekday selection
         weekday_spinner.setItems(createWeekdayList());
         // Set up hour selection
-        ArrayAdapter<String> hourAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,createHourList());
+        ArrayAdapter<String> hourAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, createHourList());
         hourAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         hour_spinner.setAdapter(hourAdapter);
         // Set up minute selection
-        ArrayAdapter<String> minuteAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,createMinuteList());
+        ArrayAdapter<String> minuteAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, createMinuteList());
         minuteAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         minute_spinner.setAdapter(minuteAdapter);
 
@@ -132,7 +132,7 @@ public class AddHabitActivity extends AppCompatActivity {
                 finish();
             }
         });
-}
+    }
 
     public void returnNewHabit(View saveNewHabitButton){
         habitNameString = habitName.getText().toString();
