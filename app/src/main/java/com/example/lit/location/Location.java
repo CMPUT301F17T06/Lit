@@ -10,32 +10,30 @@
 
 package com.example.lit.location;
 
-import android.test.ActivityInstrumentationTestCase2;
-
-import com.example.lit.habit.Habit;
-import com.google.android.gms.maps.model.LatLng;
-
 /**
- * Created by damon on 10/21/2017.
+ * Created by damon on 10/20/2017.
  */
+import com.google.android.gms.maps.model.LatLng;
+public class Location {
+    private LatLng location;
 
-public class HabitLocationTest extends ActivityInstrumentationTestCase2 {
-    public HabitLocationTest() {
-        super(Habit.class);
-    }
-    public void testgetLocation(){
-        LatLng sydney = new LatLng(-33.867, 151.206);
-        HabitLocation habitLocation = new HabitLocation(sydney);
-        assertTrue(habitLocation.getLocation().equals(sydney));
-    }
-    public void testsetLocation(){
-        LatLng sydney = new LatLng(-33.867, 151.206);
-        LatLng newlocation = new LatLng(-30.000,150.200);
-        HabitLocation habitLocation = new HabitLocation(sydney);
-        habitLocation.setLocation(newlocation);
-        assertTrue(habitLocation.getLocation().equals(newlocation));
+    public Location (LatLng location){
+        this.location = location;
     }
 
+    /*TODO : get the current location working later
+     */
 
+    public  Location (){
+        LatLng currentLocation = new LatLng(0.000, 0.000);
+        this.location = currentLocation;
+    }
+
+    public LatLng getLocation() {
+        return location;
+    }
+
+    public void setLocation(LatLng location) {
+        this.location = location;
+    }
 }
-

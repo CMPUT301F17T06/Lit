@@ -10,15 +10,8 @@
 
 package com.example.lit.activity;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,17 +27,10 @@ import android.widget.Toast;
 
 import com.example.lit.Utilities.MultiSelectionSpinner;
 import com.example.lit.R;
-
 import com.example.lit.habit.Habit;
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.habit.NormalHabit;
-import com.example.lit.location.HabitLocation;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -65,7 +51,7 @@ public class AddHabitActivity extends AppCompatActivity {
     private ImageView habitImage;
     private Button editImage;
     //TODO: Implement image feature
-
+    //TODO: Implement location feature
 
     private Date habitStartDate;
     private String habitNameString;
@@ -73,12 +59,6 @@ public class AddHabitActivity extends AppCompatActivity {
     private List<String> weekdays;
     private Integer hour;
     private Integer minute;
-
-    /*for location*/
-    private LocationManager manager;
-    private LocationListener locationListener;
-    private HabitLocation habitLocation;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,14 +91,15 @@ public class AddHabitActivity extends AppCompatActivity {
         minute_spinner.setAdapter(minuteAdapter);
 
 
-
-
         saveHabit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i("AddHabitActivity", "Save Button pressed.");
                 returnNewHabit(view);
+<<<<<<< HEAD
 
+=======
+>>>>>>> parent of e636c53... Add the Attached current location function to AddHabitactivity
                 finish();
             }
         });
@@ -131,13 +112,7 @@ public class AddHabitActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-
-
-
-
-
-}
+    }
 
     public void returnNewHabit(View saveNewHabitButton){
         habitNameString = habitName.getText().toString();
@@ -146,6 +121,7 @@ public class AddHabitActivity extends AppCompatActivity {
         hour = Integer.parseInt(hour_spinner.getSelectedItem().toString());
         minute = Integer.parseInt(minute_spinner.getSelectedItem().toString());
         weekdays = weekday_spinner.getSelectedStrings();
+<<<<<<< HEAD
         /*if checkbox checked return current location*/
         if (locationCheck.isChecked()){
             //get the location service
@@ -198,12 +174,20 @@ public class AddHabitActivity extends AppCompatActivity {
         }
 
 
+=======
+>>>>>>> parent of e636c53... Add the Attached current location function to AddHabitactivity
         //TODO: Set habit repeating schedule
+        //TODO: missing location parameter. Currently null pointer.
 
         Intent newHabitIntent = new Intent();
         try {Habit newHabit = new NormalHabit(habitNameString, habitStartDate,
+<<<<<<< HEAD
                 habitLocation, commentString);
             newHabitIntent.putExtra("HABIT", newHabit); //Habit needs serializable.
+=======
+                null, commentString);
+            newHabitIntent.putExtra(CLASS_KEY, newHabit); //Habit needs serializable.
+>>>>>>> parent of e636c53... Add the Attached current location function to AddHabitactivity
             setResult(Activity.RESULT_OK, newHabitIntent);
             finish();
         } catch (HabitFormatException e){

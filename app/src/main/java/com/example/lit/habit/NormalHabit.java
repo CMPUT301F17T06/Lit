@@ -11,7 +11,7 @@
 package com.example.lit.habit;
 
 import com.example.lit.exception.HabitFormatException;
-import com.example.lit.location.HabitLocation;
+import com.example.lit.location.Location;
 
 import java.util.Date;
 
@@ -24,8 +24,8 @@ public class NormalHabit extends Habit {
 
     public NormalHabit(String title, Date date)throws HabitFormatException {super(title, date);}
 
-    public NormalHabit(String title, Date date, HabitLocation habitLocation, String reason) throws HabitFormatException {
-        super(title, date, habitLocation, reason);
+    public NormalHabit(String title, Date date, Location location, String reason) throws HabitFormatException {
+        super(title, date, location, reason);
     }
 
     @Override
