@@ -146,26 +146,5 @@ public class ViewHabitActivity extends AppCompatActivity {
     public void deleteHabit(Habit habit){
         //
     }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        //if return success update the values of item
-        if(resultCode == RESULT_OK) {
-            /**Take from https://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
-             * 2017/11/12
-             */
-            Bundle bundle = data.getExtras();
-            HabitEvent habitevent = (HabitEvent) bundle.getSerializable("event");
-            double lat = bundle.getDouble("lat");
-            double lng = bundle.getDouble("lng");
-            Intent EventIntent = new Intent(ViewHabitActivity.this, HomePageActivity.class);
-
-            Bundle bundle2 = new Bundle();
-            bundle2.putSerializable("event", habitevent);
-            EventIntent.putExtras(bundle2);
-            setResult(Activity.RESULT_OK, EventIntent);
-            finish();
-
-        }
-}}
+}

@@ -81,6 +81,10 @@ public class HomePageActivity extends AppCompatActivity {
     private ArrayList<Habit> habitArrayList;
     ArrayAdapter<Habit> habitAdapter;
     private HabitLocation habitLocation;
+    private HabitLocation eventlocation;
+    HabitEvent habitEvent;
+    private double lat;
+    private double lng;
 
 
     @Override
@@ -98,12 +102,14 @@ public class HomePageActivity extends AppCompatActivity {
         habitAdapter = new ArrayAdapter<Habit>(this,R.layout.list_item,habitArrayList);
         habitsListView.setAdapter(habitAdapter);
 
+
         HabitHistory.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
 
-                Intent intent = new Intent(HomePageActivity.this, HistoryActivity.class);
-                startActivity(intent);
+                Intent EventIntent = new Intent(HomePageActivity.this, HistoryActivity.class);
+
+                startActivity(EventIntent);
             }});
 
         Friends.setOnClickListener(new View.OnClickListener() {
@@ -216,21 +222,7 @@ public class HomePageActivity extends AppCompatActivity {
             }
 
         }
-        // TODO: Not sure the functionality of this block and why entering HistoryActivity
-        // Comment out for normal transition for now
-        else if(requestCode == 2){ // Deal with habit event
-            if (resultCode == RESULT_OK) {
-                Bundle bundle = data.getExtras();
-                HabitEvent habitEvent = (HabitEvent) bundle.getSerializable("event");
-                double lat = bundle.getDouble("lat");
-                double lng = bundle.getDouble("lng");
-                Intent EventIntent = new Intent(HomePageActivity.this, HistoryActivity.class);
-                Bundle bundle2 = new Bundle();
-                bundle2.putSerializable("event", habitEvent);
-                EventIntent.putExtras(bundle2);
-                //startActivityForResult(EventIntent, 1);
-            }
-        }
+
 
     }
 

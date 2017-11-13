@@ -127,7 +127,7 @@ public class AddHabitEventActivity extends AppCompatActivity  {
     public void returnNewHabitEvent(View saveNewHabitButton) {
         habitNameString = habitEventName.getText().toString();
         commentString = habitEventComment.getText().toString();
-        Intent newHabitEventIntent = new Intent(AddHabitEventActivity.this, ViewHabitActivity.class);
+        Intent newHabitEventIntent = new Intent(AddHabitEventActivity.this, HistoryActivity.class);
         Bundle bundle = new Bundle();
         try{
             Location location = buildLocation(locationCheck);
@@ -146,7 +146,7 @@ public class AddHabitEventActivity extends AppCompatActivity  {
             HabitEvent newHabitEvent = new NormalHabitEvent(habitNameString, commentString,null);
             bundle.putSerializable("event", newHabitEvent);
             newHabitEventIntent.putExtras(bundle);
-            setResult(Activity.RESULT_OK, newHabitEventIntent);
+            startActivityForResult(newHabitEventIntent,1);
             finish();
         } catch (HabitFormatException e) {
             Toast.makeText(AddHabitEventActivity.this, "Error: Illegal Habit Event information!", Toast.LENGTH_LONG).show();

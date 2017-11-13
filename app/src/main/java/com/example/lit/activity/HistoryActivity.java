@@ -46,61 +46,30 @@ public class HistoryActivity extends AppCompatActivity {
     private static final String FILENAME = "habiteventfile.sav";
     private Button BackMain;
     private ListView eventListView;
-    private ArrayList<HabitEvent> eventArrayList;
-    ArrayAdapter<HabitEvent> eventAdapter;
+    private ArrayList<HabitEvent> eventArrayList ;
+    private ArrayAdapter<HabitEvent> eventAdapter;
     private HabitLocation eventLocation;
     private HabitEvent event;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
-        eventArrayList = new ArrayList<>();
-        eventListView = (ListView)findViewById(R.id.eventlist);
-        eventAdapter = new ArrayAdapter<HabitEvent>(this,R.layout.list_item,eventArrayList);
-        eventListView.setAdapter(eventAdapter);
-
-
+        eventListView = (ListView) findViewById(R.id.eventlist);
         BackMain = (Button) findViewById(R.id.eventhome);
 
         BackMain.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
                 setResult(RESULT_OK);
-                Intent intent = new Intent(v.getContext(), HomePageActivity.class);
-                setResult(Activity.RESULT_CANCELED);
+                Intent intent = new Intent(HistoryActivity.this, HomePageActivity.class);
+                startActivity(intent);
                 finish();
             }});
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
-
-            //if return success update the values of item
-            if (resultCode == RESULT_OK) {
-                /**Take from https://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
-                 * 2017/11/12
-                 */
-                Bundle bundle = data.getExtras();
-                HabitEvent event = (HabitEvent) bundle.getSerializable("event");
-                try {
-                    double lat = bundle.getDouble("lat");
-                    double lng = bundle.getDouble("lng");
-                    LatLng latLng = new LatLng(lat, lng);
-                    eventLocation = new HabitLocation(latLng);
-                    event.setLocation(eventLocation);
-                } catch (Exception e) {
-                    //
-                }
-                eventArrayList.add(event);
-                eventAdapter.notifyDataSetChanged();
-                saveInFile();
-            }
-        }
-    }
     @Override
     protected void onStart() {
         // TODO Auto-generated method stub
@@ -110,6 +79,26 @@ public class HistoryActivity extends AppCompatActivity {
         eventAdapter = new ArrayAdapter<HabitEvent>(this,
                 R.layout.list_item, eventArrayList);
         eventListView.setAdapter(eventAdapter);
+        /**Take from https://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
+         * 2017/11/12
+         */
+        Intent EventIntent = getIntent();
+        Bundle bundle = EventIntent.getExtras();
+        if(bundle != null) {
+            HabitEvent event = (HabitEvent) bundle.getSerializable("event");
+            try {
+                double lat = bundle.getDouble("lat");
+                double lng = bundle.getDouble("lng");
+                LatLng latLng = new LatLng(lat, lng);
+                eventLocation = new HabitLocation(latLng);
+                event.setLocation(eventLocation);
+            } catch (Exception e) {
+                //
+            }
+            eventArrayList.add(event);
+            eventAdapter.notifyDataSetChanged();
+            saveInFile();
+        }
 
     }
     /**
