@@ -129,12 +129,19 @@ public class AddHabitActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.i("AddHabitActivity", "Cancel button pressed. Habit creation cancelled.");
-                //setResult(Activity.RESULT_CANCELED);
+                setResult(Activity.RESULT_CANCELED);
                 finish();
             }
         });
-    }
 
+}
+    /**
+     * This function is called when user click on save button.
+     * This function will build a NormalHabit based on user inputs.
+     * The NormalHabit built will be sent back to HomePageActivity
+     * @see HomePageActivity
+     * @param saveNewHabitButton the current view.
+     * */
     public void returnNewHabit(View saveNewHabitButton){
         habitNameString = habitName.getText().toString();
         commentString = habitComment.getText().toString();

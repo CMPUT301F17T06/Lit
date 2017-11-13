@@ -116,8 +116,8 @@ public class ViewHabitActivity extends AppCompatActivity {
     public void toEditHabitActivity(Serializable serializable){
         Intent intent = new Intent(ViewHabitActivity.this, EditHabitActivity.class);
         Log.i("ViewHabitActivity", "Edit button pressed.");
-        intent.putExtra(CLASS_KEY,serializable);
-        startActivity(intent);
+        intent.putExtra("habit",serializable);
+        startActivityForResult(intent,1);
     }
 
     //TODO: delete current habit and return to previous activity
