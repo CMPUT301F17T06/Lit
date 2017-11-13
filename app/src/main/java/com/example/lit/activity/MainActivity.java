@@ -36,7 +36,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 setResult(RESULT_OK);
                 Intent intent = new Intent(v.getContext(), HomePageActivity.class);
-                startActivityForResult(intent,1);
+                String filename = username.getText().toString();
+                username.setText("");
+                intent.putExtra("FILENAME",filename);
+                startActivity(intent);
             }});
             }
 }

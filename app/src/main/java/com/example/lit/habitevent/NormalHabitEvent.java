@@ -13,6 +13,7 @@ package com.example.lit.habitevent;
 import android.support.annotation.NonNull;
 
 import com.example.lit.exception.HabitFormatException;
+import com.example.lit.location.HabitLocation;
 
 /**
  * Created by ammar on 21/10/17.
@@ -21,6 +22,7 @@ import com.example.lit.exception.HabitFormatException;
 public class NormalHabitEvent extends HabitEvent{
     public NormalHabitEvent(String name){super(name);}
     public NormalHabitEvent(String name, String comment)throws HabitFormatException {super(name, comment);}
+    public NormalHabitEvent(String name, String comment, HabitLocation location)throws HabitFormatException {super(name, comment,location);}
 
     @Override
     public int compareTo(@NonNull Object o) {
