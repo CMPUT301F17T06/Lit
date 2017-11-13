@@ -8,28 +8,34 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.example.lit.habit;
+package com.example.lit.location;
 
-import com.example.lit.exception.HabitFormatException;
-import com.example.lit.location.HabitLocation;
+import android.test.ActivityInstrumentationTestCase2;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import com.example.lit.habit.Habit;
+import com.google.android.gms.maps.model.LatLng;
 
 /**
- * Created by weikailu on 2017-10-21.
+ * Created by damon on 10/21/2017.
  */
 
-public class NormalHabit extends Habit {
-    public NormalHabit(String title)throws HabitFormatException {super(title);}
-
-    public NormalHabit(String title, Date date)throws HabitFormatException {super(title, date);}
-
-    public NormalHabit(String title, Date date, HabitLocation habitLocation, String reason, List<Calendar> calenderList) throws HabitFormatException {
-        super(title, date, habitLocation, reason, calenderList);
+public class HabitLocationTest extends ActivityInstrumentationTestCase2 {
+    public HabitLocationTest() {
+        super(Habit.class);
+    }
+    public void testgetLocation(){
+        LatLng sydney = new LatLng(-33.867, 151.206);
+        HabitLocation habitLocation = new HabitLocation(sydney);
+        assertTrue(habitLocation.getLocation().equals(sydney));
+    }
+    public void testsetLocation(){
+        LatLng sydney = new LatLng(-33.867, 151.206);
+        LatLng newlocation = new LatLng(-30.000,150.200);
+        HabitLocation habitLocation = new HabitLocation(sydney);
+        habitLocation.setLocation(newlocation);
+        assertTrue(habitLocation.getLocation().equals(newlocation));
     }
 
-    @Override
-    public String habitType(){return "Normal";}
+
 }
+

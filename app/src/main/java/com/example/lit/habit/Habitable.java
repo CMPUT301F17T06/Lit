@@ -14,7 +14,7 @@ package com.example.lit.habit;
  * Created by weikailu on 2017-10-20.
  */
 
-import com.example.lit.location.Location;
+import com.example.lit.location.HabitLocation;
 
 import java.util.Date;
 
@@ -23,5 +23,5 @@ public interface Habitable {
     String getTitle();
     String getReason();
     Date  getDate();
-    Location getLocation();
+    HabitLocation getHabitLocation();
 }

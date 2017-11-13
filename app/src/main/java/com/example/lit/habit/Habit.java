@@ -34,7 +34,7 @@ public abstract class Habit implements Habitable , Serializable{
     private String title;
     private Date date;
     public abstract String habitType();
-    private Location location;
+    private HabitLocation habitLocation;
     private String reason;
     private int titleLength = 20;
     private int reasonLength = 30;
@@ -57,14 +57,10 @@ public abstract class Habit implements Habitable , Serializable{
         this.setDate(date);
     }
 
-<<<<<<< HEAD
-    public Habit(String title, Date date, Location location, String reason) throws HabitFormatException {
-=======
     public Habit(String title, Date date, HabitLocation habitLocation, String reason, List<Calendar> calendarList) throws HabitFormatException {
->>>>>>> master
         this.setTitle(title);
         this.setDate(date);
-        this.setLocation(location);
+        this.setLocation(habitLocation);
         this.setReason(reason);
         this.setCalendars(calendarList);
     }
@@ -103,26 +99,20 @@ public abstract class Habit implements Habitable , Serializable{
         }
     }
 
-<<<<<<< HEAD
-    public void setLocation(LatLng coordinate){
-        Location location = new Location(coordinate);
-        this.location = location;
-=======
     public List<Calendar> getCalendars() {
         return calendars;
     }
 
     public void setCalendars(List<Calendar> calendars) {
         this.calendars = calendars;
->>>>>>> master
     }
 
-    public void setLocation(Location location){
-        this.location = location;
+    public void setLocation(HabitLocation habitLocation){
+        this.habitLocation = habitLocation;
     }
 
-    public Location getLocation(){
-        return this.location;
+    public HabitLocation getHabitLocation(){
+        return this.habitLocation;
     }
 
 

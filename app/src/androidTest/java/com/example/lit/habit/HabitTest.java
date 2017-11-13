@@ -67,8 +67,8 @@ public class HabitTest extends  ActivityInstrumentationTestCase2{
         String reason = "test reason";
         Date date = new Date(System.currentTimeMillis());
         LatLng latLng = new LatLng(0.000, 0.000);
-        Location location = new Location(latLng);
-        Habit habit = new NormalHabit(title,date,location,reason);
+        HabitLocation habitLocation = new HabitLocation(latLng);
+        Habit habit = new NormalHabit(title,date, habitLocation,reason);
         assertEquals(habit.getReason(),reason);
     }
 
@@ -77,8 +77,8 @@ public class HabitTest extends  ActivityInstrumentationTestCase2{
         String reason = "test reason";
         Date date = new Date(System.currentTimeMillis());
         LatLng latLng = new LatLng(0.000, 0.000);
-        Location location = new Location(latLng);
-        Habit habit = new NormalHabit(title,date,location,reason);
+        HabitLocation habitLocation = new HabitLocation(latLng);
+        Habit habit = new NormalHabit(title,date, habitLocation,reason);
         String newReason = "new habit reason";
         habit.setReason(newReason);
         assertEquals(habit.getReason(),newReason);
@@ -119,11 +119,11 @@ public class HabitTest extends  ActivityInstrumentationTestCase2{
         String reason = "test reason";
         Date date = new Date(System.currentTimeMillis());
         LatLng latLng = new LatLng(0.000, 0.000);
-        Location location = new Location(latLng);
+        HabitLocation habitLocation = new HabitLocation(latLng);
 
-        NormalHabit habit = new NormalHabit(title,date,location,reason);
+        NormalHabit habit = new NormalHabit(title,date, habitLocation,reason);
 
-        assertEquals(habit.getLocation(),location);
+        assertEquals(habit.getHabitLocation(), habitLocation);
     }
 
     public void testSetLocation(){
@@ -131,15 +131,15 @@ public class HabitTest extends  ActivityInstrumentationTestCase2{
         String reason = "test reason";
         Date date = new Date(System.currentTimeMillis());
         LatLng latLng = new LatLng(0.000, 0.000);
-        Location location = new Location(latLng);
+        HabitLocation habitLocation = new HabitLocation(latLng);
 
         LatLng newLatlng = new LatLng(5.000,6.000);
-        Location newLocation = new Location(newLatlng);
+        HabitLocation newHabitLocation = new HabitLocation(newLatlng);
 
-        NormalHabit habit = new NormalHabit(title,date,location,reason);
-        habit.setLocation(newLatlng);
+        NormalHabit habit = new NormalHabit(title,date, habitLocation,reason);
+        habit.setHabitLocation(newLatlng);
 
-        assertEquals(habit.getLocation(),newLocation);
+        assertEquals(habit.getHabitLocation(), newHabitLocation);
     }
 
 }
