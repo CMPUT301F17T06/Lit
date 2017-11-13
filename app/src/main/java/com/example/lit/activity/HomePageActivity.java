@@ -12,9 +12,11 @@ package com.example.lit.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,7 +28,9 @@ import android.widget.TextView;
 import com.example.lit.R;
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.habit.Habit;
+import com.example.lit.habit.HabitList;
 import com.example.lit.habit.NormalHabit;
+import com.example.lit.location.HabitLocation;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -40,6 +44,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class HomePageActivity extends AppCompatActivity {
 
@@ -59,11 +66,11 @@ public class HomePageActivity extends AppCompatActivity {
     Button sortHistoryMenu; //Not sure what kind of View this should be
 
 
-    private ImageButton addHabitButton;
-    private Button Maps;
-    private Button HabitHistory;
-    private Button Friends;
-    private Button Profile;
+    ImageButton addHabitButton;
+    Button Maps;
+    Button HabitHistory;
+    Button Friends;
+    Button Profile;
 
     private ListView habitsListView;
     private ArrayList<Habit> habitArrayList;
@@ -79,7 +86,6 @@ public class HomePageActivity extends AppCompatActivity {
         HabitHistory =  (Button) findViewById(R.id.HabitHistory) ;
         Friends  = (Button) findViewById(R.id.Friend);
         Profile = (Button) findViewById(R.id.Profile);
-
         habitArrayList = new ArrayList<>();
         habitsListView = (ListView)findViewById(R.id.habit_ListView);
         habitAdapter = new ArrayAdapter<Habit>(this,R.layout.list_item,habitArrayList);
@@ -87,7 +93,13 @@ public class HomePageActivity extends AppCompatActivity {
 
         //Set up a dummy habit for testing
         try {
-            Habit habit = new NormalHabit("Testing habit");
+            Habit habit = new NormalHabit("Drink Water", new Date());
+            habit.setReason("Just chilling...");
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.DAY_OF_WEEK,1);
+            List<Calendar> calendarList = new ArrayList<Calendar>();
+            calendarList.add(calendar);
+            habit.setCalendars(calendarList);
             habitArrayList.add(habit);
         }catch (HabitFormatException e){
 
@@ -134,39 +146,18 @@ public class HomePageActivity extends AppCompatActivity {
                 Intent intent = new Intent(v.getContext(), AddHabitActivity.class);
                 startActivityForResult(intent,1);
             }});
-    }
 
-    private void loadFromFile() {
-        try {
-            FileInputStream fis = openFileInput(FILENAME);
-            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
-            Gson gson = new Gson();
-            // Taken from https://stackoverflow.com/questions/12384064/gson-convert-from-json-to-a-typed-arraylistt
-            //2017-09-19
-            Type listType = new TypeToken<ArrayList<Habit>>(){}.getType();
-            habitArrayList = gson.fromJson(in, listType);
+        habitsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            habitArrayList = new ArrayList<Habit>();
-        }
-    }
-
-    private void saveInFile() {
-        try {
-            FileOutputStream fos = openFileOutput(FILENAME,
-                    Context.MODE_PRIVATE);
-            BufferedWriter out = new BufferedWriter((new OutputStreamWriter(fos)));
-            Gson gson = new Gson();
-            gson.toJson(habitArrayList,out);
-            out.flush();
-            fos.close();
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException();
-        }
+                Intent intent = new Intent(HomePageActivity.this,ViewHabitActivity.class);
+                Bundle bundle = new Bundle();
+                Habit selectedHabit = habitArrayList.get(i);
+                bundle.putSerializable("habit", selectedHabit);
+                intent.putExtras(bundle);
+                startActivityForResult(intent,1);
+            }
+        });
     }
 }

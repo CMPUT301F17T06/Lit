@@ -121,9 +121,6 @@ public class AddHabitActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.i("AddHabitActivity", "Save Button pressed.");
                 returnNewHabit(view);
-                Intent intent = new Intent(view.getContext(), HomePageActivity.class);
-                startActivityForResult(intent,1);
-                finish();
             }
         });
 
@@ -191,10 +188,10 @@ public class AddHabitActivity extends AppCompatActivity {
             }
         }
 
-        Intent newHabitIntent = new Intent();
+        Intent newHabitIntent = new Intent(AddHabitActivity.this, HomePageActivity.class);
         try {Habit newHabit = new NormalHabit(habitNameString, habitStartDate,
                 habitLocation, commentString, calendarList);
-            newHabitIntent.putExtra(CLASS_KEY, newHabit); //Habit needs serializable.
+            newHabitIntent.putExtra(CLASS_KEY, newHabit);
             setResult(Activity.RESULT_OK, newHabitIntent);
             finish();
         } catch (HabitFormatException e){
