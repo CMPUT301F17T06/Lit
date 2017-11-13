@@ -44,10 +44,20 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by ammar on 12/11/17.
- */
 
+/*
+ * AddHabitEventActivity
+ *
+ * Version 1.0
+ *
+ * Nov.13 2017
+ *
+ *
+ *
+ * Copyright 2017 Team 6, CMPUT301, University of Alberta-All Rights Reserved.
+ * You may use distribute, or modify this code under terms and conditions of the Code of Student Behaviour at University of Alberta.
+ * you may find a copy of the license in the project. Otherwise please contact jiaxiong@ualberta.ca
+ */
 public class AddHabitEventActivity extends AppCompatActivity  {
     private static final String CLASS_KEY = "com.example.lit.activity.AddHabitEventActivity";
 
@@ -123,11 +133,17 @@ public class AddHabitEventActivity extends AppCompatActivity  {
             }
         });
     }
-
+    /**
+     * This function is called when user click on the completed button.
+     * This function will build a NormalHabitEvent based on user inputs.
+     * The NormalHabitEvent built will be sent back to HistoryActivity
+     * @see ViewHabitActivity
+     * @param saveNewHabitButton the current view.
+     * */
     public void returnNewHabitEvent(View saveNewHabitButton) {
         habitNameString = habitEventName.getText().toString();
         commentString = habitEventComment.getText().toString();
-        Intent newHabitEventIntent = new Intent(AddHabitEventActivity.this, ViewHabitActivity.class);
+        Intent newHabitEventIntent = new Intent(AddHabitEventActivity.this, HistoryActivity.class);
         Bundle bundle = new Bundle();
         try{
             Location location = buildLocation(locationCheck);
@@ -146,7 +162,7 @@ public class AddHabitEventActivity extends AppCompatActivity  {
             HabitEvent newHabitEvent = new NormalHabitEvent(habitNameString, commentString,null);
             bundle.putSerializable("event", newHabitEvent);
             newHabitEventIntent.putExtras(bundle);
-            setResult(Activity.RESULT_OK, newHabitEventIntent);
+            startActivityForResult(newHabitEventIntent,1);
             finish();
         } catch (HabitFormatException e) {
             Toast.makeText(AddHabitEventActivity.this, "Error: Illegal Habit Event information!", Toast.LENGTH_LONG).show();
@@ -155,7 +171,13 @@ public class AddHabitEventActivity extends AppCompatActivity  {
 
     //TODO: should be able to set habit image
     private void setHabitImage(ImageView habitImage){}
-
+    /**
+     * This function will return a Location object containing Latitude and Longitude attribute.
+     *
+     * @param locationCheck location checkbox in AddHabitActivity.
+     *
+     * @return A location object, null if fail to initialize location.
+     * */
     private Location buildLocation(CheckBox locationCheck){
                 /*if checkbox checked return current location*/
         Location returnLocation = null;

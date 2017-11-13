@@ -52,6 +52,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 
+/*
+ * AddHabitActivity
+ *
+ * Version 1.0
+ *
+ * Nov.13 2017
+ *
+ *
+ *
+ * Copyright 2017 Team 6, CMPUT301, University of Alberta-All Rights Reserved.
+ * You may use distribute, or modify this code under terms and conditions of the Code of Student Behaviour at University of Alberta.
+ * you may find a copy of the license in the project. Otherwise please contact jiaxiong@ualberta.ca
+ */
 public class AddHabitActivity extends AppCompatActivity  {
 
     private static final String CLASS_KEY = "com.example.lit.activity.AddHabitActivity";

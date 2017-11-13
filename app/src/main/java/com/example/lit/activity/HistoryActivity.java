@@ -41,66 +41,53 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-
+/**
+ * Version 1.0
+ *
+ * Nov.13 2017
+ * HistoryActivity
+ *This class is showing the habit event list and can edited the habitevent
+ * Transition from this activity should be from HomepageActivity and AddHabitEventActivity
+ * @see AddHabitEventActivity
+ * @author : damon
+ *
+ *
+ * Copyright 2017 Team 6, CMPUT301, University of Alberta-All Rights Reserved.
+ * You may use distribute, or modify this code under terms and conditions of the Code of Student Behaviour at University of Alberta.
+ * you may find a copy of the license in the project. Otherwise please contact jiaxiong@ualberta.ca
+ */
 public class HistoryActivity extends AppCompatActivity {
     private static final String FILENAME = "habiteventfile.sav";
     private Button BackMain;
     private ListView eventListView;
-    private ArrayList<HabitEvent> eventArrayList;
-    ArrayAdapter<HabitEvent> eventAdapter;
+    private ArrayList<HabitEvent> eventArrayList ;
+    private ArrayAdapter<HabitEvent> eventAdapter;
     private HabitLocation eventLocation;
     private HabitEvent event;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
-        eventArrayList = new ArrayList<>();
-        eventListView = (ListView)findViewById(R.id.eventlist);
-        eventAdapter = new ArrayAdapter<HabitEvent>(this,R.layout.list_item,eventArrayList);
-        eventListView.setAdapter(eventAdapter);
-
-
+        eventListView = (ListView) findViewById(R.id.eventlist);
         BackMain = (Button) findViewById(R.id.eventhome);
 
         BackMain.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
                 setResult(RESULT_OK);
-                Intent intent = new Intent(v.getContext(), HomePageActivity.class);
-                setResult(Activity.RESULT_CANCELED);
+                Intent intent = new Intent(HistoryActivity.this, HomePageActivity.class);
+                startActivity(intent);
                 finish();
             }});
 
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
-
-            //if return success update the values of item
-            if (resultCode == RESULT_OK) {
-                /**Take from https://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
-                 * 2017/11/12
-                 */
-                Bundle bundle = data.getExtras();
-                HabitEvent event = (HabitEvent) bundle.getSerializable("event");
-                try {
-                    double lat = bundle.getDouble("lat");
-                    double lng = bundle.getDouble("lng");
-                    LatLng latLng = new LatLng(lat, lng);
-                    eventLocation = new HabitLocation(latLng);
-                    event.setLocation(eventLocation);
-                } catch (Exception e) {
-                    //
-                }
-                eventArrayList.add(event);
-                eventAdapter.notifyDataSetChanged();
-                saveInFile();
-            }
-        }
-    }
+/**
+ * called when the activity start
+ * @throw Excepetion e
+ * @see AddHabitEventActivity
+ */
     @Override
     protected void onStart() {
         // TODO Auto-generated method stub
@@ -110,10 +97,31 @@ public class HistoryActivity extends AppCompatActivity {
         eventAdapter = new ArrayAdapter<HabitEvent>(this,
                 R.layout.list_item, eventArrayList);
         eventListView.setAdapter(eventAdapter);
+        /**Take from https://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
+         * 2017/11/12
+         */
+        Intent EventIntent = getIntent();
+        Bundle bundle = EventIntent.getExtras();
+        if(bundle != null) {
+            HabitEvent event = (HabitEvent) bundle.getSerializable("event");
+            try {
+                double lat = bundle.getDouble("lat");
+                double lng = bundle.getDouble("lng");
+                LatLng latLng = new LatLng(lat, lng);
+                eventLocation = new HabitLocation(latLng);
+                event.setLocation(eventLocation);
+            } catch (Exception e) {
+                //
+            }
+            eventArrayList.add(event);
+            eventAdapter.notifyDataSetChanged();
+            saveInFile();
+        }
 
     }
     /**
      * This function load data from local file to HomePageActivity habit list view.
+     * @throws FileNotFoundException
      * */
     private void loadFromFile() {
         try {
@@ -135,6 +143,8 @@ public class HistoryActivity extends AppCompatActivity {
 
     /**
      * This function save data when new habit object is instantiated.
+     * @throws FileNotFoundException
+     * @throws IOException
      * */
     private void saveInFile() {
         try {

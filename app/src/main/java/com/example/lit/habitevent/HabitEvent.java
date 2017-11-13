@@ -17,8 +17,17 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Created by damon on 10/20/2017.
- * Edited by ammar on 10/21/2017.
+ * HabitEvent
+ *
+ * Version 1.0
+ *
+ * Nov.13 2017
+ *
+ *
+ *
+ * Copyright 2017 Team 6, CMPUT301, University of Alberta-All Rights Reserved.
+ * You may use distribute, or modify this code under terms and conditions of the Code of Student Behaviour at University of Alberta.
+ * you may find a copy of the license in the project. Otherwise please contact jiaxiong@ualberta.ca
  */
 
 public abstract class HabitEvent implements HabitEventAddable, Comparable, Serializable {
@@ -39,6 +48,15 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Seria
         this.date = new Date();
         this.eventComment= habitEventComment;
     }
+    /**
+     * This is the main constructor we are using in AddHabitActivity
+     *
+     * @see com.example.lit.activity.AddHabitActivity
+     * @param habitEventName Habitevent name, should be at most 20 char long.
+     * @param habitEventComment Habitevent Comment, should be at most 30 char long.
+     * @param location if user chose to attach location will get the current location
+     * @throws HabitFormatException thrown when title longer than 20 char or reason longer than 30 char
+     * */
     public HabitEvent(String habitEventName, String habitEventComment,HabitLocation location) throws HabitFormatException{
         this.habitEventName = habitEventName;
         this.habitLocation = location;

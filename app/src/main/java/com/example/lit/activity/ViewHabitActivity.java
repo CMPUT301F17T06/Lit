@@ -32,7 +32,20 @@ import com.example.lit.location.HabitLocation;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
-
+/**
+ * viewHabitActivity
+ * Version 1.0
+ *
+ * Nov.13 2017
+ *
+ * @see HomePageActivity
+ *
+ *
+ *
+ * Copyright 2017 Team 6, CMPUT301, University of Alberta-All Rights Reserved.
+ * You may use distribute, or modify this code under terms and conditions of the Code of Student Behaviour at University of Alberta.
+ * you may find a copy of the license in the project. Otherwise please contact jiaxiong@ualberta.ca
+ */
 public class ViewHabitActivity extends AppCompatActivity {
 
     private static final String CLASS_KEY = "com.example.lit.activity.ViewHabitActivity";
@@ -135,6 +148,10 @@ public class ViewHabitActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * This function jump to EditHabitActivity
+     * @param serializable
+     */
     public void toEditHabitActivity(Serializable serializable){
         Intent intent = new Intent(ViewHabitActivity.this, EditHabitActivity.class);
         Log.i("ViewHabitActivity", "Edit button pressed.");
@@ -146,26 +163,5 @@ public class ViewHabitActivity extends AppCompatActivity {
     public void deleteHabit(Habit habit){
         //
     }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        //if return success update the values of item
-        if(resultCode == RESULT_OK) {
-            /**Take from https://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
-             * 2017/11/12
-             */
-            Bundle bundle = data.getExtras();
-            HabitEvent habitevent = (HabitEvent) bundle.getSerializable("event");
-            double lat = bundle.getDouble("lat");
-            double lng = bundle.getDouble("lng");
-            Intent EventIntent = new Intent(ViewHabitActivity.this, HomePageActivity.class);
-
-            Bundle bundle2 = new Bundle();
-            bundle2.putSerializable("event", habitevent);
-            EventIntent.putExtras(bundle2);
-            setResult(Activity.RESULT_OK, EventIntent);
-            finish();
-
-        }
-}}
+}
