@@ -14,6 +14,7 @@ import android.graphics.Bitmap;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.example.lit.activity.HomePageActivity;
+import com.example.lit.exception.HabitFormatException;
 import com.example.lit.habit.Habit;
 import com.example.lit.habit.HabitList;
 import com.example.lit.habit.NormalHabit;
@@ -118,7 +119,7 @@ public class UserProfileTest extends ActivityInstrumentationTestCase2{
     }
 
     @Test
-    public void testAddCurrentHabits(){
+    public void testAddCurrentHabits()throws HabitFormatException {
         HabitList history = new HabitList();
         Habit myHabit = new NormalHabit("My Habit");
 

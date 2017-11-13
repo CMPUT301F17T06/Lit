@@ -14,6 +14,7 @@ package com.example.lit.habit;
  * Created by weikailu on 2017-10-21.
  */
 
+import com.example.lit.exception.HabitFormatException;
 import com.example.lit.habit.*;
 
 
@@ -32,15 +33,14 @@ public class HabitListTest extends ActivityInstrumentationTestCase2 {
         super(HabitList.class);
     }
 
-    public void testAddHabit(){
+    public void testAddHabit() throws HabitFormatException{
         HabitList habits = new HabitList();
-        Habit habit = new NormalHabit("adding tweet") {
-        };
+        Habit habit = new NormalHabit("adding tweet");
         habits.add(habit);
         assertTrue(habits.hasHabit(habit));
     }
 
-    public void testDeleteHabit(){
+    public void testDeleteHabit()throws HabitFormatException{
         HabitList list = new HabitList();
         Habit habit = new NormalHabit("test");
         list.add(habit);
@@ -48,7 +48,7 @@ public class HabitListTest extends ActivityInstrumentationTestCase2 {
         assertFalse(list.hasHabit(habit));
     }
 
-    public void testSetHabits(){
+    public void testSetHabits()throws HabitFormatException{
         HabitList list1 = new HabitList();
         Habit habit1 = new NormalHabit("test habit 1");
         list1.add(habit1);
@@ -61,7 +61,7 @@ public class HabitListTest extends ActivityInstrumentationTestCase2 {
         assertTrue(list1.hasHabit(habit2));
     }
 
-    public void testGetHabit(){
+    public void testGetHabit()throws HabitFormatException{
         HabitList habits = new HabitList(); //
         Habit habit = new NormalHabit("test");
         habits.add(habit);
@@ -70,14 +70,14 @@ public class HabitListTest extends ActivityInstrumentationTestCase2 {
     }
 
 
-    public void testHasHabit(){
+    public void testHasHabit()throws HabitFormatException{
         HabitList list = new HabitList();
         Habit habit = new NormalHabit("test");
         list.add(habit);
         assertTrue(list.hasHabit(habit));
     }
 
-    public void testGetHabits(){
+    public void testGetHabits()throws HabitFormatException{
         HabitList list = new HabitList();
         Habit habit1 = new NormalHabit("test1");
         list.add(habit1);

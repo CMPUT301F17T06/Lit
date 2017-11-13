@@ -10,18 +10,50 @@
 
 package com.example.lit.activity;
 
+import android.app.Activity;
+import android.os.Bundle;
 import android.test.ActivityInstrumentationTestCase2;
+import android.widget.Button;
+import android.widget.EditText;
+
+import com.example.lit.R;
+import com.robotium.solo.Solo;
 
 /**
  * Created by weikailu on 2017-11-13.
  */
 
 public class AddHabitActivityTest extends ActivityInstrumentationTestCase2 {
+
+    private Solo solo;
+
     public AddHabitActivityTest(){
         super(AddHabitActivity.class);
     }
 
-    public void testStart() throws Exception{
-
+    public void setUp(){
+        solo = new Solo(getInstrumentation(),getActivity());
     }
+
+    public void testStart() throws Exception{
+        Activity activity = getActivity();
+    }
+
+    public void testAddHabit(){
+        solo.assertCurrentActivity("Wrong Activity",AddHabitActivity.class);
+        solo.enterText((EditText) solo.getView(R.id.Habit_EditText),"Test Habit!");
+        solo.clickOnView((Button)solo.getView(R.id.save_button));
+
+        solo.waitForActivity(HomePageActivity.class);
+        solo.waitForText("Test Habit!");
+    }
+
+    public void testDiscardHabit(){
+        solo.assertCurrentActivity("Wrong Activity",AddHabitActivity.class);
+        solo.clickOnView((Button)solo.getView(R.id.discard_button));
+
+        solo.waitForActivity(HomePageActivity.class);
+    }
+
+
 }
