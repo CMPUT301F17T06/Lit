@@ -67,7 +67,6 @@ public class AddHabitActivity extends AppCompatActivity  {
     private Button editImage;
     //TODO: Implement image feature
 
-
     Date habitStartDate;
     String habitNameString;
     String commentString;
@@ -81,7 +80,6 @@ public class AddHabitActivity extends AppCompatActivity  {
     private String provider;
     double latitude;
     double longitude;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +109,6 @@ public class AddHabitActivity extends AppCompatActivity  {
         minuteAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         minute_spinner.setAdapter(minuteAdapter);
 
-
         saveHabit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -129,7 +126,6 @@ public class AddHabitActivity extends AppCompatActivity  {
                 finish();
             }
         });
-
     }
 
     /**
@@ -151,7 +147,6 @@ public class AddHabitActivity extends AppCompatActivity  {
         } catch (ParseException e) {
             //TODO: handle exception
         }
-
 
         Intent newHabitIntent = new Intent(AddHabitActivity.this, HomePageActivity.class);
         Bundle bundle = new Bundle();
@@ -306,5 +301,4 @@ public class AddHabitActivity extends AppCompatActivity  {
         }
         return returnLocation;
     }
-
 }
