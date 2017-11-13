@@ -20,11 +20,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.example.lit.R;
 import com.example.lit.exception.HabitFormatException;
+import com.example.lit.exception.LoadHabitException;
+import com.example.lit.habit.Habit;
 import com.example.lit.habitevent.HabitEvent;
 import com.example.lit.habitevent.NormalHabitEvent;
+
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -36,7 +41,10 @@ import java.util.List;
 public class AddHabitEventActivity extends AppCompatActivity {
     private static final String CLASS_KEY = "com.example.lit.activity.AddHabitEventActivity";
 
-    private EditText habitEventName;
+    Serializable serializable;
+    Habit currentHabit;
+    String habitTitleString;
+    private TextView habitEventName;
     private EditText habitEventComment;
     Button saveHabitEvent;
     Button cancelHabitEvent;
@@ -44,9 +52,9 @@ public class AddHabitEventActivity extends AppCompatActivity {
     private Button editImage;
     //TODO: Implement image feature
 
-    Date habitEventDate;
     String habitNameString;
     String commentString;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,19 +62,34 @@ public class AddHabitEventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_habit_event);
         setTitle("Adding A New Habit Event");
 
+
+        try{
+            serializable = getIntent().getExtras().getSerializable("habit");
+            if (!(serializable instanceof Habit)) throw new LoadHabitException();
+        }catch (LoadHabitException e){
+            //TODO: handle LoadHabitException
+        }
+
+        // Retrieve habit info
+        currentHabit = (Habit) serializable;
+        habitTitleString = currentHabit.getTitle();
+
         // Activity components
-        habitEventName = (EditText) findViewById(R.id.Habit_EditText);
+        habitEventName = (TextView) findViewById(R.id.habit_title_TextView);
         habitEventComment = (EditText) findViewById(R.id.Comment_EditText);
         habitEventComment.setLines(3); //Maximum lines our comment should be able to show at once.
         saveHabitEvent = (Button) findViewById(R.id.save_button);
         cancelHabitEvent = (Button) findViewById(R.id.discard_button);
+        habitEventName.setText(habitTitleString);
+
 
 
         saveHabitEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i("AddHabitEventActivity", "Save Button pressed.");
-                //returnNewHabitEvent(view);
+                returnNewHabitEvent(view);
+                finish();
             }
         });
 
@@ -79,7 +102,7 @@ public class AddHabitEventActivity extends AppCompatActivity {
         });
 
     }
-    public void returnNewHabit(View saveNewHabitButton) {
+    public void returnNewHabitEvent(View saveNewHabitButton) {
         habitNameString = habitEventName.getText().toString();
         commentString = habitEventComment.getText().toString();
 

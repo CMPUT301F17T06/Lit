@@ -26,10 +26,12 @@ import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
+import static android.provider.Telephony.Mms.Part.FILENAME;
+
 /**
  * Created by Riley Dixon on 12/11/2017.
  */
-
+/**
 public class DataHandler {
     private long lastOfflineSave;
     private long lastOnlineSave;
@@ -122,3 +124,4 @@ public class DataHandler {
     }
 
 }
+**/

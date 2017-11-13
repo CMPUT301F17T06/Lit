@@ -41,6 +41,8 @@ public class ViewHabitActivity extends AppCompatActivity {
     TextView habitDateStarted;
     Button editHabit;
     Button deleteHabit;
+    Button mainMenu;
+
 
     // TODO: Habit image feature
     ImageView habitImage;
@@ -77,6 +79,7 @@ public class ViewHabitActivity extends AppCompatActivity {
         // Set up buttons
         editHabit = (Button) findViewById(R.id.edit_habit_button);
         deleteHabit = (Button) findViewById(R.id.delete_habit_button);
+        mainMenu = (Button) findViewById(R.id.main_menu_button);
 
         editHabit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,13 +94,22 @@ public class ViewHabitActivity extends AppCompatActivity {
                 deleteHabit(currentHabit);
             }
         });
+
         addHabitEventButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                setResult(RESULT_OK);
                 Intent intent = new Intent(v.getContext(), AddHabitEventActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("habit", currentHabit);
+                intent.putExtras(bundle);
                 startActivityForResult(intent,1);
             }});
+        mainMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
     }
 

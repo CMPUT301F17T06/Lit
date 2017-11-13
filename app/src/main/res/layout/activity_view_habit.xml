@@ -61,7 +61,7 @@
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_marginBottom="56dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="36dp"
         android:text="@string/delete_habit_button"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -70,13 +70,13 @@
     <Button
         android:id="@+id/edit_habit_button"
         android:layout_width="100dp"
-        android:layout_height="49dp"
-        android:layout_marginBottom="60dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="56dp"
         android:layout_marginEnd="40dp"
         android:text="@string/habit_edit_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.153"
+        app:layout_constraintHorizontal_bias="0.055"
         app:layout_constraintStart_toEndOf="@+id/delete_habit_button" />
 
 
@@ -158,13 +158,13 @@
 
     <Button
         android:id="@+id/AddHabitEvent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="60dp"
+        android:layout_width="105dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="56dp"
         android:text="COMPLETED"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintHorizontal_bias="0.428"
         app:layout_constraintStart_toEndOf="@+id/edit_habit_button" />
 
     <android.support.constraint.Guideline
@@ -173,5 +173,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_begin="20dp" />
+
+    <Button
+        android:id="@+id/main_menu_button"
+        android:layout_width="75dp"
+        android:layout_height="50dp"
+        android:text="Main Menu"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="6dp" />
 
 </android.support.constraint.ConstraintLayout>
