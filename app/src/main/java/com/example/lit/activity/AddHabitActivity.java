@@ -128,7 +128,7 @@ public class AddHabitActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.i("AddHabitActivity", "Cancel button pressed. Habit creation cancelled.");
-                //setResult(Activity.RESULT_CANCELED);
+                setResult(Activity.RESULT_CANCELED);
                 finish();
             }
         });
