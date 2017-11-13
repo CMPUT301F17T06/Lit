@@ -14,8 +14,6 @@ package com.example.lit.saving;
  * Created by Riley Dixon on 12/11/2017.
  */
 
-/*
-
 public interface Saveable {
 
     public boolean saveData();
@@ -23,7 +21,6 @@ public interface Saveable {
 
 }
 
-**/
 
 
 
