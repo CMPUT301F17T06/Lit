@@ -29,7 +29,7 @@ import java.util.ArrayList;
 /**
  * Created by Riley Dixon on 12/11/2017.
  */
-
+/*
 public class DataHandler {
     private long lastOfflineSave;
     private long lastOnlineSave;
@@ -122,3 +122,4 @@ public class DataHandler {
     }
 
 }
+*/

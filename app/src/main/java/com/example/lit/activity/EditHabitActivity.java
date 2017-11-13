@@ -32,8 +32,10 @@ import com.example.lit.habit.Habit;
 import com.example.lit.habit.NormalHabit;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -58,7 +60,7 @@ public class EditHabitActivity extends AppCompatActivity {
     EditText habitComment;
     Button saveHabit;
     Button cancelHabit;
-    CheckBox locationCheck; //This should not be a button, its currently a placeholder
+    CheckBox locationCheck;
     MultiSelectionSpinner weekday_spinner;
     Spinner hour_spinner;
     Spinner minute_spinner;
@@ -72,6 +74,7 @@ public class EditHabitActivity extends AppCompatActivity {
     String habitNameString;
     String commentString;
     ArrayList<Integer> weekdays;
+    List<Integer> newWeekDays;
     Integer hour;
     Integer minute;
     String habitTitleString;
@@ -132,12 +135,14 @@ public class EditHabitActivity extends AppCompatActivity {
         weekday_spinner.setSelection(convertIntegers(weekdays));
         hour_spinner.setSelection(hour);
         minute_spinner.setSelection(minute);
+        newWeekDays = weekday_spinner.getSelectedIndicies();
 
         saveHabit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i("EditHabitActivity", "Save Button pressed.");
-                returnNewHabit(view);
+                //returnNewHabit(view);
+                finish();
             }
         });
 
@@ -160,7 +165,7 @@ public class EditHabitActivity extends AppCompatActivity {
         habitStartDate = Calendar.getInstance().getTime();
         hour = Integer.parseInt(hour_spinner.getSelectedItem().toString());
         minute = Integer.parseInt(minute_spinner.getSelectedItem().toString());
-        //weekdays = weekday_spinner.getSelectedStrings();
+
 
         //TODO: should be able to edit habit within this activity
     }

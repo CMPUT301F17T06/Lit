@@ -51,7 +51,7 @@ import java.util.List;
 public class HomePageActivity extends AppCompatActivity {
 
     private static final String FILENAME = "habitFile.sav";
-    /**ListView currentHabitList;
+    /*ListView currentHabitList;
     ListView habitHistoryList;
     ListView friendsList;
     View mapView; //What kind of view is this supposed to be?
@@ -64,7 +64,7 @@ public class HomePageActivity extends AppCompatActivity {
     Button searchHistoryByHabitName;
     Button searchHistoryByComment;
     Button sortHistoryMenu; //Not sure what kind of View this should be
-**/
+*/
 
     private ImageButton addHabitButton;
     private Button Maps;
@@ -156,9 +156,17 @@ public class HomePageActivity extends AppCompatActivity {
         habitsListView.setAdapter(habitAdapter);
 
     }
+    /**
+     * This function handle the new Habit returned from AddHabitActivity.
+     * Activated when user click 'SAVE' button habit info valid.
+     * @see AddHabitActivity
+     *
+     * @serialData A new Habit object
+     * @param requestCode Request Code
+     * @param resultCode Result Code
+     * @param data  data returned from previous activity
+     * */
     @Override
-
-    //return from the Detail activity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -178,9 +186,11 @@ public class HomePageActivity extends AppCompatActivity {
             habitAdapter.notifyDataSetChanged();
             saveInFile();
         }
-
-
     }
+
+    /**
+     * This function load data from local file to HomePageActivity habit list view.
+     * */
     private void loadFromFile() {
         try {
             FileInputStream fis = openFileInput(FILENAME);
@@ -196,12 +206,12 @@ public class HomePageActivity extends AppCompatActivity {
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             habitArrayList = new ArrayList<Habit>();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException();
         }
     }
 
+    /**
+     * This function save data when new habit object is instantiated.
+     * */
     private void saveInFile() {
         try {
             FileOutputStream fos = openFileOutput(FILENAME,
