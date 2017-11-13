@@ -31,6 +31,7 @@ import com.example.lit.habit.Habit;
 import com.example.lit.habit.HabitList;
 import com.example.lit.habit.NormalHabit;
 import com.example.lit.location.HabitLocation;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -51,7 +52,7 @@ import java.util.List;
 public class HomePageActivity extends AppCompatActivity {
 
     private static final String FILENAME = "habitFile.sav";
-    ListView currentHabitList;
+    /*ListView currentHabitList;
     ListView habitHistoryList;
     ListView friendsList;
     View mapView; //What kind of view is this supposed to be?
@@ -64,17 +65,18 @@ public class HomePageActivity extends AppCompatActivity {
     Button searchHistoryByHabitName;
     Button searchHistoryByComment;
     Button sortHistoryMenu; //Not sure what kind of View this should be
+*/
 
-
-    ImageButton addHabitButton;
-    Button Maps;
-    Button HabitHistory;
-    Button Friends;
-    Button Profile;
+    private ImageButton addHabitButton;
+    private Button Maps;
+    private Button HabitHistory;
+    private Button Friends;
+    private Button Profile;
 
     private ListView habitsListView;
     private ArrayList<Habit> habitArrayList;
     ArrayAdapter<Habit> habitAdapter;
+    private HabitLocation habitLocation;
 
 
     @Override
@@ -90,22 +92,6 @@ public class HomePageActivity extends AppCompatActivity {
         habitsListView = (ListView)findViewById(R.id.habit_ListView);
         habitAdapter = new ArrayAdapter<Habit>(this,R.layout.list_item,habitArrayList);
         habitsListView.setAdapter(habitAdapter);
-
-        //Set up a dummy habit for testing
-        try {
-            Habit habit = new NormalHabit("Drink Water", new Date());
-            habit.setReason("Just chilling...");
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.DAY_OF_WEEK,1);
-            List<Calendar> calendarList = new ArrayList<Calendar>();
-            calendarList.add(calendar);
-            habit.setCalendars(calendarList);
-            habitArrayList.add(habit);
-        }catch (HabitFormatException e){
-
-        }
-
-        habitAdapter.notifyDataSetChanged();
 
         HabitHistory.setOnClickListener(new View.OnClickListener() {
 
@@ -154,10 +140,118 @@ public class HomePageActivity extends AppCompatActivity {
                 Intent intent = new Intent(HomePageActivity.this,ViewHabitActivity.class);
                 Bundle bundle = new Bundle();
                 Habit selectedHabit = habitArrayList.get(i);
+                try {
+                    HabitLocation location = selectedHabit.getHabitLocation();
+                    LatLng latLng = location.getLocation();
+                    double latitude = latLng.latitude;
+                    double longitude = latLng.longitude;
+                    selectedHabit.setLocation(null);
+                    bundle.putDouble("lat", latitude);
+                    bundle.putDouble("lng", longitude);
+                }catch (Exception e){
+                //TODO: handle when location is null
+                }
                 bundle.putSerializable("habit", selectedHabit);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,1);
             }
         });
+    }
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        loadFromFile();
+
+
+        habitAdapter = new ArrayAdapter<Habit>(this,
+                R.layout.list_item, habitArrayList);
+        habitsListView.setAdapter(habitAdapter);
+
+    }
+    /**
+     * This function handle the new Habit returned from AddHabitActivity.
+     * Activated when user click 'SAVE' button habit info valid.
+     * @see AddHabitActivity
+     *
+     * @serialData A new Habit object
+     * @param requestCode Request Code
+     * @param resultCode Result Code
+     * @param data  data returned from previous activity
+     * */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //if return success update the values of item
+        if(resultCode == RESULT_OK) {
+            /**Take from https://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
+             * 2017/11/12
+             */
+            Bundle bundle = data.getExtras();
+            Habit habit = (Habit) bundle.getSerializable("habit");
+            try {
+                double lat = bundle.getDouble("lat");
+                double lng = bundle.getDouble("lng");
+                LatLng latLng = new LatLng(lat, lng);
+                habitLocation = new HabitLocation(latLng);
+                habit.setLocation(habitLocation);
+            }catch (Exception e){
+                //
+            }
+            habitArrayList.add(habit);
+            habitAdapter.notifyDataSetChanged();
+            saveInFile();
+        }
+        else {
+            //not return success do nothing
+            habitAdapter.notifyDataSetChanged();
+            saveInFile();
+        }
+    }
+
+    /**
+     * This function load data from local file to HomePageActivity habit list view.
+     * */
+    private void loadFromFile() {
+        try {
+            FileInputStream fis = openFileInput(FILENAME);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+
+            Gson gson = new Gson();
+
+            //Taken from https://stackoverflow.com/questions/12384064/gson-convert-from-json-to-a-typed-arraylistt
+            //2017/09/19
+            Type listType = new TypeToken<ArrayList<NormalHabit>>() {}.getType();
+            habitArrayList = gson.fromJson(in, listType);
+
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            habitArrayList = new ArrayList<Habit>();
+        }
+    }
+
+    /**
+     * This function save data when new habit object is instantiated.
+     * */
+    private void saveInFile() {
+        try {
+            FileOutputStream fos = openFileOutput(FILENAME,
+                    Context.MODE_PRIVATE);
+
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
+
+            Gson gson = new Gson();
+            gson.toJson(habitArrayList,out);
+            out.flush();
+
+            fos.close();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException();
+        }
     }
 }

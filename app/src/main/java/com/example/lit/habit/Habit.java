@@ -10,6 +10,8 @@
 
 package com.example.lit.habit;
 
+import android.os.Parcelable;
+
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.location.*;
 import com.google.android.gms.maps.model.LatLng;
@@ -26,9 +28,9 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Created by weikailu on 10/20/2017.
+ * This class is an abstract habit class
+ * @author Steven Weikai Lu
  */
-
 public abstract class Habit implements Habitable , Serializable{
 
     private String title;
@@ -57,6 +59,17 @@ public abstract class Habit implements Habitable , Serializable{
         this.setDate(date);
     }
 
+    /**
+     * This is the main constructor we are using in AddHabitActivity
+     *
+     * @see com.example.lit.activity.AddHabitActivity
+     * @param title Habit name, should be at most 20 char long.
+     * @param reason Habit Comment, should be at most 30 char long.
+     * @param habitLocation Set by default when creating the habit
+     * @param date Set by GPS when creating the habit
+     * @param calendarList Set by user when creating the habit
+     * @throws HabitFormatException thrown when title longer than 20 char or reason longer than 30 char
+     * */
     public Habit(String title, Date date, HabitLocation habitLocation, String reason, List<Calendar> calendarList) throws HabitFormatException {
         this.setTitle(title);
         this.setDate(date);
@@ -118,7 +131,7 @@ public abstract class Habit implements Habitable , Serializable{
 
     @Override
     public String toString() {
-        return "Habit Name: '" + this.getTitle() + '\n' +
+        return "Habit Name: " + this.getTitle() + '\n' +
                 "Started From: " + this.getDate();
     }
 

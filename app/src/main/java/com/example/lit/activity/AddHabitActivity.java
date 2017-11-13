@@ -12,13 +12,12 @@ package com.example.lit.activity;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 
+import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -42,12 +41,7 @@ import com.example.lit.habit.Habit;
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.habit.NormalHabit;
 import com.example.lit.location.HabitLocation;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,9 +50,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
-import java.util.concurrent.TimeUnit;
 
-public class AddHabitActivity extends AppCompatActivity {
+public class AddHabitActivity extends AppCompatActivity  {
 
     private static final String CLASS_KEY = "com.example.lit.activity.AddHabitActivity";
 
@@ -82,9 +75,12 @@ public class AddHabitActivity extends AppCompatActivity {
     Integer hour;
     Integer minute;
     List<Calendar> calendarList;
+
     LocationManager manager;
-    LocationListener locationListener;
     private HabitLocation habitLocation;
+    private String provider;
+    double latitude;
+    double longitude;
 
 
     @Override
@@ -107,11 +103,11 @@ public class AddHabitActivity extends AppCompatActivity {
         // Set up weekday selection
         weekday_spinner.setItems(createWeekdayList());
         // Set up hour selection
-        ArrayAdapter<String> hourAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,createHourList());
+        ArrayAdapter<String> hourAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, createHourList());
         hourAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         hour_spinner.setAdapter(hourAdapter);
         // Set up minute selection
-        ArrayAdapter<String> minuteAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,createMinuteList());
+        ArrayAdapter<String> minuteAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, createMinuteList());
         minuteAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         minute_spinner.setAdapter(minuteAdapter);
 
@@ -121,6 +117,7 @@ public class AddHabitActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.i("AddHabitActivity", "Save Button pressed.");
                 returnNewHabit(view);
+                finish();
             }
         });
 
@@ -128,70 +125,53 @@ public class AddHabitActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.i("AddHabitActivity", "Cancel button pressed. Habit creation cancelled.");
-                //setResult(Activity.RESULT_CANCELED);
+                setResult(Activity.RESULT_CANCELED);
                 finish();
             }
         });
-}
 
-    public void returnNewHabit(View saveNewHabitButton){
+    }
+
+    /**
+     * This function is called when user click on save button.
+     * This function will build a NormalHabit based on user inputs.
+     * The NormalHabit built will be sent back to HomePageActivity
+     * @see HomePageActivity
+     * @param saveNewHabitButton the current view.
+     * */
+    public void returnNewHabit(View saveNewHabitButton) {
         habitNameString = habitName.getText().toString();
         commentString = habitComment.getText().toString();
         habitStartDate = Calendar.getInstance().getTime();
         hour = Integer.parseInt(hour_spinner.getSelectedItem().toString());
         minute = Integer.parseInt(minute_spinner.getSelectedItem().toString());
         weekdays = weekday_spinner.getSelectedStrings();
-        try{
-            calendarList = buildCalender(weekdays,hour,minute);
-        }catch (ParseException e){
+        try {
+            calendarList = buildCalender(weekdays, hour, minute);
+        } catch (ParseException e) {
             //TODO: handle exception
         }
 
-        /*if checkbox checked return current location*/
-        if (locationCheck.isChecked()){
-            //get the location service
-            manager = (LocationManager) getSystemService(LOCATION_SERVICE);
-            //request the location update thru location manager
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-                return;
-            }
-            locationListener = new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    //get the latitude and longitude from the location
-                    double latitude = location.getLatitude();
-                    double longitude = location.getLongitude();
-                    LatLng latLng = new LatLng(latitude, longitude);
-                    habitLocation = new HabitLocation(latLng);
-                }
-
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                }
-
-                @Override
-                public void onProviderEnabled(String provider) {
-
-                }
-
-                @Override
-                public void onProviderDisabled(String provider) {
-
-                }
-            };
-            if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-            } else {
-                manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-            }
-        }
 
         Intent newHabitIntent = new Intent(AddHabitActivity.this, HomePageActivity.class);
+        Bundle bundle = new Bundle();
+        try{
+            Location location = buildLocation(locationCheck);
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+            if (!(location == null)){
+                bundle.putDouble("lat",latitude);
+                bundle.putDouble("lng",longitude);
+            }
+        }
+        catch (NullPointerException e){
+            //TODO: handle when location is null
+        }
+
         try {Habit newHabit = new NormalHabit(habitNameString, habitStartDate,
-                habitLocation, commentString, calendarList);
-            newHabitIntent.putExtra(CLASS_KEY, newHabit);
+                null, commentString, calendarList);
+            bundle.putSerializable("habit", newHabit);
+            newHabitIntent.putExtras(bundle);
             setResult(Activity.RESULT_OK, newHabitIntent);
             finish();
         } catch (HabitFormatException e){
@@ -286,6 +266,45 @@ public class AddHabitActivity extends AppCompatActivity {
         }
 
         return numberList;
+    }
+
+    /**
+     * This function will return a Location object containing Latitude and Longitude attribute
+     *
+     * @param locationCheck location checkbox in AddHabitActivity
+     *
+     * @return A location object
+     * */
+    private Location buildLocation(CheckBox locationCheck){
+                /*if checkbox checked return current location*/
+        Location returnLocation = null;
+        if  (locationCheck.isChecked()){
+            manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            // Define the criteria how to select the locatioin provider -> use
+            // default
+            Criteria criteria = new Criteria();
+            provider = manager.getBestProvider(criteria, false);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return null;
+            }
+            Location location = manager.getLastKnownLocation(provider);
+            if (location != null) {
+                /*get the latitude and longitude from the location*/
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+                returnLocation = location;
+            }}
+        else{
+            returnLocation = null;
+        }
+        return returnLocation;
     }
 
 }

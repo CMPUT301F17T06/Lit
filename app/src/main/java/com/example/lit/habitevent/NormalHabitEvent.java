@@ -12,12 +12,15 @@ package com.example.lit.habitevent;
 
 import android.support.annotation.NonNull;
 
+import com.example.lit.exception.HabitFormatException;
+
 /**
  * Created by ammar on 21/10/17.
  */
 
 public class NormalHabitEvent extends HabitEvent{
     public NormalHabitEvent(String name){super(name);}
+    public NormalHabitEvent(String name, String comment)throws HabitFormatException {super(name, comment);}
 
     @Override
     public int compareTo(@NonNull Object o) {

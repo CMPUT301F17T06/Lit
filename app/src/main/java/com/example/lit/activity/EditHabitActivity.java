@@ -30,26 +30,39 @@ import com.example.lit.Utilities.MultiSelectionSpinner;
 import com.example.lit.exception.*;
 import com.example.lit.habit.Habit;
 import com.example.lit.habit.NormalHabit;
+import com.example.lit.location.HabitLocation;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+
+/**
+ * This activity is used for editing a existing habit.
+ * Transition from this activity should be from ViewHabitActivity
+ * @see ViewHabitActivity
+ * @author Steven Weikai Lu
+ *
+ * @throws LoadHabitException when fail to load habit passed from ViewHabitActivity
+ * */
 public class EditHabitActivity extends AppCompatActivity {
 
-    private static final String CLASS_KEY = "com.example.lit.activity.AddHabitActivity";
+    private static final String CLASS_KEY = "com.example.lit.activity.EditHabitActivity";
 
-    Serializable serializable;
+
     Habit currentHabit;
     EditText habitName;
     EditText habitComment;
     Button saveHabit;
     Button cancelHabit;
-    CheckBox locationCheck; //This should not be a button, its currently a placeholder
+    CheckBox locationCheck;
     MultiSelectionSpinner weekday_spinner;
     Spinner hour_spinner;
     Spinner minute_spinner;
@@ -62,7 +75,8 @@ public class EditHabitActivity extends AppCompatActivity {
     Date habitStartDate;
     String habitNameString;
     String commentString;
-    int[] weekdays;
+    ArrayList<Integer> weekdays;
+    List<Integer> newWeekDays;
     Integer hour;
     Integer minute;
     String habitTitleString;
@@ -76,30 +90,39 @@ public class EditHabitActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_habit);
 
         try{
-            serializable = getIntent().getExtras().getSerializable("habit");
-            if (!(serializable instanceof Habit)) throw new LoadHabitException();
+
+            Bundle bundle = getIntent().getExtras();
+            currentHabit = (Habit)bundle.getSerializable("habit");
+            double lat = bundle.getDouble("lat");
+            double lng = bundle.getDouble("lng");
+            LatLng latLng = new LatLng(lat, lng);
+            HabitLocation habitLocation= new HabitLocation(latLng);
+
+            currentHabit.setLocation(habitLocation);
+
+            if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
         }catch (LoadHabitException e){
             //TODO: handle LoadHabitException
         }
-        currentHabit = (Habit) serializable;
+
         habitTitleString = currentHabit.getTitle();
         habitCommentString = currentHabit.getReason();
         habitDate = currentHabit.getDate();
         calendarList = currentHabit.getCalendars();
         hour = calendarList.get(0).getTime().getHours();
         minute = calendarList.get(0).getTime().getHours();
-        int i = 0;
+        weekdays = new ArrayList<>();
         for (Calendar calendar:calendarList
              ) {
             int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-            weekdays[i]=dayOfWeek;
+            weekdays.add(dayOfWeek);
         }
 
         // Activity components
         habitName = (EditText) findViewById(R.id.Habit_EditText);
         habitComment = (EditText) findViewById(R.id.Comment_EditText);
         habitComment.setLines(3); //Maximum lines our comment should be able to show at once.
-        saveHabit = (Button) findViewById(R.id.SaveHabit);
+        saveHabit = (Button) findViewById(R.id.save_habit_button);
         cancelHabit = (Button) findViewById(R.id.discard_button);
         hour_spinner = (Spinner) findViewById(R.id.hour_spinner);
         minute_spinner = (Spinner) findViewById(R.id.minute_spinner);
@@ -120,35 +143,40 @@ public class EditHabitActivity extends AppCompatActivity {
         // Set up components initial info
         habitName.setText(habitTitleString);
         habitComment.setText(habitCommentString);
-        weekday_spinner.setSelection(weekdays);
+        weekday_spinner.setSelection(convertIntegers(weekdays));
         hour_spinner.setSelection(hour);
         minute_spinner.setSelection(minute);
+        newWeekDays = weekday_spinner.getSelectedIndicies();
 
         saveHabit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i("EditHabitActivity", "Save Button pressed.");
-                returnNewHabit(view);
+                //returnNewHabit(view);
+                finish();
             }
         });
 
         cancelHabit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("EditHabitActivity", "Cancel button pressed. Habit creation cancelled.");
+                Log.i("EditHabitActivity", "Cancel button pressed. Habit edit cancelled.");
                 setResult(Activity.RESULT_CANCELED);
                 finish();
             }
         });
     }
 
+    /**
+     * @param saveNewHabitButton the view currently in
+     * */
     public void returnNewHabit(View saveNewHabitButton){
         habitNameString = habitName.getText().toString();
         commentString = habitComment.getText().toString();
         habitStartDate = Calendar.getInstance().getTime();
         hour = Integer.parseInt(hour_spinner.getSelectedItem().toString());
         minute = Integer.parseInt(minute_spinner.getSelectedItem().toString());
-        //weekdays = weekday_spinner.getSelectedStrings();
+
 
         //TODO: should be able to edit habit within this activity
     }
@@ -158,13 +186,16 @@ public class EditHabitActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem selection){
         switch (selection.getItemId()){
             case android.R.id.home: //Up button pressed
-                Log.i("AddHabitActivity", "Up button pressed. Habit creation cancelled.");
+                Log.i("AddHabitActivity", "Up button pressed. Habit edit cancelled.");
                 setResult(Activity.RESULT_CANCELED);
                 finish();
         }
         return true;
     }
 
+    /**
+     *@return returns an array list of string from Monday to Sunday
+     * */
     private ArrayList<String> createWeekdayList(){
         ArrayList<String> weekdayList = new ArrayList<String>();
         weekdayList.add("None");
@@ -179,11 +210,19 @@ public class EditHabitActivity extends AppCompatActivity {
         return weekdayList;
     }
 
+    /**
+     * @return  return an array list of number from 1 to 24 in string format
+     * */
     private List<String> createHourList(){
         List<String> hourList = createNumberList(1,24,1);
         return hourList;
     }
 
+    /**
+     * Returns an array list of number from 1 to 60 in string format
+     *
+     * @return  An array list of number fom 1 to 60 in string format
+     * */
     private List<String> createMinuteList(){
         List<String> hourList = createNumberList(1,60,1);
         return hourList;
@@ -194,7 +233,7 @@ public class EditHabitActivity extends AppCompatActivity {
 
     /**
      * Returns an array list of numbers in a string format. This list is from low to high
-     * inclusively. Each number is seperated by each other as defined by the interval.
+     * inclusively. Each number is separated by each other as defined by the interval.
      * Should low > high then the list returned is empty.
      *
      * @param low The beginning of the range of numbers to be added to the list.
@@ -210,4 +249,13 @@ public class EditHabitActivity extends AppCompatActivity {
         return numberList;
     }
 
+    public static int[] convertIntegers(List<Integer> integers)
+    {
+        int[] ret = new int[integers.size()];
+        for (int i=0; i < ret.length; i++)
+        {
+            ret[i] = integers.get(i).intValue();
+        }
+        return ret;
+    }
 }

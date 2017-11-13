@@ -8,22 +8,13 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.example.lit.saving;
+package com.example.lit.activity;
+
+import android.support.v7.app.AppCompatActivity;
 
 /**
- * Created by Riley Dixon on 12/11/2017.
+ * Created by ammar on 12/11/17.
  */
 
-/*
-
-public interface Saveable {
-
-    public boolean saveData();
-    public boolean loadData();
-
+public class EditHabitEventActivity extends AppCompatActivity {
 }
-
-**/
-
-
-

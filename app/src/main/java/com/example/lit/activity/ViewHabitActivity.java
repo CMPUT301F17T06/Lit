@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -40,16 +41,19 @@ public class ViewHabitActivity extends AppCompatActivity {
     TextView habitDateStarted;
     Button editHabit;
     Button deleteHabit;
+    Button mainMenu;
+
 
     // TODO: Habit image feature
     ImageView habitImage;
     Button habitDoneToday;          //Not sure what this should be, Button is a placeholder.
-
+    Button addHabitEventButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_habit);
+        addHabitEventButton = (Button) findViewById(R.id.AddHabitEvent);
 
         try{
             serializable = getIntent().getExtras().getSerializable("habit");
@@ -75,6 +79,7 @@ public class ViewHabitActivity extends AppCompatActivity {
         // Set up buttons
         editHabit = (Button) findViewById(R.id.edit_habit_button);
         deleteHabit = (Button) findViewById(R.id.delete_habit_button);
+        mainMenu = (Button) findViewById(R.id.main_menu_button);
 
         editHabit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,13 +95,29 @@ public class ViewHabitActivity extends AppCompatActivity {
             }
         });
 
+        addHabitEventButton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), AddHabitEventActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("habit", currentHabit);
+                intent.putExtras(bundle);
+                startActivityForResult(intent,1);
+            }});
+        mainMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
     }
 
     public void toEditHabitActivity(Serializable serializable){
         Intent intent = new Intent(ViewHabitActivity.this, EditHabitActivity.class);
         Log.i("ViewHabitActivity", "Edit button pressed.");
-        intent.putExtra(CLASS_KEY,serializable);
-        startActivity(intent);
+        intent.putExtra("habit",serializable);
+        startActivityForResult(intent,1);
     }
 
     //TODO: delete current habit and return to previous activity
