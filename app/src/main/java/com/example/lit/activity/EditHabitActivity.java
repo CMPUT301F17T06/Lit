@@ -41,7 +41,7 @@ import java.util.Locale;
 
 public class EditHabitActivity extends AppCompatActivity {
 
-    private static final String CLASS_KEY = "com.example.lit.activity.AddHabitActivity";
+    private static final String CLASS_KEY = "com.example.lit.activity.EditHabitActivity";
 
     Serializable serializable;
     Habit currentHabit;
