@@ -117,83 +117,90 @@ public class HomePageActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page_updated);
+
         //OLD CODE COMMENTED OUT
-        /*addHabitButton = (ImageButton) findViewById(R.id.AddHabit);
-        Maps = (Button) findViewById(R.id.Maps) ;
-        HabitHistory =  (Button) findViewById(R.id.HabitHistory) ;
-        Friends  = (Button) findViewById(R.id.Friend);
-        Profile = (Button) findViewById(R.id.Profile);
-        habitArrayList = new ArrayList<>();
-        habitsListView = (ListView)findViewById(R.id.habit_ListView);
-        habitAdapter = new ArrayAdapter<Habit>(this,R.layout.list_item,habitArrayList);
-        habitsListView.setAdapter(habitAdapter);
+        //OLD CODE COMMENTED OUT
 
+//        addHabitButton = (ImageButton) findViewById(R.id.AddHabit);
+//        Maps = (Button) findViewById(R.id.Maps) ;
+//        HabitHistory =  (Button) findViewById(R.id.HabitHistory) ;
+//        Friends  = (Button) findViewById(R.id.Friend);
+//        Profile = (Button) findViewById(R.id.Profile);
+//        habitArrayList = new ArrayList<>();
+//        habitsListView = (ListView)findViewById(R.id.habit_ListView);
+//        habitAdapter = new ArrayAdapter<Habit>(this,R.layout.list_item,habitArrayList);
+//        habitsListView.setAdapter(habitAdapter);
+//
+//
+//        HabitHistory.setOnClickListener(new View.OnClickListener() {
+//
+//            public void onClick(View v) {
+//
+//                Intent EventIntent = new Intent(HomePageActivity.this, HistoryActivity.class);
+//
+//                startActivity(EventIntent);
+//            }});
+//
+//        Friends.setOnClickListener(new View.OnClickListener() {
+//
+//            public void onClick(View v) {
+//                setResult(RESULT_OK);
+//                Intent intent = new Intent(v.getContext(), ViewFriendActivity.class);
+//                startActivityForResult(intent,1);
+//            }});
+//
+//        Maps.setOnClickListener(new View.OnClickListener() {
+//
+//            public void onClick(View v) {
+//                setResult(RESULT_OK);
+//                Intent intent = new Intent(v.getContext(), MapsActivity.class);
+//                startActivityForResult(intent,1);
+//            }});
+//
+//        Profile.setOnClickListener(new View.OnClickListener() {
+//
+//            public void onClick(View v) {
+//                setResult(RESULT_OK);
+//                Intent intent = new Intent(v.getContext(), ProfileActivity.class);
+//                startActivityForResult(intent,1);
+//            }});
+//
+//        addHabitButton.setOnClickListener(new View.OnClickListener() {
+//
+//            public void onClick(View v) {
+//                setResult(RESULT_OK);
+//                Intent intent = new Intent(v.getContext(), AddHabitActivity.class);
+//                startActivityForResult(intent,1);
+//            }});
+//
+//        habitsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//
+//                Intent intent = new Intent(HomePageActivity.this,ViewHabitActivity.class);
+//                Bundle bundle = new Bundle();
+//                Habit selectedHabit = habitArrayList.get(i);
+//                try {
+//                    HabitLocation location = selectedHabit.getHabitLocation();
+//                    LatLng latLng = location.getLocation();
+//                    double latitude = latLng.latitude;
+//                    double longitude = latLng.longitude;
+//                    selectedHabit.setLocation(null);
+//                    bundle.putDouble("lat", latitude);
+//                    bundle.putDouble("lng", longitude);
+//                }catch (Exception e){
+//                //TODO: handle when location is null
+//                }
+//                bundle.putSerializable("habit", selectedHabit);
+//                intent.putExtras(bundle);
+//                startActivityForResult(intent,2);
+//            }
+//        });
 
-        HabitHistory.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-
-                Intent EventIntent = new Intent(HomePageActivity.this, HistoryActivity.class);
-
-                startActivity(EventIntent);
-            }});
-
-        Friends.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-                setResult(RESULT_OK);
-                Intent intent = new Intent(v.getContext(), ViewFriendActivity.class);
-                startActivityForResult(intent,1);
-            }});
-
-        Maps.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-                setResult(RESULT_OK);
-                Intent intent = new Intent(v.getContext(), MapsActivity.class);
-                startActivityForResult(intent,1);
-            }});
-
-        Profile.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-                setResult(RESULT_OK);
-                Intent intent = new Intent(v.getContext(), ProfileActivity.class);
-                startActivityForResult(intent,1);
-            }});
-
-        addHabitButton.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-                setResult(RESULT_OK);
-                Intent intent = new Intent(v.getContext(), AddHabitActivity.class);
-                startActivityForResult(intent,1);
-            }});
-
-        habitsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                Intent intent = new Intent(HomePageActivity.this,ViewHabitActivity.class);
-                Bundle bundle = new Bundle();
-                Habit selectedHabit = habitArrayList.get(i);
-                try {
-                    HabitLocation location = selectedHabit.getHabitLocation();
-                    LatLng latLng = location.getLocation();
-                    double latitude = latLng.latitude;
-                    double longitude = latLng.longitude;
-                    selectedHabit.setLocation(null);
-                    bundle.putDouble("lat", latitude);
-                    bundle.putDouble("lng", longitude);
-                }catch (Exception e){
-                //TODO: handle when location is null
-                }
-                bundle.putSerializable("habit", selectedHabit);
-                intent.putExtras(bundle);
-                startActivityForResult(intent,2);
-            }
-        });*/
         //NEW CODE BELOW
+        //----------------------
+
+
         mDrawerList = (ListView)findViewById(R.id.navList);
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         mActivityTitle = getTitle().toString();

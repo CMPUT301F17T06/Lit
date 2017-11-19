@@ -48,7 +48,8 @@
         <activity android:name=".activity.AddHabitEventActivity" />
         <activity android:name=".activity.ViewHabitEventActivity" />
         <activity android:name=".activity.EditHabitEventActivity" />
-        <activity android:name=".activity.HistoryActivity"></activity>
+        <activity android:name=".activity.HistoryActivity" />
+        <activity android:name=".activity.HomePageActivityNew"></activity>
     </application>
 
 </manifest>
