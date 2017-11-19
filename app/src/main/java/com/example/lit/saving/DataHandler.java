@@ -12,6 +12,7 @@ package com.example.lit.saving;
 
 import android.content.Context;
 
+import com.example.lit.elasticsearch.ElasticSearchHabitController;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -47,6 +48,7 @@ public class DataHandler<T> {
     private long lastOfflineSave;
     private long lastOnlineSave;
     private String FILENAME;
+    private ElasticSearchHabitController esObject;
 
     /**
      * Builds a handler that is used to save data to both local storage for offline use as
@@ -83,7 +85,7 @@ public class DataHandler<T> {
         FILENAME += File.separator + savedObject + ".sav";
     }
 
-
+    /*
     public void saveArrayList(ArrayList<T> arrayListToBeSaved){
         long currentTime = System.currentTimeMillis();
         try{
@@ -93,20 +95,20 @@ public class DataHandler<T> {
             throw new RuntimeException();
         }
         //TODO: Online part
-    }
+    }*/
 
-    public void saveSingularElement(T element){
+    public void saveData(T element){
         long currentTime = System.currentTimeMillis();
         try{
-            saveSingularElementToOffline(element);
             lastOfflineSave = currentTime;
+            saveToOffline(element);
         }catch (IOException e){
             throw new RuntimeException();
         }
         //TODO: Online part
     }
 
-    public ArrayList<T> loadArrayList(){
+    /*public ArrayList<T> loadArrayList(){
         long currentTime = System.currentTimeMillis();
         ArrayList<T> loadedList;
         //TODO: Compare offline and online file, then decide which file to load from
@@ -117,22 +119,22 @@ public class DataHandler<T> {
             throw new RuntimeException();
         }
         return loadedList;
-    }
+    }*/
 
-    public T loadSingularElement(){
+    public T loadData(){
         long currentTime = System.currentTimeMillis();
         T loadedElement;
         //TODO: Compare offline and online file, then decide which file to load from
         //TODO: If the files timestamps are different, sync with the newer file
         try{
-            loadedElement = loadSingularElementFromOffline();
+            loadedElement = loadFromOffline();
         }catch (IOException e){
             throw new RuntimeException();
         }
         return loadedElement;
     }
 
-    private void saveArrayToOffline(ArrayList<T> arrayListToSave)throws IOException{
+    /*private void saveArrayToOffline(ArrayList<T> arrayListToSave)throws IOException{
         FileOutputStream fos = new FileOutputStream(new File(FILENAME));
         BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
         Type typeOfArrayList = new TypeToken<ArrayList<T>>(){}.getType();
@@ -143,13 +145,13 @@ public class DataHandler<T> {
         out.flush();
         fos.close();
 
-    }
+    }*/
 
-    private void saveArrayToOnline(){
+    /*private void saveArrayToOnline(){
 
-    }
+    }*/
 
-    private void saveSingularElementToOffline(T singleElementToSave) throws IOException{
+    private void saveToOffline(T singleElementToSave) throws IOException{
         FileOutputStream fos = new FileOutputStream(new File(FILENAME));
         BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
         Type typeOfElement = new TypeToken<T>(){}.getType();
@@ -161,11 +163,11 @@ public class DataHandler<T> {
         fos.close();
     }
 
-    private void saveSingularElementToOnline(){
+    private void saveToOnline(){
 
     }
 
-    private ArrayList<T> loadArrayFromOffline() throws IOException{
+    /*private ArrayList<T> loadArrayFromOffline() throws IOException{
         ArrayList<T> loadedList;
         try {
             FileInputStream fis = new FileInputStream(new File(FILENAME));
@@ -181,20 +183,21 @@ public class DataHandler<T> {
              return new ArrayList<T>();
         }
         return loadedList;
-    }
+    }*/
 
-    private ArrayList<T> loadArrayFromOnline(){
+    /*private ArrayList<T> loadArrayFromOnline(){
         return null;
-    }
+    }*/
 
-    private T loadSingularElementFromOffline() throws IOException{
+    private T loadFromOffline() throws IOException{
         T loadedElement;
 
         //Build the FileInputStream
         FileInputStream fis = new FileInputStream(new File(FILENAME));
         BufferedReader in = new BufferedReader(new InputStreamReader(fis));
         Type typeOfElement = new TypeToken<T>(){}.getType();
-        //Read from inputstream
+        //Read from inputstream\
+
         Gson gson = new Gson();
         loadedElement = gson.fromJson(in, typeOfElement);
         //Close stream
@@ -203,7 +206,7 @@ public class DataHandler<T> {
         return loadedElement;
     }
 
-    private T loadSingularElementFromOnline(){
+    private T loadFromOnline(){
         return null;
     }
 
