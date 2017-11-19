@@ -22,5 +22,7 @@
     <string name="habit_event_scheduled_prompt">When did you complete the Habit:</string>
     <string name="habit_event_schedule_title">Habit takes place:</string>
     <string name="main_menu">Main Menu</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 
 </resources>
