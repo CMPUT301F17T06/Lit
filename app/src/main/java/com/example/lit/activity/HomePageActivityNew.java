@@ -20,11 +20,15 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.example.lit.R;
 import com.example.lit.Utilities.DataModel;
 import com.example.lit.Utilities.DrawerItemCustomAdapter;
+import com.example.lit.fragments.FriendsFragment;
+import com.example.lit.fragments.MapFragment;
+import com.example.lit.fragments.ProfileFragment;
 import com.example.lit.fragments.TestFragment;
 
 public class HomePageActivityNew extends AppCompatActivity {
@@ -36,6 +40,7 @@ public class HomePageActivityNew extends AppCompatActivity {
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
+    private FrameLayout frameLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +51,7 @@ public class HomePageActivityNew extends AppCompatActivity {
         mNavigationDrawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        frameLayout = (FrameLayout) findViewById(R.id.content_frame);
 
         setupToolbar();
 
@@ -63,6 +69,9 @@ public class HomePageActivityNew extends AppCompatActivity {
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         setupDrawerToggle();
+        selectItem(0);
+
+
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -83,13 +92,13 @@ public class HomePageActivityNew extends AppCompatActivity {
                 fragment = new TestFragment();
                 break;
             case 1:
-                //fragment = new FixturesFragment();
+                fragment = new FriendsFragment();
                 break;
             case 2:
-                //fragment = new TableFragment();
+                fragment = new MapFragment();
                 break;
             case 3:
-                //fragment = new ProfileFragment();
+                fragment = new ProfileFragment();
 
             default:
                 break;
@@ -105,7 +114,10 @@ public class HomePageActivityNew extends AppCompatActivity {
             mDrawerLayout.closeDrawer(mDrawerList);
 
         } else {
-            Log.e("HomePageActivityNew", "Error in creating fragment");
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            Fragment fragmentDefault = new TestFragment();
+            fragmentManager.beginTransaction().replace(R.id.content_frame,fragmentDefault);
+            //Log.e("HomePageActivityNew", "Error in creating fragment");
         }
     }
 
