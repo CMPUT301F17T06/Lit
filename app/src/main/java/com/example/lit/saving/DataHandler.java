@@ -36,6 +36,9 @@ import java.util.ArrayList;
  * Objects that are not the same type should be separated into two different
  * DataHandler objects and as such two different files.
  *
+ * An alternative to having the user provide the filename would
+ * be to use class reflection and have that determine the file name.
+ *
  * @author Riley Dixon
  */
 
@@ -47,8 +50,14 @@ import java.util.ArrayList;
 public class DataHandler<T> {
     private long lastOfflineSave;
     private long lastOnlineSave;
+    //The following two variables are used for reading into the data's timestamp
+    //They are used as temporary variables compared to the two above as in case
+    //There is some reason why reading in the data unsuccessful. This causes the two variables
+    //above to hold the timestamp of the last time the data was loaded successfully.
+    private long loadingOfflineTime;
+    private long loadingOnlineTime;
     private String FILENAME;
-    private ElasticSearchHabitController esObject;
+    private ElasticSearchHabitController.AddHabitsTask esObject;
 
     /**
      * Builds a handler that is used to save data to both local storage for offline use as
@@ -100,9 +109,16 @@ public class DataHandler<T> {
     public void saveData(T element){
         long currentTime = System.currentTimeMillis();
         try{
+            saveToOffline(element, currentTime);
             lastOfflineSave = currentTime;
-            saveToOffline(element);
         }catch (IOException e){
+            throw new RuntimeException();
+        }
+
+        try{
+            saveToOnline(element, currentTime);
+            lastOnlineSave = currentTime;
+        }catch (NotOnlineException e){
             throw new RuntimeException();
         }
         //TODO: Online part
@@ -121,17 +137,37 @@ public class DataHandler<T> {
         return loadedList;
     }*/
 
+    /**
+     * Returns the newest data
+     *
+     *
+     * @return
+     */
     public T loadData(){
-        long currentTime = System.currentTimeMillis();
-        T loadedElement;
+        //zero assumes no data was found, if both are zero then there probably is no data
+        //or the data has been lost.
+        T loadedElementOffline;
+        T loadedElementOnline;
         //TODO: Compare offline and online file, then decide which file to load from
         //TODO: If the files timestamps are different, sync with the newer file
         try{
-            loadedElement = loadFromOffline();
+            loadedElementOffline = loadFromOffline();
+            this.lastOfflineSave = this.loadingOfflineTime;
         }catch (IOException e){
             throw new RuntimeException();
         }
-        return loadedElement;
+        try{
+            loadedElementOnline = loadFromOnline();
+            this.lastOnlineSave = this.loadingOnlineTime;
+        }catch (NotOnlineException e){
+            throw new RuntimeException();
+        }
+
+        if(this.lastOfflineSave > this.lastOnlineSave){
+            return loadedElementOffline;
+        }else{
+            return loadedElementOnline;
+        }
     }
 
     /*private void saveArrayToOffline(ArrayList<T> arrayListToSave)throws IOException{
@@ -151,19 +187,20 @@ public class DataHandler<T> {
 
     }*/
 
-    private void saveToOffline(T singleElementToSave) throws IOException{
+    private void saveToOffline(T dataToSave, long currentTime) throws IOException{
         FileOutputStream fos = new FileOutputStream(new File(FILENAME));
         BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
         Type typeOfElement = new TypeToken<T>(){}.getType();
         //Write to the stream.
         Gson gson = new Gson();
-        gson.toJson(singleElementToSave, typeOfElement, out); //OBJECT, TYPE, APPENDABLE
+        gson.toJson(currentTime, out);
+        gson.toJson(dataToSave, typeOfElement, out); //OBJECT, TYPE, APPENDABLE
         //Close the writing stream.
         out.flush();
         fos.close();
     }
 
-    private void saveToOnline(){
+    private void saveToOnline(T dataToSave, long currentTime) throws NotOnlineException{
 
     }
 
@@ -196,9 +233,9 @@ public class DataHandler<T> {
         FileInputStream fis = new FileInputStream(new File(FILENAME));
         BufferedReader in = new BufferedReader(new InputStreamReader(fis));
         Type typeOfElement = new TypeToken<T>(){}.getType();
-        //Read from inputstream\
-
+        //Read from inputstream
         Gson gson = new Gson();
+        this.loadingOfflineTime = gson.fromJson(in, new TypeToken<Long>(){}.getType());
         loadedElement = gson.fromJson(in, typeOfElement);
         //Close stream
         fis.close();
@@ -206,7 +243,7 @@ public class DataHandler<T> {
         return loadedElement;
     }
 
-    private T loadFromOnline(){
+    private T loadFromOnline() throws NotOnlineException{
         return null;
     }
 
