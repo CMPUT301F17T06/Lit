@@ -25,6 +25,7 @@ import android.widget.ListView;
 import com.example.lit.R;
 import com.example.lit.Utilities.DataModel;
 import com.example.lit.Utilities.DrawerItemCustomAdapter;
+import com.example.lit.fragments.TestFragment;
 
 public class HomePageActivityNew extends AppCompatActivity {
 
@@ -48,7 +49,7 @@ public class HomePageActivityNew extends AppCompatActivity {
 
         setupToolbar();
 
-        DataModel[] drawerItem = new DataModel[3];
+        DataModel[] drawerItem = new DataModel[4];
 
         drawerItem[0] = new DataModel(R.drawable.habithistory, "HabitHistory");
         drawerItem[1] = new DataModel(R.drawable.friends, "Friends");
@@ -60,7 +61,6 @@ public class HomePageActivityNew extends AppCompatActivity {
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.list_view_item_row, drawerItem);
         mDrawerList.setAdapter(adapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         setupDrawerToggle();
     }
@@ -80,7 +80,7 @@ public class HomePageActivityNew extends AppCompatActivity {
 
         switch (position) {
             case 0:
-                //fragment = new ConnectFragment();
+                fragment = new TestFragment();
                 break;
             case 1:
                 //fragment = new FixturesFragment();
