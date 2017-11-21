@@ -59,6 +59,13 @@ public abstract class Habit implements Habitable , Serializable{
         this.setDate(date);
     }
 
+    public Habit(String title, Date date, HabitLocation habitLocation, String reason) throws HabitFormatException {
+        this.setTitle(title);
+        this.setDate(date);
+        this.setLocation(habitLocation);
+        this.setReason(reason);
+    }
+
     /**
      * This is the main constructor we are using in AddHabitActivity
      *

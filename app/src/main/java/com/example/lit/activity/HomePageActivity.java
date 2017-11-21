@@ -10,6 +10,7 @@
 
 package com.example.lit.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -30,6 +31,7 @@ import com.example.lit.exception.HabitFormatException;
 import com.example.lit.habit.Habit;
 import com.example.lit.habit.HabitList;
 import com.example.lit.habit.NormalHabit;
+import com.example.lit.habitevent.HabitEvent;
 import com.example.lit.location.HabitLocation;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
@@ -48,10 +50,24 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
+/**
+ * HomepageActivity
+ * This is the main page of the app. implements most of the function
+ * Version 1.0
+ *
+ * Nov.13 2017
+ * @author : damon
+ *
+ *
+ * Copyright 2017 Team 6, CMPUT301, University of Alberta-All Rights Reserved.
+ * You may use distribute, or modify this code under terms and conditions of the Code of Student Behaviour at University of Alberta.
+ * you may find a copy of the license in the project. Otherwise please contact jiaxiong@ualberta.ca
+ */
 public class HomePageActivity extends AppCompatActivity {
 
+
     private static final String FILENAME = "habitFile.sav";
+
     /*ListView currentHabitList;
     ListView habitHistoryList;
     ListView friendsList;
@@ -77,10 +93,15 @@ public class HomePageActivity extends AppCompatActivity {
     private ArrayList<Habit> habitArrayList;
     ArrayAdapter<Habit> habitAdapter;
     private HabitLocation habitLocation;
+    private HabitLocation eventlocation;
+    HabitEvent habitEvent;
+    private double lat;
+    private double lng;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
         addHabitButton = (ImageButton) findViewById(R.id.AddHabit);
@@ -93,12 +114,14 @@ public class HomePageActivity extends AppCompatActivity {
         habitAdapter = new ArrayAdapter<Habit>(this,R.layout.list_item,habitArrayList);
         habitsListView.setAdapter(habitAdapter);
 
+
         HabitHistory.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                setResult(RESULT_OK);
-                Intent intent = new Intent(v.getContext(), ViewHabitActivity.class);
-                startActivityForResult(intent,1);
+
+                Intent EventIntent = new Intent(HomePageActivity.this, HistoryActivity.class);
+
+                startActivity(EventIntent);
             }});
 
         Friends.setOnClickListener(new View.OnClickListener() {
@@ -153,7 +176,7 @@ public class HomePageActivity extends AppCompatActivity {
                 }
                 bundle.putSerializable("habit", selectedHabit);
                 intent.putExtras(bundle);
-                startActivityForResult(intent,1);
+                startActivityForResult(intent,2);
             }
         });
     }
@@ -183,31 +206,36 @@ public class HomePageActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        //if return success update the values of item
-        if(resultCode == RESULT_OK) {
-            /**Take from https://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
-             * 2017/11/12
-             */
-            Bundle bundle = data.getExtras();
-            Habit habit = (Habit) bundle.getSerializable("habit");
-            try {
-                double lat = bundle.getDouble("lat");
-                double lng = bundle.getDouble("lng");
-                LatLng latLng = new LatLng(lat, lng);
-                habitLocation = new HabitLocation(latLng);
-                habit.setLocation(habitLocation);
-            }catch (Exception e){
-                //
+        if(requestCode == 1){
+            //if return success update the values of item
+            if(resultCode == RESULT_OK) {
+                /**Take from https://stackoverflow.com/questions/2736389/how-to-pass-an-object-from-one-activity-to-another-on-android
+                 * 2017/11/12
+                 */
+                Bundle bundle = data.getExtras();
+                Habit habit = (Habit) bundle.getSerializable("habit");
+                try {
+                    double lat = bundle.getDouble("lat");
+                    double lng = bundle.getDouble("lng");
+                    LatLng latLng = new LatLng(lat, lng);
+                    habitLocation = new HabitLocation(latLng);
+                    habit.setLocation(habitLocation);
+                }catch (Exception e){
+                    //
+                }
+                habitArrayList.add(habit);
+                habitAdapter.notifyDataSetChanged();
+                saveInFile();
             }
-            habitArrayList.add(habit);
-            habitAdapter.notifyDataSetChanged();
-            saveInFile();
+            else {
+                //not return success do nothing
+                habitAdapter.notifyDataSetChanged();
+                saveInFile();
+            }
+
         }
-        else {
-            //not return success do nothing
-            habitAdapter.notifyDataSetChanged();
-            saveInFile();
-        }
+
+
     }
 
     /**

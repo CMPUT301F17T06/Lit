@@ -10,6 +10,7 @@
 
 package com.example.lit.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,18 +20,37 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.lit.R;
+import com.example.lit.exception.HabitFormatException;
 import com.example.lit.exception.LoadHabitException;
 import com.example.lit.habit.Habit;
+import com.example.lit.habitevent.HabitEvent;
+import com.example.lit.habitevent.NormalHabitEvent;
+import com.example.lit.location.HabitLocation;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
-
+/**
+ * viewHabitActivity
+ * Version 1.0
+ *
+ * Nov.13 2017
+ *
+ * @see HomePageActivity
+ *
+ *
+ *
+ * Copyright 2017 Team 6, CMPUT301, University of Alberta-All Rights Reserved.
+ * You may use distribute, or modify this code under terms and conditions of the Code of Student Behaviour at University of Alberta.
+ * you may find a copy of the license in the project. Otherwise please contact jiaxiong@ualberta.ca
+ */
 public class ViewHabitActivity extends AppCompatActivity {
 
     private static final String CLASS_KEY = "com.example.lit.activity.ViewHabitActivity";
 
-    Serializable serializable;
+
     Habit currentHabit;
     String habitTitleString;
     String habitCommentString;
@@ -56,14 +76,21 @@ public class ViewHabitActivity extends AppCompatActivity {
         addHabitEventButton = (Button) findViewById(R.id.AddHabitEvent);
 
         try{
-            serializable = getIntent().getExtras().getSerializable("habit");
-            if (!(serializable instanceof Habit)) throw new LoadHabitException();
+            Bundle bundle = getIntent().getExtras();
+            currentHabit = (Habit)bundle.getSerializable("habit");
+            double lat = bundle.getDouble("lat");
+            double lng = bundle.getDouble("lng");
+            LatLng latLng = new LatLng(lat, lng);
+            HabitLocation habitLocation= new HabitLocation(latLng);
+
+            currentHabit.setLocation(habitLocation);
+
+            if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
         }catch (LoadHabitException e){
             //TODO: handle LoadHabitException
         }
-
         // Retrieve habit info
-        currentHabit = (Habit) serializable;
+
         habitTitleString = currentHabit.getTitle();
         habitCommentString = currentHabit.getReason();
         habitDateStartedString = currentHabit.getDate().toString();
@@ -84,7 +111,7 @@ public class ViewHabitActivity extends AppCompatActivity {
         editHabit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toEditHabitActivity(serializable);
+                toEditHabitActivity(currentHabit);
             }
         });
 
@@ -100,6 +127,14 @@ public class ViewHabitActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), AddHabitEventActivity.class);
                 Bundle bundle = new Bundle();
+                HabitLocation location = currentHabit.getHabitLocation();
+                LatLng latLng = location.getLocation();
+                double latitude = latLng.latitude;
+                double longitude = latLng.longitude;
+                currentHabit.setLocation(null);
+                bundle.putDouble("lat", latitude);
+                bundle.putDouble("lng", longitude);
+
                 bundle.putSerializable("habit", currentHabit);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,1);
@@ -113,6 +148,10 @@ public class ViewHabitActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * This function jump to EditHabitActivity
+     * @param serializable
+     */
     public void toEditHabitActivity(Serializable serializable){
         Intent intent = new Intent(ViewHabitActivity.this, EditHabitActivity.class);
         Log.i("ViewHabitActivity", "Edit button pressed.");
@@ -124,4 +163,5 @@ public class ViewHabitActivity extends AppCompatActivity {
     public void deleteHabit(Habit habit){
         //
     }
+
 }

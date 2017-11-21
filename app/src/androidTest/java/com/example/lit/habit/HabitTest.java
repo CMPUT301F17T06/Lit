@@ -29,7 +29,7 @@ public class HabitTest extends  ActivityInstrumentationTestCase2{
         super(Habit.class);
     }
 
-    public void testJestId(){
+    public void testJestId()throws HabitFormatException{
         Habit habit = new NormalHabit("test title");
         String id = "test ID";
         habit.setId(id);
@@ -37,7 +37,7 @@ public class HabitTest extends  ActivityInstrumentationTestCase2{
         assertEquals(habit.getId(),id);
     }
 
-    public void testGetTitle(){
+    public void testGetTitle()throws HabitFormatException{
         String title = "test title";
         Habit habit = new NormalHabit(title);
         assertEquals(habit.getTitle(),title);
@@ -62,7 +62,7 @@ public class HabitTest extends  ActivityInstrumentationTestCase2{
 
     }
 
-    public void testGetReason(){
+    public void testGetReason()throws HabitFormatException{
         String title = "test title";
         String reason = "test reason";
         Date date = new Date(System.currentTimeMillis());
@@ -97,14 +97,14 @@ public class HabitTest extends  ActivityInstrumentationTestCase2{
     }
 
 
-    public void testGetDate(){
+    public void testGetDate()throws HabitFormatException{
         Date date = new Date();
         Habit habit = new NormalHabit("test habit", date);
 
         assertEquals(habit.getDate(),date);
     }
 
-    public void testSetDate(){
+    public void testSetDate()throws HabitFormatException{
         Date date = new Date(System.currentTimeMillis());
         Habit habit = new NormalHabit("test habit", date);
 
@@ -114,7 +114,7 @@ public class HabitTest extends  ActivityInstrumentationTestCase2{
         assertEquals(habit.getDate(),date);
     }
 
-    public void testGetLocation(){
+    public void testGetLocation()throws HabitFormatException{
         String title = "test title";
         String reason = "test reason";
         Date date = new Date(System.currentTimeMillis());
@@ -126,7 +126,7 @@ public class HabitTest extends  ActivityInstrumentationTestCase2{
         assertEquals(habit.getHabitLocation(), habitLocation);
     }
 
-    public void testSetLocation(){
+    public void testSetLocation()throws HabitFormatException{
         String title = "test title";
         String reason = "test reason";
         Date date = new Date(System.currentTimeMillis());
@@ -137,7 +137,7 @@ public class HabitTest extends  ActivityInstrumentationTestCase2{
         HabitLocation newHabitLocation = new HabitLocation(newLatlng);
 
         NormalHabit habit = new NormalHabit(title,date, habitLocation,reason);
-        habit.setHabitLocation(newLatlng);
+        habit.setLocation(newHabitLocation);
 
         assertEquals(habit.getHabitLocation(), newHabitLocation);
     }

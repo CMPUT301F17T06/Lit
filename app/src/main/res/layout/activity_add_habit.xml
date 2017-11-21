@@ -124,7 +124,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/semi_colon"
         app:layout_constraintTop_toTopOf="@+id/hour_spinner"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        android:layout_marginRight="16dp" />
 
     <TextView
         android:id="@+id/semi_colon"

@@ -41,6 +41,7 @@ import com.example.lit.habit.Habit;
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.habit.NormalHabit;
 import com.example.lit.location.HabitLocation;
+import com.example.lit.saving.DataHandler;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,6 +52,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 
+/*
+ * AddHabitActivity
+ *
+ * Version 1.0
+ *
+ * Nov.13 2017
+ *
+ *
+ *
+ * Copyright 2017 Team 6, CMPUT301, University of Alberta-All Rights Reserved.
+ * You may use distribute, or modify this code under terms and conditions of the Code of Student Behaviour at University of Alberta.
+ * you may find a copy of the license in the project. Otherwise please contact jiaxiong@ualberta.ca
+ */
 public class AddHabitActivity extends AppCompatActivity  {
 
     private static final String CLASS_KEY = "com.example.lit.activity.AddHabitActivity";
@@ -67,7 +81,6 @@ public class AddHabitActivity extends AppCompatActivity  {
     private Button editImage;
     //TODO: Implement image feature
 
-
     Date habitStartDate;
     String habitNameString;
     String commentString;
@@ -81,7 +94,6 @@ public class AddHabitActivity extends AppCompatActivity  {
     private String provider;
     double latitude;
     double longitude;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +123,6 @@ public class AddHabitActivity extends AppCompatActivity  {
         minuteAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         minute_spinner.setAdapter(minuteAdapter);
 
-
         saveHabit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -129,7 +140,6 @@ public class AddHabitActivity extends AppCompatActivity  {
                 finish();
             }
         });
-
     }
 
     /**
@@ -151,7 +161,6 @@ public class AddHabitActivity extends AppCompatActivity  {
         } catch (ParseException e) {
             //TODO: handle exception
         }
-
 
         Intent newHabitIntent = new Intent(AddHabitActivity.this, HomePageActivity.class);
         Bundle bundle = new Bundle();
@@ -214,6 +223,16 @@ public class AddHabitActivity extends AppCompatActivity  {
         return hourList;
     }
 
+    /**
+     * Return a calender list. The field in Calender set: weekdays, hour, minute.
+     *
+     * @param hour hour time
+     * @param minute minute time
+     * @param weekdays weekday
+     * @throws ParseException thrown when fail to parse weekday string
+     * @return A Calender list.
+     * @see Calendar
+     * */
     private List<Calendar> buildCalender(List<String> weekdays, int hour, int minute)throws ParseException{
         List<Calendar> calendarList = new ArrayList<Calendar>();
         for (String weekday:weekdays
@@ -232,7 +251,17 @@ public class AddHabitActivity extends AppCompatActivity  {
         return calendarList;
     }
 
-    // Taken https://stackoverflow.com/questions/18232340/convert-string-to-day-of-week-not-exact-date
+    /**
+     * This function will parse a weekday string (e.g. "Monday") to corresponding integer.
+     *
+     * Taken https://stackoverflow.com/questions/18232340/convert-string-to-day-of-week-not-exact-date
+     *
+     * @param day weekday string.
+     * @param locale weekday string format
+     * @throws ParseException when day is not a weekday string
+     * @return dayOfWeek a integer representing day of week in Calender.
+     * @see Calendar
+     * */
     private static int parseDayOfWeek(String day, Locale locale)
             throws ParseException {
         SimpleDateFormat dayFormat = new SimpleDateFormat("E", locale);
@@ -260,20 +289,18 @@ public class AddHabitActivity extends AppCompatActivity  {
      */
     private ArrayList<String> createNumberList(int low, int high, int interval){
         ArrayList<String> numberList = new ArrayList<>();
-
         for(int i = low; i <= high; i += interval){
             numberList.add(String.valueOf(i));
         }
-
         return numberList;
     }
 
     /**
-     * This function will return a Location object containing Latitude and Longitude attribute
+     * This function will return a Location object containing Latitude and Longitude attribute.
      *
-     * @param locationCheck location checkbox in AddHabitActivity
+     * @param locationCheck location checkbox in AddHabitActivity.
      *
-     * @return A location object
+     * @return A location object, null if fail to initialize location.
      * */
     private Location buildLocation(CheckBox locationCheck){
                 /*if checkbox checked return current location*/
@@ -307,4 +334,10 @@ public class AddHabitActivity extends AppCompatActivity  {
         return returnLocation;
     }
 
+
+    //TODO: A function used to add new Habit into corresponding user file
+    private void writeInFile(String user, Habit habit, Context view){
+        DataHandler datahandler = new DataHandler(user,"habit",view);
+        datahandler.saveSingularElement(habit);
+    }
 }

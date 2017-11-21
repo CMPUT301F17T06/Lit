@@ -8,47 +8,11 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.example.lit.location;
+package com.example.lit.activity;
 
 /**
- * Habitlocation implement the location object in the habitevent
- * Version 1.0
- *
- * Nov.13 2017
- *
- *
- * @author : damon
- *
- *
- * Copyright 2017 Team 6, CMPUT301, University of Alberta-All Rights Reserved.
- * You may use distribute, or modify this code under terms and conditions of the Code of Student Behaviour at University of Alberta.
- * you may find a copy of the license in the project. Otherwise please contact jiaxiong@ualberta.ca
+ * Created by weikailu on 2017-11-13.
  */
 
-import com.google.android.gms.maps.model.LatLng;
-public  class HabitLocation  {
-
-
-    private LatLng location;
-
-    public HabitLocation(LatLng location){
-        this.location = location;
-    }
-
-    /*TODO : get the current location working later
-     */
-
-    public HabitLocation(){
-        LatLng currentLocation = new LatLng(0.000, 0.000);
-        this.location = currentLocation;
-    }
-
-    public LatLng getLocation() {
-        return location;
-    }
-
-    public void setLocation(LatLng location) {
-        this.location = location;
-    }
-
+public class MainActivityTest {
 }

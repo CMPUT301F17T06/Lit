@@ -11,6 +11,7 @@
 package com.example.lit.habit;
 
 import android.os.Parcel;
+import android.provider.ContactsContract;
 
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.location.HabitLocation;
@@ -20,14 +21,26 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by weikailu on 2017-10-21.
+/*
+ * NormalHabit
+ *
+ * Version 1.0
+ *
+ * Nov.13 2017
+ *
+ *
+ *
+ * Copyright 2017 Team 6, CMPUT301, University of Alberta-All Rights Reserved.
+ * You may use distribute, or modify this code under terms and conditions of the Code of Student Behaviour at University of Alberta.
+ * you may find a copy of the license in the project. Otherwise please contact jiaxiong@ualberta.ca
  */
 
 public class NormalHabit extends Habit implements Serializable {
     public NormalHabit(String title)throws HabitFormatException {super(title);}
 
     public NormalHabit(String title, Date date)throws HabitFormatException {super(title, date);}
+
+    public NormalHabit(String title, Date date, HabitLocation habitLocation, String reason) throws HabitFormatException{super(title, date, habitLocation, reason);}
 
     public NormalHabit(String title, Date date, HabitLocation habitLocation, String reason, List<Calendar> calenderList) throws HabitFormatException {
         super(title, date, habitLocation, reason, calenderList);

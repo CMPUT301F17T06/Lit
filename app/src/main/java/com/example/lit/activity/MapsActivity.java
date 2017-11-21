@@ -34,7 +34,19 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.List;
-
+/**
+ * MapsActivity
+ * Version 1.0
+ *
+ * Nov.13 2017
+ * @see HomePageActivity
+ * @author : damon
+ *
+ *
+ * Copyright 2017 Team 6, CMPUT301, University of Alberta-All Rights Reserved.
+ * You may use distribute, or modify this code under terms and conditions of the Code of Student Behaviour at University of Alberta.
+ * you may find a copy of the license in the project. Otherwise please contact jiaxiong@ualberta.ca
+ */
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
     private LocationManager manager;
     private LocationListener locationListener;
@@ -69,6 +81,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
+        /**montior the location change
+         * @throw IOException
+         */
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
@@ -121,7 +136,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View v) {
                 setResult(RESULT_OK);
                 Intent intent = new Intent(v.getContext(), HomePageActivity.class);
-                startActivityForResult(intent,1);
+                startActivity(intent);
             }});
     }
 

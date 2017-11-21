@@ -10,10 +10,20 @@
 
 package com.example.lit.habit;
 
-/**
- * Created by weikailu on 2017-10-20.
- */
 
+/*
+ * Habitable
+ *
+ * Version 1.0
+ *
+ * Nov.13 2017
+ *
+ *
+ *
+ * Copyright 2017 Team 6, CMPUT301, University of Alberta-All Rights Reserved.
+ * You may use distribute, or modify this code under terms and conditions of the Code of Student Behaviour at University of Alberta.
+ * you may find a copy of the license in the project. Otherwise please contact jiaxiong@ualberta.ca
+ */
 import com.example.lit.location.HabitLocation;
 
 import java.util.Date;

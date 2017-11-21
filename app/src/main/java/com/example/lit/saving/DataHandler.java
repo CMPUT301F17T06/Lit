@@ -80,7 +80,7 @@ public class DataHandler<T> {
      *
      * @see Gson
      */
-    DataHandler(String username, String savedObject, Context context){
+    public DataHandler(String username, String savedObject, Context context){
         this.FILENAME = context.getFilesDir().getAbsolutePath() + File.separator
                 + username;
 

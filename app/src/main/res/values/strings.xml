@@ -21,5 +21,6 @@
     <string name="habit_event_comment_field">Habit Event Comment</string>
     <string name="habit_event_scheduled_prompt">When did you complete the Habit:</string>
     <string name="habit_event_schedule_title">Habit takes place:</string>
+    <string name="main_menu">Main Menu</string>
 
 </resources>
