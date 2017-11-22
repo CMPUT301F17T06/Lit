@@ -11,20 +11,19 @@
 package com.example.lit.saving;
 
 /**
- * Created by Riley Dixon on 19/11/2017.
+ * Created by rmdixon on 11/21/17.
  */
 
 /**
- * A particular exception of ElasticSearchException where we cannot connect to the
- * ElasticSearch server.
+ * If ElasticSearch throws an error message it should throw this exception.
  *
  */
-public class NotOnlineException extends Exception {
-    NotOnlineException(){
+public class ElasticSearchException extends Exception {
+    ElasticSearchException(){
         super();
     }
 
-    NotOnlineException(String message){
-        super(message);
+    ElasticSearchException(String errorMessage){
+        super(errorMessage);
     }
 }

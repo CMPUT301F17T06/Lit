@@ -11,20 +11,22 @@
 package com.example.lit.saving;
 
 /**
- * Created by Riley Dixon on 19/11/2017.
+ * Created by rmdixon on 11/21/17.
  */
 
 /**
- * A particular exception of ElasticSearchException where we cannot connect to the
- * ElasticSearch server.
+ * If no data is able to be read throw this exception. Should be
+ * implemented by the calling class.
  *
  */
-public class NotOnlineException extends Exception {
-    NotOnlineException(){
+public class NoDataException extends Exception {
+
+    NoDataException(){
         super();
     }
 
-    NotOnlineException(String message){
-        super(message);
+    NoDataException(String errorMessage){
+        super(errorMessage);
     }
+
 }
