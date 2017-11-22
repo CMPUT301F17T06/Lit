@@ -12,8 +12,9 @@ package com.example.lit.saving;
 
 import android.content.Context;
 
-import com.example.lit.elasticsearch.ElasticSearchHabitController;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
@@ -27,6 +28,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 
 /**
@@ -61,26 +64,19 @@ public class DataHandler<T> {
 
     /**
      * Builds a handler that is used to save data to both local storage for offline use as
-     * well as online via ElasticSearch.
+     * well as online via ElasticSearch. T is the type of object that is to be stored.
      *
      * @param username What the username of the current logged in user is.
      *                 This is required to give a cleaner file hierarchy.
-     * @param savedObject What object is currently being saved? Is this HabitList or
-     *                    HabitHistory for example.
+     * @param typeOfObject What object is currently being accessed? This designates the file name
+     *                     to be read from and written to.
      * @param context The context of the activity. In most cases when constructing
-     *                the object this parameter is "this".
-     * TODO: Fix Javadoc to clarify that the below parameter is the generic T and no longer a parameter
-     * @param typeOfDataBeingStored The type of data being stored. As arrayList's
-     *                              are being used and we cannot confirm what the
-     *                              type of the arrayList is at runtime due to Java's
-     *                              type erasure of generics at runtime, the type of
-     *                              arrayList being passed MUST be passed explicitly.
-     *                              See the GSON Javadoc for how to generate the Type
-     *                              object to pass to this constructor.
+     *                the object this parameter is "this". This is used for accessing
+     *                the file system for offline/local storage.
      *
      * @see Gson
      */
-    public DataHandler(String username, String savedObject, Context context){
+    public DataHandler(String username, String typeOfObject, Context context){
         this.FILENAME = context.getFilesDir().getAbsolutePath() + File.separator
                 + username;
 
@@ -91,7 +87,7 @@ public class DataHandler<T> {
             filePath.mkdirs();
         }
 
-        FILENAME += File.separator + savedObject + ".sav";
+        FILENAME += File.separator + typeOfObject + ".sav";
     }
 
     /*
@@ -193,8 +189,12 @@ public class DataHandler<T> {
         Type typeOfElement = new TypeToken<T>(){}.getType();
         //Write to the stream.
         Gson gson = new Gson();
-        gson.toJson(currentTime, out);
-        gson.toJson(dataToSave, typeOfElement, out); //OBJECT, TYPE, APPENDABLE
+        Collection collection = new ArrayList();
+        collection.add(currentTime);
+        collection.add(dataToSave);
+        gson.toJson(collection, out);
+        //gson.toJson(currentTime, out);
+        //gson.toJson(dataToSave, typeOfElement, out); //OBJECT, TYPE, APPENDABLE
         //Close the writing stream.
         out.flush();
         fos.close();
@@ -235,8 +235,12 @@ public class DataHandler<T> {
         Type typeOfElement = new TypeToken<T>(){}.getType();
         //Read from inputstream
         Gson gson = new Gson();
-        this.loadingOfflineTime = gson.fromJson(in, new TypeToken<Long>(){}.getType());
-        loadedElement = gson.fromJson(in, typeOfElement);
+        JsonParser jsonParser = new JsonParser();
+        JsonArray jsonArray = jsonParser.parse(gson.fromJson(in, String.class)).getAsJsonArray();
+        this.loadingOfflineTime = gson.fromJson(jsonArray.get(0), long.class);
+        loadedElement = gson.fromJson(jsonArray.get(1), typeOfElement);
+        //this.loadingOfflineTime = gson.fromJson(in, new TypeToken<Long>(){}.getType());
+        //loadedElement = gson.fromJson(in, typeOfElement);
         //Close stream
         fis.close();
 
