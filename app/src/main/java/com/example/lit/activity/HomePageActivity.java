@@ -68,20 +68,7 @@ public class HomePageActivity extends AppCompatActivity {
 
     private static final String FILENAME = "habitFile.sav";
 
-    /*ListView currentHabitList;
-    ListView habitHistoryList;
-    ListView friendsList;
-    View mapView; //What kind of view is this supposed to be?
-    View profileView; //What kind of view is this supposed to be?
-    EditText habitHistoryQuery;
-
-    TextView userProfileName;
-    TextView userProfileDescription;
-    ImageView userProfileImage;
-    Button searchHistoryByHabitName;
-    Button searchHistoryByComment;
-    Button sortHistoryMenu; //Not sure what kind of View this should be
-*/
+    
 
     private ImageButton addHabitButton;
     private Button Maps;
