@@ -23,4 +23,11 @@
     <string name="habit_event_schedule_title">Habit takes place:</string>
     <string name="main_menu">Main Menu</string>
 
+    <string-array name="navigation_drawer_items_array">
+        <item>HabitHistory</item>
+        <item>Friends</item>
+        <item>Map</item>
+        <item>Profile</item>
+    </string-array>
+
 </resources>

@@ -338,6 +338,6 @@ public class AddHabitActivity extends AppCompatActivity  {
     //TODO: A function used to add new Habit into corresponding user file
     private void writeInFile(String user, Habit habit, Context view){
         DataHandler datahandler = new DataHandler(user,"habit",view);
-        datahandler.saveSingularElement(habit);
+        //datahandler.saveSingularElement(habit);
     }
 }

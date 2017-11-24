@@ -12,7 +12,7 @@ package com.example.lit.saving;
 
 import android.content.Context;
 
-import com.example.lit.elasticsearch.ElasticSearchHabitController;
+import com.example.lit.saving.ElasticSearchHabitController;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
