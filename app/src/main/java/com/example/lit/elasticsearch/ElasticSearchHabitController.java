@@ -12,6 +12,7 @@ package com.example.lit.elasticsearch;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.lit.habit.Habit;
 import com.example.lit.habit.NormalHabit;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
@@ -72,7 +73,7 @@ public class ElasticSearchHabitController {
 
             // TODO Build the query
 
-            Search search = new Search.Builder(""+search_parameters[0]+"").addIndex("testing").addType("habit").build();
+            Search search = new Search.Builder(""+search_parameters[0]+"").addIndex("cmput301f17t06").addType("habit").build();
 
             try {
                 // get the results of the query

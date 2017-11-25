@@ -69,7 +69,7 @@ public class HomePageActivityNew extends AppCompatActivity {
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         setupDrawerToggle();
-        selectItem(0);
+        selectItem(1);
 
 
     }
