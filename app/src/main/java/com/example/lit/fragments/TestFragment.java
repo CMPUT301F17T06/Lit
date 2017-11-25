@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.example.lit.R;
@@ -47,7 +48,7 @@ public class TestFragment extends Fragment {
 
     ArrayList<NormalHabit> habitArrayList;
     ArrayAdapter<NormalHabit> habitAdapter;
-    NormalHabit testHabit;
+
 
     FragmentActivity listener;
 
@@ -77,23 +78,6 @@ public class TestFragment extends Fragment {
 
         habitAdapter = new ArrayAdapter<NormalHabit>(this.getActivity(),R.layout.list_item,habitArrayList);
 
-        try {
-            testHabit = new NormalHabit("TestHabit") {
-                @Override
-                public String habitType() {
-                    return null;
-                }
-            };
-        } catch (HabitFormatException e) {
-            e.printStackTrace();
-        }
-
-
-
-
-        habitArrayList.add(testHabit);
-
-
 
 
     }
@@ -106,6 +90,22 @@ public class TestFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         ListView lv = (ListView) view.findViewById(R.id.habit_ListView);
+        Button createHabitButton = (Button) view.findViewById(R.id.createHabitButton);
         lv.setAdapter(habitAdapter);
+
+        createHabitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    NormalHabit testHabit = new NormalHabit("posted from app");
+                    habitArrayList.add(testHabit);
+                    habitAdapter.notifyDataSetChanged();
+                    ElasticSearchHabitController.AddHabitsTask addHabitsTask = new ElasticSearchHabitController.AddHabitsTask();
+                    addHabitsTask.execute(testHabit);
+                }catch(Exception e){
+                }
+
+            }
+        });
     }
 }
