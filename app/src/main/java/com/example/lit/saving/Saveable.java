@@ -16,8 +16,8 @@ package com.example.lit.saving;
 
 public interface Saveable {
 
-    public boolean saveData();
-    public boolean loadData();
+    String getID();
+    void setID();
 
 }
 

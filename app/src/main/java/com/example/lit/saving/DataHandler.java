@@ -12,6 +12,7 @@ package com.example.lit.saving;
 
 import android.content.Context;
 
+import com.example.lit.elasticsearch.ElasticSearchHabitController;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
@@ -47,12 +48,12 @@ import java.util.Collection;
     //file consistency but ensuring that there is only one writer or reader
     // at a time.
 
-public class DataHandler<T> {
+public class DataHandler<T extends Saveable> {
     private long lastOfflineSave;
     private long lastOnlineSave;
     private String username;
+    private String typeOfObject;
     private String FILENAME;
-    private ElasticSearchHabitController.AddHabitsTask esObject;
 
     /**
      * Builds a handler that is used to save data to both local storage for offline use as
@@ -72,6 +73,7 @@ public class DataHandler<T> {
         this.FILENAME = context.getFilesDir().getAbsolutePath() + File.separator
                 + username;
         this.username = username;
+        this.typeOfObject = typeOfObject;
 
         File filePath = new File(FILENAME);
         //Check if the subdirectory has been created yet or not
@@ -176,7 +178,10 @@ public class DataHandler<T> {
      * @throws NotOnlineException If we cannot connect to the server
      */
     private void saveToOnline(T dataToSave, long currentTime) throws NotOnlineException{
+        ElasticSearchHabitController.AddTask<T> esSaver
+                = new ElasticSearchHabitController.AddTask<T>(username, typeOfObject);
 
+        esSaver.execute(dataToSave);
     }
 
     /**

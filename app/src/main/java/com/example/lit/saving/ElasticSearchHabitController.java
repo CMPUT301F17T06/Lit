@@ -13,6 +13,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.lit.habit.NormalHabit;
+import com.example.lit.saving.Saveable;
+import com.example.lit.userprofile.UserProfile;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
@@ -25,19 +27,27 @@ import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 
-//DO NOT MAKE PUBLIC
+
 class ElasticSearchHabitController {
     private static JestDroidClient client;
 
     // adds tweets to elastic search
-    public static class AddHabitsTask extends AsyncTask<NormalHabit, Void, Void> {
+     static class AddTask<T extends Saveable> extends AsyncTask<T, Void, Void> {
+        private String username;
+        private String typeOfObject;
+
+        AddTask(String username, String typeOfObject){
+            super();
+            this.username = username;
+            this.typeOfObject = typeOfObject;
+        }
 
         @Override
-        protected Void doInBackground(NormalHabit... habits) {
+        protected Void doInBackground(T... objects) {
             verifySettings();
 
-            for (NormalHabit habit : habits) {
-                Index index = new Index.Builder(habit).index("testing").type("habit").build();
+            for (T currentT : objects) {
+                Index index = new Index.Builder(currentT).index("cmput301f17t06" + username).type(typeOfObject).build();
 
                 try {
 
@@ -45,15 +55,15 @@ class ElasticSearchHabitController {
 
                     if(result.isSucceeded())
                     {
-                        habit.setId(result.getId());
+                        currentT.setId(result.getId());
                     }
                     else
                     {
-                        Log.i("Error","Elasticsearch was not able to add the habit");
+                        Log.i("Error","Elasticsearch was not able to add the T");
                     }
                 }
                 catch (Exception e) {
-                    Log.i("Error", "The application failed to build and send the habits");
+                    Log.i("Error", "The application failed to build and send the T");
                 }
 
             }
@@ -72,7 +82,7 @@ class ElasticSearchHabitController {
 
             // TODO Build the query
 
-            Search search = new Search.Builder(""+search_parameters[0]+"").addIndex("testing").addType("habit").build();
+            Search search = new Search.Builder(""+search_parameters[0]+"").addIndex("cmput301f17t06").addType("habit").build();
 
             try {
                 // get the results of the query
@@ -88,6 +98,38 @@ class ElasticSearchHabitController {
             }
 
             return habits;
+        }
+    }
+
+    public static class AddUserTask extends AsyncTask<UserProfile, Void, Void> {
+
+        @Override
+        protected Void doInBackground(UserProfile... userProfiles) {
+            verifySettings();
+
+            //TODO fix Mapping parse error document is full.
+            for (UserProfile userProfile : userProfiles) {
+                Index index = new Index.Builder(userProfile).index("cmput301f17t06").type("user").build();
+
+                try {
+
+                    DocumentResult result = client.execute(index);
+
+                    if(result.isSucceeded())
+                    {
+                        userProfile.setId(result.getId());
+                    }
+                    else
+                    {
+                        Log.i("Error","Elasticsearch was not able to add the habit");
+                    }
+                }
+                catch (Exception e) {
+                    Log.i("Error", "The application failed to build and send the habits");
+                }
+
+            }
+            return null;
         }
     }
 
