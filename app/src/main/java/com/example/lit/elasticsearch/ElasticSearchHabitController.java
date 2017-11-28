@@ -14,6 +14,7 @@ import android.util.Log;
 
 import com.example.lit.habit.Habit;
 import com.example.lit.habit.NormalHabit;
+import com.example.lit.userprofile.UserProfile;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
@@ -38,7 +39,7 @@ public class ElasticSearchHabitController {
             verifySettings();
 
             for (NormalHabit habit : habits) {
-                Index index = new Index.Builder(habit).index("testing").type("habit").build();
+                Index index = new Index.Builder(habit).index("cmput301f17t06").type("habit").build();
 
                 try {
 
@@ -89,6 +90,38 @@ public class ElasticSearchHabitController {
             }
 
             return habits;
+        }
+    }
+
+    public static class AddUserTask extends AsyncTask<UserProfile, Void, Void> {
+
+        @Override
+        protected Void doInBackground(UserProfile... userProfiles) {
+            verifySettings();
+
+            //TODO fix Mapping parse error document is full.
+            for (UserProfile userProfile : userProfiles) {
+                Index index = new Index.Builder(userProfile).index("cmput301f17t06").type("user").build();
+
+                try {
+
+                    DocumentResult result = client.execute(index);
+
+                    if(result.isSucceeded())
+                    {
+                        userProfile.setId(result.getId());
+                    }
+                    else
+                    {
+                        Log.i("Error","Elasticsearch was not able to add the habit");
+                    }
+                }
+                catch (Exception e) {
+                    Log.i("Error", "The application failed to build and send the habits");
+                }
+
+            }
+            return null;
         }
     }
 

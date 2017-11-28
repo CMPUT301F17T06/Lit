@@ -13,16 +13,18 @@ import android.graphics.Bitmap;
 
 import com.example.lit.habit.Habit;
 import com.example.lit.habit.HabitList;
+import com.example.lit.habit.Habitable;
 import com.example.lit.habitevent.HabitEvent;
 import com.example.lit.habitevent.HabitHistory;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Riley Dixon on 21/10/2017.
  */
 
-public class UserProfile {
+public class UserProfile implements Serializable,UserProfileable {
 
     /**
      * The name of the user account. This is assumed to be unique for the app's purposes.
@@ -34,15 +36,18 @@ public class UserProfile {
     private HabitHistory habitCompletionHistory;
     private ArrayList<String> followingUsers;
     private FollowManager followManager;
+    private String id;
+
+
 
     /**
      * A dummy constructor, should be used for debugging only.
      * If creating a new UserProfile object for a purpose other than
      * debugging, use the other two constructors.
      */
-    public UserProfile() { //Dummy Constructor, sets nullable.
+    /*public UserProfile() { //Dummy Constructor, sets nullable.
 
-    }
+    }*/
 
     /**
      * Intended to be used for when a new account is created.
@@ -50,7 +55,7 @@ public class UserProfile {
      * @param name The user account's name.
      */
     public UserProfile(String name){ //New Account
-
+        this.name = name;
     }
 
     /**
@@ -71,6 +76,16 @@ public class UserProfile {
                        FollowManager followManager){
 
     }
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
 
     /**
      * Sets the account name of the UserProfile. The name shouldn't be allowed to be changed.

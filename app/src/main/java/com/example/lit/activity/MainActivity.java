@@ -18,6 +18,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.lit.R;
+import com.example.lit.elasticsearch.ElasticSearchHabitController;
+import com.example.lit.userprofile.UserProfile;
+
 /**
  * MainActivity
  * This show at the begining of the app
@@ -39,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText username;
     private Button loginButton;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,15 +51,26 @@ public class MainActivity extends AppCompatActivity {
         loginButton = (Button) findViewById(R.id.Login);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
-
+            @Override
             public void onClick(View v) {
-                setResult(RESULT_OK);
-                //Intent intent = new Intent(v.getContext(), HomePageActivity.class);
+                String name = username.getText().toString();
+                UserProfile user = new UserProfile(name);
+                try{
+                    //ElasticSearchHabitController.AddUserTask addUserTask = new ElasticSearchHabitController.AddUserTask();
+                    //addUserTask.execute(user);
+                    ElasticSearchHabitController.AddHabitsTask addHabitsTask = new ElasticSearchHabitController.AddHabitsTask();
+                    addHabitsTask.execute();
+                } catch(Exception e){
+
+                }
+
+
                 Intent intent = new Intent(v.getContext(), HomePageActivityNew.class);
-                String filename = username.getText().toString();
-                username.setText("");
-                intent.putExtra("FILENAME",filename);
+                intent.putExtra("USERNAME",username.getText().toString());
                 startActivity(intent);
-            }});
+
             }
+        });
+
+    }
 }
