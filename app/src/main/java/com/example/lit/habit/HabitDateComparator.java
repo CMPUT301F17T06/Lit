@@ -12,10 +12,14 @@ package com.example.lit.habit;
 
 import java.util.Comparator;
 
-/**
- * Created by weikailu on 2017-10-21.
- */
 
+/**
+ * This comparator is used for comparing two habits by date.
+ * @author Steven Weikai Lu
+ *
+ * @see Habit
+ *
+ * */
 public class HabitDateComparator implements Comparator<Habit> {
     public int compare(Habit left, Habit right) {
         return left.getDate().compareTo(right.getDate());

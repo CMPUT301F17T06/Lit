@@ -15,4 +15,19 @@
     android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.lit.activity.MapsActivity" />
+    tools:context="com.example.lit.activity.MapsActivity">
+
+    /**From https://stackoverflow.com/questions/14694119/how-to-add-buttons-at-top-of-map-fragment-api-v2-layout
+    ** 2017/11/10 by Damon
+    */
+    <Button
+        android:id="@+id/MapMain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|top"
+        android:layout_marginTop="20dp"
+        android:padding="10dp"
+        android:paddingRight="10dp"
+        android:text="Main page" />
+</fragment>
+

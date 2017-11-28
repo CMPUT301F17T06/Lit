@@ -12,6 +12,7 @@ package com.example.lit.habitevent;
 
 import android.test.ActivityInstrumentationTestCase2;
 
+import com.example.lit.exception.HabitFormatException;
 import com.example.lit.habitevent.HabitEvent;
 import com.example.lit.habitevent.NormalHabitEvent;
 
@@ -50,7 +51,7 @@ public class HabitEventTest extends ActivityInstrumentationTestCase2 {
         assertEquals(habitEvent.getEventDate(),date);
     }
 
-    public void testComment(){
+    public void testComment()throws HabitFormatException {
         String comment = "test comment";
         HabitEvent habitEvent = new NormalHabitEvent("test");
         habitEvent.setEventComment(comment);

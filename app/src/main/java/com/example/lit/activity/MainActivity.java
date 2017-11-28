@@ -18,6 +18,21 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.lit.R;
+/**
+ * MainActivity
+ * This show at the begining of the app
+ * user input username login to user's account
+ * Version 1.0
+ *
+ * Nov.13 2017
+ *
+ * @author : damon
+ *
+ *
+ * Copyright 2017 Team 6, CMPUT301, University of Alberta-All Rights Reserved.
+ * You may use distribute, or modify this code under terms and conditions of the Code of Student Behaviour at University of Alberta.
+ * you may find a copy of the license in the project. Otherwise please contact jiaxiong@ualberta.ca
+ */
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,7 +51,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 setResult(RESULT_OK);
                 Intent intent = new Intent(v.getContext(), HomePageActivity.class);
-                startActivityForResult(intent,1);
+                String filename = username.getText().toString();
+                username.setText("");
+                intent.putExtra("FILENAME",filename);
+                startActivity(intent);
             }});
             }
 }

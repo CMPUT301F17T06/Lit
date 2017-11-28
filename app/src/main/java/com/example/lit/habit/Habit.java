@@ -10,25 +10,37 @@
 
 package com.example.lit.habit;
 
+import android.os.Parcelable;
+
+import com.example.lit.exception.HabitFormatException;
 import com.example.lit.location.*;
 import com.google.android.gms.maps.model.LatLng;
 import io.searchbox.annotations.JestId;
 
+import java.io.Serializable;
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 /**
- * Created by weikailu on 10/20/2017.
+ * This class is an abstract habit class
+ * @author Steven Weikai Lu
  */
-
-public abstract class Habit implements Habitable {
+public abstract class Habit implements Habitable , Serializable{
 
     private String title;
     private Date date;
     public abstract String habitType();
-    private Location location;
+    private HabitLocation habitLocation;
     private String reason;
     private int titleLength = 20;
     private int reasonLength = 30;
+    private List<Calendar> calendars;
     @JestId
     private String id;
 
@@ -37,23 +49,43 @@ public abstract class Habit implements Habitable {
     public void setId(String id){ this.id = id ;}
 
 
-    public Habit(String title){
-        this.title = title;
-        this.date = new Date();
+    public Habit(String title) throws HabitFormatException {
+        this.setTitle(title);
+        this.setDate(new Date());
     }
 
-    public Habit(String title, Date date){
-
-        this.title = title;
-        this.date = date;
+    public Habit(String title, Date date) throws HabitFormatException{
+        this.setTitle(title);
+        this.setDate(date);
     }
 
-    public Habit(String title, Date date, Location location, String reason) {
-        this.title = title;
-        this.date = date;
-        this.location = location;
-        this.reason = reason;
+    public Habit(String title, Date date, HabitLocation habitLocation, String reason) throws HabitFormatException {
+        this.setTitle(title);
+        this.setDate(date);
+        this.setLocation(habitLocation);
+        this.setReason(reason);
     }
+
+    /**
+     * This is the main constructor we are using in AddHabitActivity
+     *
+     * @see com.example.lit.activity.AddHabitActivity
+     * @param title Habit name, should be at most 20 char long.
+     * @param reason Habit Comment, should be at most 30 char long.
+     * @param habitLocation Set by default when creating the habit
+     * @param date Set by GPS when creating the habit
+     * @param calendarList Set by user when creating the habit
+     * @throws HabitFormatException thrown when title longer than 20 char or reason longer than 30 char
+     * */
+    public Habit(String title, Date date, HabitLocation habitLocation, String reason, List<Calendar> calendarList) throws HabitFormatException {
+        this.setTitle(title);
+        this.setDate(date);
+        this.setLocation(habitLocation);
+        this.setReason(reason);
+        this.setCalendars(calendarList);
+    }
+
+    // TODO: Constructor with JestID
 
     public String getTitle() {
         return title;
@@ -87,21 +119,27 @@ public abstract class Habit implements Habitable {
         }
     }
 
-    public void setLocation(LatLng coordinate){
-        Location location = new Location(coordinate);
-        this.location = location;
-
+    public List<Calendar> getCalendars() {
+        return calendars;
     }
 
-    public Location getLocation(){
-        return this.location;
+    public void setCalendars(List<Calendar> calendars) {
+        this.calendars = calendars;
     }
+
+    public void setLocation(HabitLocation habitLocation){
+        this.habitLocation = habitLocation;
+    }
+
+    public HabitLocation getHabitLocation(){
+        return this.habitLocation;
+    }
+
 
     @Override
     public String toString() {
-        return "Habit{" +
-                "habitName='" + title + '\'' +
-                ", date=" + date +
-                '}';
+        return "Habit Name: " + this.getTitle() + '\n' +
+                "Started From: " + this.getDate();
     }
+
 }

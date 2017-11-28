@@ -8,32 +8,11 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.example.lit.location;
+package com.example.lit.activity;
 
 /**
- * Created by damon on 10/20/2017.
+ * Created by weikailu on 2017-11-13.
  */
-import com.google.android.gms.maps.model.LatLng;
-public class Location {
-    private LatLng location;
 
-    public Location (LatLng location){
-        this.location = location;
-    }
-
-    /*TODO : get the current location working later
-     */
-
-    public  Location (){
-        LatLng currentLocation = new LatLng(0.000, 0.000);
-        this.location = currentLocation;
-    }
-
-    public LatLng getLocation() {
-        return location;
-    }
-
-    public void setLocation(LatLng location) {
-        this.location = location;
-    }
+public class ViewHabitEventActivityTest {
 }

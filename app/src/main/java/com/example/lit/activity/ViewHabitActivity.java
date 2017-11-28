@@ -10,28 +10,158 @@
 
 package com.example.lit.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.lit.R;
+import com.example.lit.exception.HabitFormatException;
+import com.example.lit.exception.LoadHabitException;
+import com.example.lit.habit.Habit;
+import com.example.lit.habitevent.HabitEvent;
+import com.example.lit.habitevent.NormalHabitEvent;
+import com.example.lit.location.HabitLocation;
+import com.google.android.gms.maps.model.LatLng;
 
+import java.io.Serializable;
+/**
+ * viewHabitActivity
+ * Version 1.0
+ *
+ * Nov.13 2017
+ *
+ * @see HomePageActivity
+ *
+ *
+ *
+ * Copyright 2017 Team 6, CMPUT301, University of Alberta-All Rights Reserved.
+ * You may use distribute, or modify this code under terms and conditions of the Code of Student Behaviour at University of Alberta.
+ * you may find a copy of the license in the project. Otherwise please contact jiaxiong@ualberta.ca
+ */
 public class ViewHabitActivity extends AppCompatActivity {
 
-    ImageView habitImage;
-    TextView habitName;
+    private static final String CLASS_KEY = "com.example.lit.activity.ViewHabitActivity";
+
+
+    Habit currentHabit;
+    String habitTitleString;
+    String habitCommentString;
+    String habitDateStartedString;
+    String habitDateCompletedString;
+    TextView habitTitle;
     TextView habitComment;
     TextView habitDateStarted;
-    TextView habitDateCompleted;
-
     Button editHabit;
-    Button habitDoneToday; //Not sure what this should be, Button is a placeholder.
+    Button deleteHabit;
+    Button mainMenu;
+
+
+    // TODO: Habit image feature
+    ImageView habitImage;
+    Button habitDoneToday;          //Not sure what this should be, Button is a placeholder.
+    Button addHabitEventButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_habit);
+        addHabitEventButton = (Button) findViewById(R.id.AddHabitEvent);
+
+        try{
+            Bundle bundle = getIntent().getExtras();
+            currentHabit = (Habit)bundle.getSerializable("habit");
+            double lat = bundle.getDouble("lat");
+            double lng = bundle.getDouble("lng");
+            LatLng latLng = new LatLng(lat, lng);
+            HabitLocation habitLocation= new HabitLocation(latLng);
+
+            currentHabit.setLocation(habitLocation);
+
+            if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
+        }catch (LoadHabitException e){
+            //TODO: handle LoadHabitException
+        }
+        // Retrieve habit info
+
+        habitTitleString = currentHabit.getTitle();
+        habitCommentString = currentHabit.getReason();
+        habitDateStartedString = currentHabit.getDate().toString();
+
+        // Set up view components
+        habitTitle = (TextView) findViewById(R.id.habit_title_TextView);
+        habitComment = (TextView) findViewById(R.id.Comment_TextView);
+        habitDateStarted = (TextView) findViewById(R.id.date_started_TextView);
+        habitTitle.setText(habitTitleString);
+        habitComment.setText(habitCommentString);
+        habitDateStarted.setText(habitDateStartedString);
+
+        // Set up buttons
+        editHabit = (Button) findViewById(R.id.edit_habit_button);
+        deleteHabit = (Button) findViewById(R.id.delete_habit_button);
+        mainMenu = (Button) findViewById(R.id.main_menu_button);
+
+        editHabit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toEditHabitActivity(currentHabit);
+            }
+        });
+
+        deleteHabit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteHabit(currentHabit);
+            }
+        });
+
+        addHabitEventButton.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), AddHabitEventActivity.class);
+                Bundle bundle = new Bundle();
+                HabitLocation location = currentHabit.getHabitLocation();
+                LatLng latLng = location.getLocation();
+                double latitude = latLng.latitude;
+                double longitude = latLng.longitude;
+                currentHabit.setLocation(null);
+                bundle.putDouble("lat", latitude);
+                bundle.putDouble("lng", longitude);
+
+                bundle.putSerializable("habit", currentHabit);
+                intent.putExtras(bundle);
+                startActivityForResult(intent,1);
+            }});
+        mainMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
     }
+
+    /**
+     * This function jump to EditHabitActivity
+     * @param serializable
+     */
+    public void toEditHabitActivity(Serializable serializable){
+        Intent intent = new Intent(ViewHabitActivity.this, EditHabitActivity.class);
+        Log.i("ViewHabitActivity", "Edit button pressed.");
+        intent.putExtra("habit",serializable);
+        startActivityForResult(intent,1);
+    }
+
+    //TODO: delete current habit and return to previous activity
+    public void deleteHabit(Habit habit){
+        //
+    }
+
 }
