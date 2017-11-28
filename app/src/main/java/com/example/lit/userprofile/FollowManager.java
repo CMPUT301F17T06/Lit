@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * Created by Riley Dixon on 31/10/2017.
  */
 
-public class FollowManager {
+class FollowManager {
     //Follow Manager should not exist without being constructed with an accompanying UserProfile
     String currentUsersName;
     ArrayList<String> followingUsers;
