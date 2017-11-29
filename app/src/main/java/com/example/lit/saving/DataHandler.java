@@ -12,27 +12,22 @@ package com.example.lit.saving;
 
 import android.content.Context;
 
-<<<<<<< HEAD
 import com.example.lit.saving.ElasticSearchHabitController;
-=======
->>>>>>> 94b1c602d667f38e2b1297bdcb886cb1b51bda94
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.concurrent.ExecutionException;
+
 
 /**
  * The DataHandler class is to be used to save an object for longtime storage.
@@ -52,34 +47,42 @@ import java.util.concurrent.ExecutionException;
     //file consistency but ensuring that there is only one writer or reader
     // at a time.
 
-public class DataHandler<T extends Saveable> {
+public class DataHandler<T> {
     private long lastOfflineSave;
     private long lastOnlineSave;
-    private String username;
-    private String typeOfObject;
+    //The following two variables are used for reading into the data's timestamp
+    //They are used as temporary variables compared to the two above as in case
+    //There is some reason why reading in the data unsuccessful. This causes the two variables
+    //above to hold the timestamp of the last time the data was loaded successfully.
+    private long loadingOfflineTime;
+    private long loadingOnlineTime;
     private String FILENAME;
-    private Class<T> referenceClass;
+    private ElasticSearchHabitController.AddHabitsTask esObject;
 
     /**
      * Builds a handler that is used to save data to both local storage for offline use as
-     * well as online via ElasticSearch. T is the type of object that is to be stored.
+     * well as online via ElasticSearch.
      *
      * @param username What the username of the current logged in user is.
      *                 This is required to give a cleaner file hierarchy.
-     * @param typeOfObject What object is currently being accessed? This designates the file name
-     *                     to be read from and written to.
+     * @param savedObject What object is currently being saved? Is this HabitList or
+     *                    HabitHistory for example.
      * @param context The context of the activity. In most cases when constructing
-     *                the object this parameter is "this". This is used for accessing
-     *                the file system for offline/local storage.
+     *                the object this parameter is "this".
+     * TODO: Fix Javadoc to clarify that the below parameter is the generic T and no longer a parameter
+     * @param typeOfDataBeingStored The type of data being stored. As arrayList's
+     *                              are being used and we cannot confirm what the
+     *                              type of the arrayList is at runtime due to Java's
+     *                              type erasure of generics at runtime, the type of
+     *                              arrayList being passed MUST be passed explicitly.
+     *                              See the GSON Javadoc for how to generate the Type
+     *                              object to pass to this constructor.
      *
      * @see Gson
      */
-    public DataHandler(String username, String typeOfObject, Context context, Class<T> referenceClass){
+    public DataHandler(String username, String savedObject, Context context){
         this.FILENAME = context.getFilesDir().getAbsolutePath() + File.separator
                 + username;
-        this.username = username;
-        this.typeOfObject = typeOfObject;
-        this.referenceClass = referenceClass;
 
         File filePath = new File(FILENAME);
         //Check if the subdirectory has been created yet or not
@@ -88,14 +91,21 @@ public class DataHandler<T extends Saveable> {
             filePath.mkdirs();
         }
 
-        FILENAME += File.separator + typeOfObject + ".sav";
+        FILENAME += File.separator + savedObject + ".sav";
     }
 
-    /**
-     * Saves the data both offline and online.
-     *
-     * @param element The element or object that we want to save
-     */
+    /*
+    public void saveArrayList(ArrayList<T> arrayListToBeSaved){
+        long currentTime = System.currentTimeMillis();
+        try{
+            saveArrayToOffline(arrayListToBeSaved);
+            lastOfflineSave = currentTime;
+        }catch (IOException e) {
+            throw new RuntimeException();
+        }
+        //TODO: Online part
+    }*/
+
     public void saveData(T element){
         long currentTime = System.currentTimeMillis();
         try{
@@ -114,149 +124,127 @@ public class DataHandler<T extends Saveable> {
         //TODO: Online part
     }
 
+    /*public ArrayList<T> loadArrayList(){
+        long currentTime = System.currentTimeMillis();
+        ArrayList<T> loadedList;
+        //TODO: Compare offline and online file, then decide which file to load from
+        //TODO: If the files timestamps are different, sync with the newer file
+        try{
+            loadedList = loadArrayFromOffline();
+        }catch (IOException e){
+            throw new RuntimeException();
+        }
+        return loadedList;
+    }*/
+
     /**
-     * Returns the newest version of the data from either online or offline.
+     * Returns the newest data
      *
-     * @throws NoDataException If no data was able to be loaded this exception is thrown.
-     * @return Returns the save data for object type T.
+     *
+     * @return
      */
-    public T loadData() throws NoDataException {
+    public T loadData(){
+        //zero assumes no data was found, if both are zero then there probably is no data
+        //or the data has been lost.
         T loadedElementOffline;
         T loadedElementOnline;
-
-        try {
+        //TODO: Compare offline and online file, then decide which file to load from
+        //TODO: If the files timestamps are different, sync with the newer file
+        try{
             loadedElementOffline = loadFromOffline();
-        } catch (IOException e) {
-            this.lastOfflineSave = 0;
-            loadedElementOffline = null;
+            this.lastOfflineSave = this.loadingOfflineTime;
+        }catch (IOException e){
+            throw new RuntimeException();
         }
-        try {
+        try{
             loadedElementOnline = loadFromOnline();
-        } catch (NotOnlineException e) {
-            this.lastOnlineSave = 0;
-            loadedElementOnline = null;
+            this.lastOnlineSave = this.loadingOnlineTime;
+        }catch (NotOnlineException e){
+            throw new RuntimeException();
         }
 
-        if (this.lastOfflineSave == 0 && this.lastOnlineSave == 0) {
-            //If no data was loaded, was it lost or no data existed in the first place.
-            throw new NoDataException("No data to load.");
-        }else if(this.lastOfflineSave > this.lastOnlineSave){
+        if(this.lastOfflineSave > this.lastOnlineSave){
             return loadedElementOffline;
         }else{
             return loadedElementOnline;
         }
     }
 
-    /**
-     * Saves the object to the local file system. This should not be accessed outside of this class.
-     *
-     * @param dataToSave The piece of data that is to be saved.
-     * @param currentTime The time that we are saving the data. This time is when the request was
-     *                    started, not necessarily when the data was written.
-     * @throws IOException Does the file not exist?
-     */
+    /*private void saveArrayToOffline(ArrayList<T> arrayListToSave)throws IOException{
+        FileOutputStream fos = new FileOutputStream(new File(FILENAME));
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
+        Type typeOfArrayList = new TypeToken<ArrayList<T>>(){}.getType();
+        //Write to the stream.
+        Gson gson = new Gson();
+        gson.toJson(arrayListToSave, typeOfArrayList, out); //OBJECT, TYPE, APPENDABLE
+        //Close the writing stream.
+        out.flush();
+        fos.close();
+
+    }*/
+
+    /*private void saveArrayToOnline(){
+
+    }*/
+
     private void saveToOffline(T dataToSave, long currentTime) throws IOException{
-        //Build the file streams
         FileOutputStream fos = new FileOutputStream(new File(FILENAME));
         BufferedWriter out = new BufferedWriter(new OutputStreamWriter(fos));
         Type typeOfElement = new TypeToken<T>(){}.getType();
-
         //Write to the stream.
         Gson gson = new Gson();
-        Collection collection = new ArrayList();
-        collection.add(currentTime);
-        collection.add(dataToSave);
-        gson.toJson(collection, out);
-        //gson.toJson(currentTime, out);
-        //gson.toJson(dataToSave, typeOfElement, out); //OBJECT, TYPE, APPENDABLE
-
+        gson.toJson(currentTime, out);
+        gson.toJson(dataToSave, typeOfElement, out); //OBJECT, TYPE, APPENDABLE
         //Close the writing stream.
         out.flush();
         fos.close();
     }
 
-    /**
-     * Saves the object to online. This should not be accessed outside of this class.
-     *
-     * @param dataToSave The piece of data that is to be saved.
-     * @param currentTime The time that we are saving the data. This time is when the request was
-     *                    started, not necessarily when the data was written.
-     * @throws NotOnlineException If we cannot connect to the server
-     */
     private void saveToOnline(T dataToSave, long currentTime) throws NotOnlineException{
-        ElasticSearchHabitController.AddTask<T> esSaver
-                = new ElasticSearchHabitController.AddTask<T>(username, typeOfObject);
 
-        esSaver.execute(dataToSave);
     }
 
-    /**
-     * Loads data from the offline save file. This should not be accessed outside of
-     * this class.
-     *
-     * @return Returns the object
-     * @throws IOException
-     */
+    /*private ArrayList<T> loadArrayFromOffline() throws IOException{
+        ArrayList<T> loadedList;
+        try {
+            FileInputStream fis = new FileInputStream(new File(FILENAME));
+            BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+            Type typeOfArrayList = new TypeToken<ArrayList<T>>(){}.getType();
+            //Read from the stream
+            Gson gson = new Gson();
+            loadedList = gson.fromJson(in, typeOfArrayList);
+            //Close the stream
+            fis.close();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+             return new ArrayList<T>();
+        }
+        return loadedList;
+    }*/
+
+    /*private ArrayList<T> loadArrayFromOnline(){
+        return null;
+    }*/
+
     private T loadFromOffline() throws IOException{
         T loadedElement;
-        long tempTime; //TempTime is used incase we do not load the actual data successfully.
-                       //lastOfflineSave is used for the last successful load of data.
 
         //Build the FileInputStream
         FileInputStream fis = new FileInputStream(new File(FILENAME));
         BufferedReader in = new BufferedReader(new InputStreamReader(fis));
         Type typeOfElement = new TypeToken<T>(){}.getType();
-
-        //Read from input stream
+        //Read from inputstream
         Gson gson = new Gson();
-        JsonParser jsonParser = new JsonParser();
-        JsonArray jsonArray = jsonParser.parse(gson.fromJson(in, String.class)).getAsJsonArray();
-        tempTime = gson.fromJson(jsonArray.get(0), long.class);
-        loadedElement = gson.fromJson(jsonArray.get(1), typeOfElement);
-
-
-        //this.loadingOfflineTime = gson.fromJson(in, new TypeToken<Long>(){}.getType());
-        //loadedElement = gson.fromJson(in, typeOfElement);
+        this.loadingOfflineTime = gson.fromJson(in, new TypeToken<Long>(){}.getType());
+        loadedElement = gson.fromJson(in, typeOfElement);
         //Close stream
         fis.close();
 
-        this.lastOfflineSave = tempTime;
         return loadedElement;
     }
 
-    /**
-     * Load data from online. This should not be accessed outside of
-     * this class.
-     *
-     *
-     * @return
-     * @throws NotOnlineException
-     */
     private T loadFromOnline() throws NotOnlineException{
-        //ElasticSearchTimestampWrapper<T> loadedElement = null;
-        T loadedElement = null;
-        long tempTime; //TempTime is used incase we do not load the actual data successfully.
-                       //lastOnlineSave is used for the last successful load of data.
-
-        ElasticSearchHabitController.GetTask<T> esLoader
-                = new ElasticSearchHabitController.GetTask<>(username, typeOfObject, referenceClass);
-
-        //ElasticSearchHabitController.GetTask<T> esLoader
-         //       = new ElasticSearchHabitController.GetTask<>(username, typeOfObject, ElasticSearchTimestampWrapper.class);
-
-        try {
-            loadedElement = esLoader.execute("").get(); //null search parameters
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        //Placeholders to allow code to compile
-        tempTime = 0;
-
-        this.lastOnlineSave = tempTime;
-        return loadedElement;
+        return null;
     }
 
 }

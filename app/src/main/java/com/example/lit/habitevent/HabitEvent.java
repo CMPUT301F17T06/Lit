@@ -12,7 +12,6 @@ package com.example.lit.habitevent;
 
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.location.HabitLocation;
-import com.example.lit.saving.Saveable;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -31,13 +30,12 @@ import java.util.Date;
  * you may find a copy of the license in the project. Otherwise please contact jiaxiong@ualberta.ca
  */
 
-public abstract class HabitEvent implements HabitEventAddable, Comparable, Serializable, Saveable {
+public abstract class HabitEvent implements HabitEventAddable, Comparable, Serializable {
     private String habitEventName;
     private HabitLocation habitLocation;
     private Date date = new Date();
     private String eventComment;
     private int commentLength = 20;
-    private String jestID;
 
 
     public HabitEvent(String habitEventName) {
@@ -112,14 +110,6 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Seria
                 ", date=" + date + '\'' +
                 ", comment=" + eventComment +
                 '}';
-    }
-
-    public void setID(String ID){
-        this.jestID = ID;
-    }
-
-    public String getID(){
-        return this.jestID;
     }
 
 }

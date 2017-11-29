@@ -13,8 +13,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.lit.habit.NormalHabit;
-import com.example.lit.saving.Saveable;
-import com.example.lit.userprofile.UserProfile;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
@@ -27,27 +25,19 @@ import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 
-
+//DO NOT MAKE PUBLIC
 class ElasticSearchHabitController {
     private static JestDroidClient client;
 
     // adds tweets to elastic search
-     static class AddTask<T extends Saveable> extends AsyncTask<T, Void, Void> {
-        private String username;
-        private String typeOfObject;
-
-        AddTask(String username, String typeOfObject){
-            super();
-            this.username = username;
-            this.typeOfObject = typeOfObject;
-        }
+    public static class AddHabitsTask extends AsyncTask<NormalHabit, Void, Void> {
 
         @Override
-        protected Void doInBackground(T... objects) {
+        protected Void doInBackground(NormalHabit... habits) {
             verifySettings();
 
-            for (T currentT : objects) {
-                Index index = new Index.Builder(currentT).index("cmput301f17t06" + username).type(typeOfObject).build();
+            for (NormalHabit habit : habits) {
+                Index index = new Index.Builder(habit).index("testing").type("habit").build();
 
                 try {
 
@@ -55,15 +45,15 @@ class ElasticSearchHabitController {
 
                     if(result.isSucceeded())
                     {
-                        currentT.setID(result.getId());
+                        habit.setId(result.getId());
                     }
                     else
                     {
-                        Log.i("Error","Elasticsearch was not able to add the T");
+                        Log.i("Error","Elasticsearch was not able to add the habit");
                     }
                 }
                 catch (Exception e) {
-                    Log.i("Error", "The application failed to build and send the T");
+                    Log.i("Error", "The application failed to build and send the habits");
                 }
 
             }
@@ -72,49 +62,36 @@ class ElasticSearchHabitController {
     }
 
     // gets habits from elastic search
-    public static class GetTask<T extends Saveable> extends AsyncTask<String, Void, T> {
-        private String username;
-        private String typeOfObject;
-        private Class<T> classOfObject;
-
-        GetTask(String username, String typeOfObject, Class<T> classOfObject){
-            super();
-            this.username = username;
-            this.typeOfObject = typeOfObject;
-            this.classOfObject = classOfObject;
-        }
-
+    public static class GetHabitsTask extends AsyncTask<String, Void, ArrayList<NormalHabit>> {
         @Override
-        protected T doInBackground(String... search_parameters) {
+        protected ArrayList<NormalHabit> doInBackground(String... search_parameters) {
             verifySettings();
 
-            T loadingObject = null;
-
-            //ArrayList<NormalHabit> habits;
-            //habits = new ArrayList<NormalHabit>();
+            ArrayList<NormalHabit> habits;
+            habits = new ArrayList<NormalHabit>();
 
             // TODO Build the query
 
-            Search search = new Search.Builder(""+search_parameters[0]+"")
-                    .addIndex("cmput301f17t06" + username).addType(typeOfObject).build();
+            Search search = new Search.Builder(""+search_parameters[0]+"").addIndex("testing").addType("habit").build();
 
             try {
                 // get the results of the query
                 SearchResult result = client.execute(search);
                 if(result.isSucceeded())
                 {
-                    //List<NormalHabit> foundHabit = result.getSourceAsObjectList(NormalHabit.class);
-                    //habits.addAll(foundHabit);
-                    loadingObject = result.getSourceAsObject(classOfObject);
+                    List<NormalHabit> foundHabit = result.getSourceAsObjectList(NormalHabit.class);
+                    habits.addAll(foundHabit);
                 }
             }
             catch (Exception e) {
                 Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
             }
 
-            return loadingObject;
+            return habits;
         }
     }
+
+
 
 
     public static void verifySettings() {
