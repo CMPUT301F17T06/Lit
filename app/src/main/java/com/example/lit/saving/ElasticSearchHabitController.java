@@ -72,68 +72,49 @@ class ElasticSearchHabitController {
     }
 
     // gets habits from elastic search
-    public static class GetHabitsTask extends AsyncTask<String, Void, ArrayList<NormalHabit>> {
+    public static class GetTask<T extends Saveable> extends AsyncTask<String, Void, T> {
+        private String username;
+        private String typeOfObject;
+        private Class<T> classOfObject;
+
+        GetTask(String username, String typeOfObject, Class<T> classOfObject){
+            super();
+            this.username = username;
+            this.typeOfObject = typeOfObject;
+            this.classOfObject = classOfObject;
+        }
+
         @Override
-        protected ArrayList<NormalHabit> doInBackground(String... search_parameters) {
+        protected T doInBackground(String... search_parameters) {
             verifySettings();
 
-            ArrayList<NormalHabit> habits;
-            habits = new ArrayList<NormalHabit>();
+            T loadingObject;
+
+            //ArrayList<NormalHabit> habits;
+            //habits = new ArrayList<NormalHabit>();
 
             // TODO Build the query
 
-            Search search = new Search.Builder(""+search_parameters[0]+"").addIndex("cmput301f17t06").addType("habit").build();
+            Search search = new Search.Builder(""+search_parameters[0]+"")
+                    .addIndex("cmput301f17t06" + username).addType(typeOfObject).build();
 
             try {
                 // get the results of the query
                 SearchResult result = client.execute(search);
                 if(result.isSucceeded())
                 {
-                    List<NormalHabit> foundHabit = result.getSourceAsObjectList(NormalHabit.class);
-                    habits.addAll(foundHabit);
+                    //List<NormalHabit> foundHabit = result.getSourceAsObjectList(NormalHabit.class);
+                    //habits.addAll(foundHabit);
+                    loadingObject = result.getSourceAsObject(classOfObject);
                 }
             }
             catch (Exception e) {
                 Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
             }
 
-            return habits;
+            return loadingObject;
         }
     }
-
-    public static class AddUserTask extends AsyncTask<UserProfile, Void, Void> {
-
-        @Override
-        protected Void doInBackground(UserProfile... userProfiles) {
-            verifySettings();
-
-            //TODO fix Mapping parse error document is full.
-            for (UserProfile userProfile : userProfiles) {
-                Index index = new Index.Builder(userProfile).index("cmput301f17t06").type("user").build();
-
-                try {
-
-                    DocumentResult result = client.execute(index);
-
-                    if(result.isSucceeded())
-                    {
-                        userProfile.setId(result.getId());
-                    }
-                    else
-                    {
-                        Log.i("Error","Elasticsearch was not able to add the habit");
-                    }
-                }
-                catch (Exception e) {
-                    Log.i("Error", "The application failed to build and send the habits");
-                }
-
-            }
-            return null;
-        }
-    }
-
-
 
 
     public static void verifySettings() {

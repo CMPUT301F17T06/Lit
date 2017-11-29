@@ -17,7 +17,7 @@ package com.example.lit.saving;
 public interface Saveable {
 
     String getID();
-    void setID();
+    void setID(String id);
 
 }
 
