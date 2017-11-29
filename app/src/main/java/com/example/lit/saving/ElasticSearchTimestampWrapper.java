@@ -14,6 +14,7 @@ package com.example.lit.saving;
  * Created by Riley Dixon on 28/11/2017.
  */
 
+//Would have preferred to have this approach work instead of sending a gson string.
 class ElasticSearchTimestampWrapper<T extends Saveable>{
     private T data;
     private long timestamp;
