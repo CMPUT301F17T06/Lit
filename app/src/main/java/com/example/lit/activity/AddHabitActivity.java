@@ -13,7 +13,6 @@ package com.example.lit.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 
 import android.location.Criteria;
@@ -71,7 +70,7 @@ public class AddHabitActivity extends AppCompatActivity  {
 
     private EditText habitName;
     private EditText habitComment;
-    private CheckBox locationCheck; //This should not be a button, its currently a placeholder
+    private CheckBox locationCheck;
     private MultiSelectionSpinner weekday_spinner;
     private Spinner hour_spinner;
     private Spinner minute_spinner;
@@ -88,18 +87,29 @@ public class AddHabitActivity extends AppCompatActivity  {
     Integer hour;
     Integer minute;
     List<Calendar> calendarList;
+    DataHandler dataHandler;
 
     LocationManager manager;
     private HabitLocation habitLocation;
     private String provider;
     double latitude;
     double longitude;
+    String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_habit);
         setTitle("Adding A New Habit");
+
+        try{
+            username = getIntent().getExtras().getString("username");
+            assert username != null;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        dataHandler = new DataHandler(username,"habit",this);
 
         // Activity components
         habitName = (EditText) findViewById(R.id.Habit_EditText);
@@ -145,7 +155,8 @@ public class AddHabitActivity extends AppCompatActivity  {
     /**
      * This function is called when user click on save button.
      * This function will build a NormalHabit based on user inputs.
-     * The NormalHabit built will be sent back to HomePageActivity
+     * The NormalHabit built will be saved by DataHandler
+     * Return to HomepageActivityNew is saved successfully
      * @see HomePageActivity
      * @param saveNewHabitButton the current view.
      * */
@@ -159,32 +170,22 @@ public class AddHabitActivity extends AppCompatActivity  {
         try {
             calendarList = buildCalender(weekdays, hour, minute);
         } catch (ParseException e) {
-            //TODO: handle exception
+            e.printStackTrace();
         }
 
-        Intent newHabitIntent = new Intent(AddHabitActivity.this, HomePageActivity.class);
-        Bundle bundle = new Bundle();
-        try{
-            Location location = buildLocation(locationCheck);
-            latitude = location.getLatitude();
-            longitude = location.getLongitude();
-            if (!(location == null)){
-                bundle.putDouble("lat",latitude);
-                bundle.putDouble("lng",longitude);
-            }
-        }
-        catch (NullPointerException e){
-            //TODO: handle when location is null
-        }
+        //TODO: should build location implicitly when building new habit.
+        //habitLocation = buildLocation(locationCheck);
+        habitLocation = null;
 
         try {Habit newHabit = new NormalHabit(habitNameString, habitStartDate,
-                null, commentString, calendarList);
-            bundle.putSerializable("habit", newHabit);
-            newHabitIntent.putExtras(bundle);
-            setResult(Activity.RESULT_OK, newHabitIntent);
+                habitLocation, commentString, calendarList);
+            //TODO: save new habit by DataHandler
+            //dataHandler.saveData(newHabit);
             finish();
         } catch (HabitFormatException e){
             Toast.makeText(AddHabitActivity.this,"Error: Illegal Habit information!",Toast.LENGTH_LONG).show();
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -334,10 +335,4 @@ public class AddHabitActivity extends AppCompatActivity  {
         return returnLocation;
     }
 
-
-    //TODO: A function used to add new Habit into corresponding user file
-    private void writeInFile(String user, Habit habit, Context view){
-        DataHandler datahandler = new DataHandler(user,"habit",view);
-        //datahandler.saveSingularElement(habit);
-    }
 }

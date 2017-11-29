@@ -180,7 +180,7 @@ public class HomePageActivity extends AppCompatActivity {
 
     }
     /**
-     * This function handle the new Habit returned from AddHabitActivity.
+     * This @function handle the new Habit returned from AddHabitActivity.
      * Activated when user click 'SAVE' button habit info valid.
      * @see AddHabitActivity
      *

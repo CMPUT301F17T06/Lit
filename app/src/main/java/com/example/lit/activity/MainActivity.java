@@ -36,24 +36,23 @@ import com.example.lit.R;
 
 public class MainActivity extends AppCompatActivity {
 
-    private EditText username;
-    private Button loginButton;
+    private EditText usernameEditText;
+    Button loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        username = (EditText) findViewById(R.id.username);
+        usernameEditText = (EditText) findViewById(R.id.username);
         loginButton = (Button) findViewById(R.id.Login);
-
         loginButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
                 setResult(RESULT_OK);
                 Intent intent = new Intent(v.getContext(), HomePageActivityNew.class);
-                String filename = username.getText().toString();
-                username.setText("");
-                intent.putExtra("FILENAME",filename);
+                String username = usernameEditText.getText().toString();
+                //username.setText("");
+                intent.putExtra("username",username);
                 startActivity(intent);
             }});
             }
