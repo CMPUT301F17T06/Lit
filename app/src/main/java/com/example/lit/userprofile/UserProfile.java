@@ -15,14 +15,16 @@ import com.example.lit.habit.Habit;
 import com.example.lit.habit.HabitList;
 import com.example.lit.habitevent.HabitEvent;
 import com.example.lit.habitevent.HabitHistory;
+import com.example.lit.saving.Saveable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Riley Dixon on 21/10/2017.
  */
 
-public class UserProfile {
+public class UserProfile implements Serializable, Saveable{
 
     /**
      * The name of the user account. This is assumed to be unique for the app's purposes.
@@ -34,6 +36,7 @@ public class UserProfile {
     private HabitHistory habitCompletionHistory;
     private ArrayList<String> followingUsers;
     private FollowManager followManager;
+    private String jestID;
 
     /**
      * A dummy constructor, should be used for debugging only.
@@ -261,6 +264,14 @@ public class UserProfile {
      */
     public void respondToFollowRequest(boolean decision){
 
+    }
+
+    public void setID(String ID){
+        this.jestID = ID;
+    }
+
+    public String getID(){
+        return this.jestID;
     }
 
 }

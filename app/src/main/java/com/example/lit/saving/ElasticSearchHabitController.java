@@ -55,7 +55,7 @@ class ElasticSearchHabitController {
 
                     if(result.isSucceeded())
                     {
-                        currentT.setId(result.getId());
+                        currentT.setID(result.getId());
                     }
                     else
                     {
@@ -88,7 +88,7 @@ class ElasticSearchHabitController {
         protected T doInBackground(String... search_parameters) {
             verifySettings();
 
-            T loadingObject;
+            T loadingObject = null;
 
             //ArrayList<NormalHabit> habits;
             //habits = new ArrayList<NormalHabit>();

@@ -12,7 +12,6 @@ package com.example.lit.saving;
 
 import android.content.Context;
 
-import com.example.lit.elasticsearch.ElasticSearchHabitController;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
@@ -29,6 +28,7 @@ import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.ExecutionException;
 
 /**
  * The DataHandler class is to be used to save an object for longtime storage.
@@ -54,6 +54,7 @@ public class DataHandler<T extends Saveable> {
     private String username;
     private String typeOfObject;
     private String FILENAME;
+    private Class<T> referenceClass;
 
     /**
      * Builds a handler that is used to save data to both local storage for offline use as
@@ -69,11 +70,12 @@ public class DataHandler<T extends Saveable> {
      *
      * @see Gson
      */
-    public DataHandler(String username, String typeOfObject, Context context){
+    public DataHandler(String username, String typeOfObject, Context context, Class<T> referenceClass){
         this.FILENAME = context.getFilesDir().getAbsolutePath() + File.separator
                 + username;
         this.username = username;
         this.typeOfObject = typeOfObject;
+        this.referenceClass = referenceClass;
 
         File filePath = new File(FILENAME);
         //Check if the subdirectory has been created yet or not
@@ -227,12 +229,25 @@ public class DataHandler<T extends Saveable> {
      * @throws NotOnlineException
      */
     private T loadFromOnline() throws NotOnlineException{
-        T loadedElement;
+        ElasticSearchTimestampWrapper<T> loadedElement = null;
         long tempTime; //TempTime is used incase we do not load the actual data successfully.
                        //lastOnlineSave is used for the last successful load of data.
 
+        //ElasticSearchHabitController.GetTask<T> esLoader
+        //        = new ElasticSearchHabitController.GetTask<>(username, typeOfObject, referenceClass);
+
+        ElasticSearchHabitController.GetTask<T> esLoader
+                = new ElasticSearchHabitController.GetTask<>(username, typeOfObject, ElasticSearchTimestampWrapper.class);
+
+        try {
+            loadedElement = esLoader.execute("").get(); //null search parameters
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
         //Placeholders to allow code to compile
-        loadedElement = null;
         tempTime = 0;
 
         this.lastOnlineSave = tempTime;
