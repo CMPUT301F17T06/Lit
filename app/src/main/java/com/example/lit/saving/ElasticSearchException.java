@@ -11,16 +11,19 @@
 package com.example.lit.saving;
 
 /**
- * Created by Riley Dixon on 12/11/2017.
+ * Created by rmdixon on 11/21/17.
  */
 
-public interface Saveable {
+/**
+ * If ElasticSearch throws an error message it should throw this exception.
+ *
+ */
+public class ElasticSearchException extends Exception {
+    ElasticSearchException(){
+        super();
+    }
 
-    String getID();
-    void setID(String id);
-
+    ElasticSearchException(String errorMessage){
+        super(errorMessage);
+    }
 }
-
-
-
-
