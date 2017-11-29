@@ -229,15 +229,16 @@ public class DataHandler<T extends Saveable> {
      * @throws NotOnlineException
      */
     private T loadFromOnline() throws NotOnlineException{
-        ElasticSearchTimestampWrapper<T> loadedElement = null;
+        //ElasticSearchTimestampWrapper<T> loadedElement = null;
+        T loadedElement = null;
         long tempTime; //TempTime is used incase we do not load the actual data successfully.
                        //lastOnlineSave is used for the last successful load of data.
 
-        //ElasticSearchHabitController.GetTask<T> esLoader
-        //        = new ElasticSearchHabitController.GetTask<>(username, typeOfObject, referenceClass);
-
         ElasticSearchHabitController.GetTask<T> esLoader
-                = new ElasticSearchHabitController.GetTask<>(username, typeOfObject, ElasticSearchTimestampWrapper.class);
+                = new ElasticSearchHabitController.GetTask<>(username, typeOfObject, referenceClass);
+
+        //ElasticSearchHabitController.GetTask<T> esLoader
+         //       = new ElasticSearchHabitController.GetTask<>(username, typeOfObject, ElasticSearchTimestampWrapper.class);
 
         try {
             loadedElement = esLoader.execute("").get(); //null search parameters
