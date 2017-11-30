@@ -22,6 +22,8 @@
     <string name="habit_event_scheduled_prompt">When did you complete the Habit:</string>
     <string name="habit_event_schedule_title">Habit takes place:</string>
     <string name="main_menu">Main Menu</string>
+    <string name="your_habits">Your Habits :</string>
+    <string name="take_photo">Take Photo</string>
 
     <string-array name="navigation_drawer_items_array">
         <item>HabitHistory</item>

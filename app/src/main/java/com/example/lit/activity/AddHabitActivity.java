@@ -13,11 +13,14 @@ package com.example.lit.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-
+import android.graphics.Bitmap;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
+import android.os.StrictMode;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,17 +34,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import com.example.lit.Utilities.MultiSelectionSpinner;
 import com.example.lit.R;
-
 import com.example.lit.Utilities.SchduledTask;
 import com.example.lit.habit.Habit;
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.habit.NormalHabit;
 import com.example.lit.location.HabitLocation;
 import com.example.lit.saving.DataHandler;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -67,6 +67,7 @@ import java.util.Timer;
 public class AddHabitActivity extends AppCompatActivity  {
 
     private static final String CLASS_KEY = "com.example.lit.activity.AddHabitActivity";
+    protected static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 0;
 
     private EditText habitName;
     private EditText habitComment;
@@ -76,8 +77,9 @@ public class AddHabitActivity extends AppCompatActivity  {
     private Spinner minute_spinner;
     Button saveHabit;
     Button cancelHabit;
+    private Bitmap image;
     private ImageView habitImage;
-    private Button editImage;
+    Button editImage;
     //TODO: Implement image feature
 
     Date habitStartDate;
@@ -95,12 +97,17 @@ public class AddHabitActivity extends AppCompatActivity  {
     double latitude;
     double longitude;
     String username;
+    Uri imageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_habit);
         setTitle("Adding A New Habit");
+
+        // Ignore file URI exposure
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
 
         try{
             username = getIntent().getExtras().getString("username");
@@ -121,6 +128,15 @@ public class AddHabitActivity extends AppCompatActivity  {
         minute_spinner = (Spinner) findViewById(R.id.minute_spinner);
         weekday_spinner = (MultiSelectionSpinner) findViewById(R.id.weekday_spinner);
         locationCheck = (CheckBox) findViewById(R.id.locationCheckBox);
+        habitImage = (ImageView) findViewById(R.id.HabitImage);
+        editImage = (Button)findViewById(R.id.takeImageButton);
+
+        editImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                takePicture();
+            }
+        });
 
         // Set up weekday selection
         weekday_spinner.setItems(createWeekdayList());
@@ -178,7 +194,7 @@ public class AddHabitActivity extends AppCompatActivity  {
         habitLocation = null;
 
         try {Habit newHabit = new NormalHabit(habitNameString, habitStartDate,
-                habitLocation, commentString, calendarList);
+                habitLocation, commentString, calendarList,image);
             //TODO: save new habit by DataHandler
             //dataHandler.saveData(newHabit);
             finish();
@@ -335,4 +351,30 @@ public class AddHabitActivity extends AppCompatActivity  {
         return returnLocation;
     }
 
+    /**
+     * Function used to take picture by camera.
+     * taken: https://stackoverflow.com/questions/5991319/capture-image-from-camera-and-display-in-activity
+     */
+    public void takePicture(){
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+                try {
+                    image = (Bitmap) data.getExtras().get("data");
+                    habitImage.setImageBitmap(image);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+        else if (resultCode == RESULT_CANCELED) {
+            Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT).show();
+        }
+    }
 }

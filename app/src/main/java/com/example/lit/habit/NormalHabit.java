@@ -10,6 +10,7 @@
 
 package com.example.lit.habit;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.provider.ContactsContract;
 
@@ -42,8 +43,8 @@ public class NormalHabit extends Habit implements Serializable {
 
     public NormalHabit(String title, Date date, HabitLocation habitLocation, String reason) throws HabitFormatException{super(title, date, habitLocation, reason);}
 
-    public NormalHabit(String title, Date date, HabitLocation habitLocation, String reason, List<Calendar> calenderList) throws HabitFormatException {
-        super(title, date, habitLocation, reason, calenderList);
+    public NormalHabit(String title, Date date, HabitLocation habitLocation, String reason, List<Calendar> calenderList, Bitmap image) throws HabitFormatException {
+        super(title, date, habitLocation, reason, calenderList,image);
     }
 
     @Override

@@ -10,6 +10,7 @@
 
 package com.example.lit.habit;
 
+import android.graphics.Bitmap;
 import android.os.Parcelable;
 
 import com.example.lit.exception.HabitFormatException;
@@ -43,6 +44,7 @@ public abstract class Habit implements Habitable , Serializable{
     private List<Calendar> calendars;
     @JestId
     private String id;
+    private Bitmap image;
 
     public String getId(){ return id ;}
 
@@ -83,6 +85,15 @@ public abstract class Habit implements Habitable , Serializable{
         this.setLocation(habitLocation);
         this.setReason(reason);
         this.setCalendars(calendarList);
+    }
+
+    public Habit(String title, Date date, HabitLocation habitLocation, String reason, List<Calendar> calendars, Bitmap image)throws HabitFormatException {
+        this.setTitle(title);
+        this.setDate(date);
+        this.setLocation(habitLocation);
+        this.setReason(reason);
+        this.setCalendars(calendars);
+        this.setImage(image);
     }
 
     // TODO: Constructor with JestID
@@ -135,6 +146,13 @@ public abstract class Habit implements Habitable , Serializable{
         return this.habitLocation;
     }
 
+    public Bitmap getImage() {
+        return image;
+    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
+    }
 
     @Override
     public String toString() {
