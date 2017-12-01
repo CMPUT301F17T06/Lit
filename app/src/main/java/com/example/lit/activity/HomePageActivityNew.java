@@ -33,6 +33,7 @@ import com.example.lit.habit.HabitList;
 import com.example.lit.habit.NormalHabitList;
 import com.example.lit.location.HabitLocation;
 import com.example.lit.saving.DataHandler;
+import com.example.lit.saving.NoDataException;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
@@ -133,9 +134,13 @@ public class HomePageActivityNew extends AppCompatActivity {
     @Override
     protected void onStart(){
         super.onStart();
-        DataHandler dataHandler = new DataHandler(username,"HabitList",HomePageActivityNew.this);
+        DataHandler<HabitList> dataHandler = new DataHandler<HabitList>(username,"HabitList",HomePageActivityNew.this);
         //TODO: load all habits by DataHandler
-        habitArrayList = dataHandler.loadData();
+        try {
+            habitArrayList = dataHandler.loadData();
+        } catch (NoDataException e) {
+            e.printStackTrace();
+        }
         habitAdapter = new ArrayAdapter<Habit>(this,
                 R.layout.list_item, habitArrayList.getHabits());
         habitsListView.setAdapter(habitAdapter);
