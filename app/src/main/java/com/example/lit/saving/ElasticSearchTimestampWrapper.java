@@ -11,16 +11,32 @@
 package com.example.lit.saving;
 
 /**
- * Created by Riley Dixon on 12/11/2017.
+ * Created by Riley Dixon on 28/11/2017.
  */
 
-public interface Saveable {
+//Would have preferred to have this approach work instead of sending a gson string.
+class ElasticSearchTimestampWrapper<T extends Saveable>{
+    private T data;
+    private long timestamp;
 
-    String getID();
-    void setID(String id);
+    public ElasticSearchTimestampWrapper(T data, long timestamp) {
+        this.data = data;
+        this.timestamp = timestamp;
+    }
 
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
 }
-
-
-
-

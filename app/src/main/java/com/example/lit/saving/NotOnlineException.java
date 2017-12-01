@@ -14,6 +14,11 @@ package com.example.lit.saving;
  * Created by Riley Dixon on 19/11/2017.
  */
 
+/**
+ * A particular exception of ElasticSearchException where we cannot connect to the
+ * ElasticSearch server.
+ *
+ */
 public class NotOnlineException extends Exception {
     NotOnlineException(){
         super();
