@@ -12,10 +12,9 @@ package com.example.lit.saving;
 
 import android.content.Context;
 
-<<<<<<< HEAD
+
 import com.example.lit.saving.ElasticSearchHabitController;
-=======
->>>>>>> 94b1c602d667f38e2b1297bdcb886cb1b51bda94
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
