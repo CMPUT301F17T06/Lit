@@ -41,6 +41,7 @@ public abstract class Habit implements Habitable , Serializable{
     private int titleLength = 20;
     private int reasonLength = 30;
     private List<Calendar> calendars;
+    private String user;
     @JestId
     private String id;
 
@@ -48,6 +49,14 @@ public abstract class Habit implements Habitable , Serializable{
 
     public void setId(String id){ this.id = id ;}
 
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
 
     public Habit(String title) throws HabitFormatException {
         this.setTitle(title);

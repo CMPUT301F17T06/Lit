@@ -33,6 +33,7 @@ import com.example.lit.fragments.TestFragment;
 
 public class HomePageActivityNew extends AppCompatActivity {
 
+    private String username;
     private String[] mNavigationDrawerItemTitles;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -47,6 +48,7 @@ public class HomePageActivityNew extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page_new);
 
+        username = getIntent().getExtras().getString("USERNAME");
         mTitle = mDrawerTitle = getTitle();
         mNavigationDrawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);

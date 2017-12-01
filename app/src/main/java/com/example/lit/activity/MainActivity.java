@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.lit.R;
 import com.example.lit.elasticsearch.ElasticSearchHabitController;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText username;
     private Button loginButton;
+    private UserProfile user;
 
 
     @Override
@@ -53,24 +55,55 @@ public class MainActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 String name = username.getText().toString();
-                UserProfile user = new UserProfile(name);
-                try{
-                    //ElasticSearchHabitController.AddUserTask addUserTask = new ElasticSearchHabitController.AddUserTask();
-                    //addUserTask.execute(user);
-                    ElasticSearchHabitController.AddHabitsTask addHabitsTask = new ElasticSearchHabitController.AddHabitsTask();
-                    addHabitsTask.execute();
-                } catch(Exception e){
+                validateInput(name);
+
+
+
+                ElasticSearchHabitController.GetUserTask getUserTask = new ElasticSearchHabitController.GetUserTask();
+                getUserTask.execute(name);
+                if (!name.isEmpty()){
+                    try{
+                        user = getUserTask.get();
+                        if (user == null){
+                            user = new UserProfile(name);
+                            ElasticSearchHabitController.AddUserTask addUserTask = new ElasticSearchHabitController.AddUserTask();
+                            addUserTask.execute(user);
+                            Toast.makeText(getApplicationContext(),"New User created.",Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(),"User exists.",Toast.LENGTH_LONG).show();
+                        }
+                    }catch (Exception e){
+
+                    }
 
                 }
 
 
+                try{
+                    //ElasticSearchHabitController.AddUserTask addUserTask = new ElasticSearchHabitController.AddUserTask();
+                    //addUserTask.execute(user);
+                } catch(Exception e){
+                }
                 Intent intent = new Intent(v.getContext(), HomePageActivityNew.class);
                 intent.putExtra("USERNAME",username.getText().toString());
                 startActivity(intent);
-
             }
         });
-
     }
+
+    private boolean validateInput(String name){
+        if (name.length() == 0){
+            Toast.makeText(getApplicationContext(),"username is empty.",Toast.LENGTH_LONG).show();
+            return false;
+        }else {
+            return true;
+        }
+    }
+
+
+
+
+
 }

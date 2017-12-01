@@ -93,6 +93,44 @@ public class ElasticSearchHabitController {
         }
     }
 
+    public static class GetCurrentHabitsTask extends AsyncTask<String, Void, ArrayList<NormalHabit>> {
+        @Override
+        protected ArrayList<NormalHabit> doInBackground(String... search_parameters) {
+            verifySettings();
+
+            ArrayList<NormalHabit> habits;
+            habits = new ArrayList<NormalHabit>();
+
+
+            String query = "{\n" +
+                    "    \"query\" : {\n" +
+                    "       \"constant_score\" : {\n" +
+                    "           \"filter\" : {\n" +
+                    "               \"term\" : {\"user\": \"" + search_parameters[0] + "\"}\n" +
+                    "             }\n" +
+                    "         }\n" +
+                    "    }\n" +
+                    "}";
+            Search search = new Search.Builder(query).addIndex("cmput301f17t06").addType("habit").build();
+
+
+            try {
+                // get the results of the query
+                SearchResult result = client.execute(search);
+                if(result.isSucceeded())
+                {
+                    List<NormalHabit> foundHabit = result.getSourceAsObjectList(NormalHabit.class);
+                    habits.addAll(foundHabit);
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+
+            return habits;
+        }
+    }
+
     public static class AddUserTask extends AsyncTask<UserProfile, Void, Void> {
 
         @Override
@@ -122,6 +160,44 @@ public class ElasticSearchHabitController {
 
             }
             return null;
+        }
+    }
+
+    public static class GetUserTask extends AsyncTask<String, Void, UserProfile> {
+        private UserProfile userProfile = null;
+
+        @Override
+        protected UserProfile doInBackground(String... search_parameters) {
+            verifySettings();
+
+            String query = "{\n" +
+                    "    \"query\" : {\n" +
+                    "       \"constant_score\" : {\n" +
+                    "           \"filter\" : {\n" +
+                    "               \"term\" : {\"name\": \"" + search_parameters[0] + "\"}\n" +
+                    "             }\n" +
+                    "         }\n" +
+                    "    }\n" +
+                    "}";
+
+            Search search = new Search.Builder(query).addIndex("cmput301f17t06").addType("user").build();
+
+            try {
+                // get the results of the query
+                SearchResult result = client.execute(search);
+                if(result.isSucceeded() && result.getFirstHit(UserProfile.class).source != null)
+                {
+                    userProfile = result.getFirstHit(UserProfile.class).source;
+                    String blah = "p";
+                } else {
+                    Log.i("Error", "The search query failed to find any Users that matched");
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+
+            return userProfile;
         }
     }
 

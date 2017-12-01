@@ -12,6 +12,7 @@ package com.example.lit.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -48,6 +49,7 @@ public class TestFragment extends Fragment {
 
     ArrayList<NormalHabit> habitArrayList;
     ArrayAdapter<NormalHabit> habitAdapter;
+    String username;
 
 
     FragmentActivity listener;
@@ -65,12 +67,15 @@ public class TestFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent i = getActivity().getIntent();
+        username = (String) i.getSerializableExtra("USERNAME");
         habitArrayList = new ArrayList<NormalHabit>();
-        ElasticSearchHabitController.GetHabitsTask getHabitsTask = new ElasticSearchHabitController.GetHabitsTask();
-        getHabitsTask.execute("");
+
+        ElasticSearchHabitController.GetCurrentHabitsTask getCurrentHabitsTask = new ElasticSearchHabitController.GetCurrentHabitsTask();
+        getCurrentHabitsTask.execute(username);
 
         try{
-            habitArrayList = getHabitsTask.get();
+            habitArrayList = getCurrentHabitsTask.get();
         }
         catch (Exception e){
             Log.i("Error","Failed to get the habits from the asyc object");
@@ -90,22 +95,25 @@ public class TestFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         ListView lv = (ListView) view.findViewById(R.id.habit_ListView);
-        Button createHabitButton = (Button) view.findViewById(R.id.createHabitButton);
         lv.setAdapter(habitAdapter);
 
+        // Button for creating dummy habits.
+        Button createHabitButton = (Button) view.findViewById(R.id.createHabitButton);
         createHabitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
                     NormalHabit testHabit = new NormalHabit("posted from app");
+                    testHabit.setUser(username);
                     habitArrayList.add(testHabit);
                     habitAdapter.notifyDataSetChanged();
                     ElasticSearchHabitController.AddHabitsTask addHabitsTask = new ElasticSearchHabitController.AddHabitsTask();
                     addHabitsTask.execute(testHabit);
                 }catch(Exception e){
                 }
-
             }
         });
+
+
     }
 }
