@@ -29,9 +29,8 @@ import io.searchbox.core.SearchResult;
 
 
 class ElasticSearchHabitController {
-    private static JestDroidClient client;
+     private static JestDroidClient client;
 
-    // adds tweets to elastic search
      static class AddTask<T extends Saveable> extends AsyncTask<T, Void, Void> {
         private String username;
         private String typeOfObject;
@@ -60,6 +59,9 @@ class ElasticSearchHabitController {
                     else
                     {
                         Log.i("Error","Elasticsearch was not able to add the T");
+                        //TODO: What does ES return upon failure?
+                        //throw new NotOnlineException();
+                        //Let user know it couldn't save online successfully.
                     }
                 }
                 catch (Exception e) {
@@ -71,8 +73,7 @@ class ElasticSearchHabitController {
         }
     }
 
-    // gets habits from elastic search
-    public static class GetTask<T extends Saveable> extends AsyncTask<String, Void, T> {
+    static class GetTask<T extends Saveable> extends AsyncTask<String, Void, ElasticSearchTimestampWrapper<T>> {
         private String username;
         private String typeOfObject;
         private Class<T> classOfObject;
@@ -85,15 +86,10 @@ class ElasticSearchHabitController {
         }
 
         @Override
-        protected T doInBackground(String... search_parameters) {
+        protected ElasticSearchTimestampWrapper<T> doInBackground(String... search_parameters) {
             verifySettings();
 
-            T loadingObject = null;
-
-            //ArrayList<NormalHabit> habits;
-            //habits = new ArrayList<NormalHabit>();
-
-            // TODO Build the query
+            ElasticSearchTimestampWrapper<T> loadingObject = null;
 
             Search search = new Search.Builder(""+search_parameters[0]+"")
                     .addIndex("cmput301f17t06" + username).addType(typeOfObject).build();
@@ -105,7 +101,7 @@ class ElasticSearchHabitController {
                 {
                     //List<NormalHabit> foundHabit = result.getSourceAsObjectList(NormalHabit.class);
                     //habits.addAll(foundHabit);
-                    loadingObject = result.getSourceAsObject(classOfObject);
+                    loadingObject = result.getSourceAsObject(ElasticSearchTimestampWrapper.class);
                 }
             }
             catch (Exception e) {
