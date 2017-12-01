@@ -196,7 +196,7 @@ public class AddHabitActivity extends AppCompatActivity  {
         try {Habit newHabit = new NormalHabit(habitNameString, habitStartDate,
                 habitLocation, commentString, calendarList,image);
             //TODO: save new habit by DataHandler
-            //dataHandler.saveData(newHabit);
+            dataHandler.saveData(newHabit);
             finish();
         } catch (HabitFormatException e){
             Toast.makeText(AddHabitActivity.this,"Error: Illegal Habit information!",Toast.LENGTH_LONG).show();

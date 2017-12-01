@@ -29,6 +29,8 @@ import com.example.lit.R;
 import com.example.lit.Utilities.DataModel;
 import com.example.lit.Utilities.DrawerItemCustomAdapter;
 import com.example.lit.habit.Habit;
+import com.example.lit.habit.HabitList;
+import com.example.lit.habit.NormalHabitList;
 import com.example.lit.location.HabitLocation;
 import com.example.lit.saving.DataHandler;
 import com.google.android.gms.maps.model.LatLng;
@@ -48,7 +50,8 @@ public class HomePageActivityNew extends AppCompatActivity {
 
     private String username;
     private ListView habitsListView;
-    private ArrayList<Habit> habitArrayList;
+    //private ArrayList<Habit> habitArrayList;
+    private HabitList habitArrayList;
     ArrayAdapter<Habit> habitAdapter;
 
     ImageButton addHabitButton;
@@ -64,9 +67,10 @@ public class HomePageActivityNew extends AppCompatActivity {
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         //frameLayout = (FrameLayout) findViewById(R.id.content_frame);
 
-        habitArrayList = new ArrayList<>();
+        //habitArrayList = new ArrayList<>();
+        habitArrayList = new NormalHabitList();
         habitsListView = (ListView)findViewById(R.id.habit_ListView);
-        habitAdapter = new ArrayAdapter<Habit>(this,R.layout.list_item,habitArrayList);
+        habitAdapter = new ArrayAdapter<Habit>(this,R.layout.list_item,habitArrayList.getHabits());
         habitsListView.setAdapter(habitAdapter);
 
         setupToolbar();
@@ -103,7 +107,7 @@ public class HomePageActivityNew extends AppCompatActivity {
 
                 Intent intent = new Intent(HomePageActivityNew.this,ViewHabitActivity.class);
                 Bundle bundle = new Bundle();
-                Habit selectedHabit = habitArrayList.get(i);
+                Habit selectedHabit = habitArrayList.getHabit(i);
                 try {
                     bundle.putSerializable("habit",selectedHabit);
                 }catch (Exception e){
@@ -131,9 +135,9 @@ public class HomePageActivityNew extends AppCompatActivity {
         super.onStart();
         DataHandler dataHandler = new DataHandler(username,"HabitList",HomePageActivityNew.this);
         //TODO: load all habits by DataHandler
-        //habitArrayList = dataHandler.loadData();
+        habitArrayList = dataHandler.loadData();
         habitAdapter = new ArrayAdapter<Habit>(this,
-                R.layout.list_item, habitArrayList);
+                R.layout.list_item, habitArrayList.getHabits());
         habitsListView.setAdapter(habitAdapter);
     }
 

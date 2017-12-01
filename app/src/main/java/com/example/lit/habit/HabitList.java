@@ -10,8 +10,13 @@
 
 package com.example.lit.habit;
 
+import com.example.lit.saving.Saveable;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+
+import io.searchbox.annotations.JestId;
 
 
 /*
@@ -28,11 +33,22 @@ import java.util.Collections;
  * you may find a copy of the license in the project. Otherwise please contact jiaxiong@ualberta.ca
  */
 
-public class HabitList {
+public abstract class HabitList implements HabitListable , Serializable, Saveable{
 
     private ArrayList<Habit> habits = new ArrayList<>();
+    public abstract String habitListType();
+    @JestId
+    private String id;
+
+    public String getID(){ return id ;}
+
+    public void setID(String id){ this.id = id ;}
 
     public HabitList(){}
+
+    public ArrayList<Habit> getHabits() {
+        return habits;
+    }
 
     public ArrayList<Habit> getHabits(String sortType) {
 
