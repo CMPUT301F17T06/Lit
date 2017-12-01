@@ -21,20 +21,19 @@ android {
 
 dependencies {
     implementation 'com.android.support:design:26.1.0'
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     /*From https://stackoverflow.com/questions/21134326/
-        **cannot-import-com-google-android-gms-maps-model-latlng-in-android-studio
-        * Oct 21 2017
-         */
+    **cannot-import-com-google-android-gms-maps-model-latlng-in-android-studio
+    * Oct 21 2017
+     */
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'io.searchbox:jest-droid:1.0.0'
+    compile files('src/include/jest-droid-2.0.1-SNAPSHOT.jar')
     compile 'com.google.android.gms:play-services-maps:9.2.0'
     compile 'com.google.android.gms:play-services-location:9.2.0'
     androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.2.1'
     testCompile 'junit:junit:4.12'
-    implementation files('src/include/jest-droid-2.0.1-SNAPSHOT.jar')
 }

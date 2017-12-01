@@ -93,16 +93,17 @@ public class EditHabitActivity extends AppCompatActivity {
 
             Bundle bundle = getIntent().getExtras();
             currentHabit = (Habit)bundle.getSerializable("habit");
-            double lat = bundle.getDouble("lat");
-            double lng = bundle.getDouble("lng");
-            LatLng latLng = new LatLng(lat, lng);
-            HabitLocation habitLocation= new HabitLocation(latLng);
-
-            currentHabit.setLocation(habitLocation);
+            //double lat = bundle.getDouble("lat");
+            //double lng = bundle.getDouble("lng");
+            //LatLng latLng = new LatLng(lat, lng);
+            //HabitLocation habitLocation= new HabitLocation(latLng);
+            //currentHabit.setLocation(habitLocation);
+            HabitLocation habitLocation = currentHabit.getHabitLocation();
 
             if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
         }catch (LoadHabitException e){
-            //TODO: handle LoadHabitException
+            e.printStackTrace();
+            Toast.makeText(this,"Error loading habit!",Toast.LENGTH_LONG).show();
         }
 
         habitTitleString = currentHabit.getTitle();
