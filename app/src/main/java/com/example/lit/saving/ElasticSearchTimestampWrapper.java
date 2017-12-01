@@ -10,33 +10,35 @@
 
 package com.example.lit.saving;
 
+import java.io.Serializable;
+
 /**
  * Created by Riley Dixon on 28/11/2017.
  */
 
 //Would have preferred to have this approach work instead of sending a gson string.
-class ElasticSearchTimestampWrapper<T extends Saveable>{
+class ElasticSearchTimestampWrapper<T extends Saveable> implements Serializable{
     private T data;
     private long timestamp;
 
-    public ElasticSearchTimestampWrapper(T data, long timestamp) {
+    ElasticSearchTimestampWrapper(T data, long timestamp) {
         this.data = data;
         this.timestamp = timestamp;
     }
 
-    public T getData() {
+    T getData() {
         return data;
     }
 
-    public void setData(T data) {
+    void setData(T data) {
         this.data = data;
     }
 
-    public long getTimestamp() {
+    long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(long timestamp) {
+    void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 }
