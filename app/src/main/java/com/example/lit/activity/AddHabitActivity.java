@@ -97,7 +97,6 @@ public class AddHabitActivity extends AppCompatActivity  {
     double latitude;
     double longitude;
     String username;
-    Uri imageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,8 +194,7 @@ public class AddHabitActivity extends AppCompatActivity  {
 
         try {Habit newHabit = new NormalHabit(habitNameString, habitStartDate,
                 habitLocation, commentString, calendarList,image);
-            //TODO: save new habit by DataHandler
-            //dataHandler.saveData(newHabit);
+            dataHandler.saveData(newHabit);
             finish();
         } catch (HabitFormatException e){
             Toast.makeText(AddHabitActivity.this,"Error: Illegal Habit information!",Toast.LENGTH_LONG).show();
@@ -291,7 +289,6 @@ public class AddHabitActivity extends AppCompatActivity  {
 
     //TODO: should be able to set habit image
     private void setHabitImage(ImageView habitImage){
-
     }
 
     /**

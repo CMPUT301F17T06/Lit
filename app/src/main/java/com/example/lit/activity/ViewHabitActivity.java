@@ -78,19 +78,17 @@ public class ViewHabitActivity extends AppCompatActivity {
         try{
             Bundle bundle = getIntent().getExtras();
             currentHabit = (Habit)bundle.getSerializable("habit");
-            double lat = bundle.getDouble("lat");
-            double lng = bundle.getDouble("lng");
-            LatLng latLng = new LatLng(lat, lng);
-            HabitLocation habitLocation= new HabitLocation(latLng);
-
-            currentHabit.setLocation(habitLocation);
+            //double lat = bundle.getDouble("lat");
+            //double lng = bundle.getDouble("lng");
+            //LatLng latLng = new LatLng(lat, lng);
+            //HabitLocation habitLocation= new HabitLocation(latLng);
+            //currentHabit.setLocation(habitLocation);
 
             if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
         }catch (LoadHabitException e){
             //TODO: handle LoadHabitException
         }
         // Retrieve habit info
-
         habitTitleString = currentHabit.getTitle();
         habitCommentString = currentHabit.getReason();
         habitDateStartedString = currentHabit.getDate().toString();
@@ -150,13 +148,16 @@ public class ViewHabitActivity extends AppCompatActivity {
 
     /**
      * This function jump to EditHabitActivity
-     * @param serializable
+     * @param habit
      */
-    public void toEditHabitActivity(Serializable serializable){
-        Intent intent = new Intent(ViewHabitActivity.this, EditHabitActivity.class);
+    public void toEditHabitActivity(Habit habit){
         Log.i("ViewHabitActivity", "Edit button pressed.");
-        intent.putExtra("habit",serializable);
-        startActivityForResult(intent,1);
+
+        Intent intent = new Intent(ViewHabitActivity.this,EditHabitActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("habit", habit);
+        intent.putExtras(bundle);
+        startActivityForResult(intent,2);
     }
 
     //TODO: delete current habit and return to previous activity
