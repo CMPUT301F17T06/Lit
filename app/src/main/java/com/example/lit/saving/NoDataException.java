@@ -11,16 +11,22 @@
 package com.example.lit.saving;
 
 /**
- * Created by Riley Dixon on 12/11/2017.
+ * Created by rmdixon on 11/21/17.
  */
 
-public interface Saveable {
+/**
+ * If no data is able to be read throw this exception. Should be
+ * implemented by the calling class.
+ *
+ */
+public class NoDataException extends Exception {
 
-    String getID();
-    void setID(String id);
+    NoDataException(){
+        super();
+    }
+
+    NoDataException(String errorMessage){
+        super(errorMessage);
+    }
 
 }
-
-
-
-
