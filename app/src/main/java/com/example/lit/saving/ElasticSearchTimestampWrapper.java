@@ -17,6 +17,24 @@ import java.io.Serializable;
  */
 
 //Would have preferred to have this approach work instead of sending a gson string.
+
+/**
+ * A class simply used to also contain the timestamp of when the object was last saved
+ * for when passing to ElasticSearch. Saving the timestamp with the actual data
+ * is thought to be unnecessary as we only need its last modified date to be
+ * comparing the online and offline versions of the file. Also saving in a Collection
+ * would not work as the types are different.
+ *
+ * Documentation was unavailable for saving two objects under the same set of search parameters
+ * with ElasticSearch and as such that method was ultimately not chosen.
+ *
+ * This class is to be paired with DataHandler
+ *
+ * @param <T> The type of object being saved.
+ *
+ * @see DataHandler
+ * @author Riley Dixon
+ */
 class ElasticSearchTimestampWrapper<T extends Saveable> implements Serializable{
     private T data;
     private long timestamp;

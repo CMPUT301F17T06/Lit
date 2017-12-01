@@ -12,9 +12,6 @@ package com.example.lit.saving;
 
 import android.content.Context;
 
-
-import com.example.lit.saving.ElasticSearchHabitController;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
@@ -33,6 +30,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 
+
+//TODO: BONUS, upgrade to java.nio.files.Files and introduce file locking
+    //The above TO DO is just a bonus and should be used to ensure
+    //file consistency but ensuring that there is only one writer or reader
+    // at a time.
+
 /**
  * The DataHandler class is to be used to save an object for longtime storage.
  * This object should be used for a single object or a collection of the same type
@@ -44,13 +47,8 @@ import java.util.concurrent.ExecutionException;
  * be to use class reflection and have that determine the file name.
  *
  * @author Riley Dixon
+ * @param <T> The type of data we are trying to save.
  */
-
-//TODO: BONUS, upgrade to java.nio.files.Files and introduce file locking
-    //The above TO DO is just a bonus and should be used to ensure
-    //file consistency but ensuring that there is only one writer or reader
-    // at a time.
-
 public class DataHandler<T extends Saveable> {
     private long lastOfflineSave;
     private long lastOnlineSave;
@@ -95,6 +93,7 @@ public class DataHandler<T extends Saveable> {
      */
     public void saveData(T element){
         long currentTime = System.currentTimeMillis();
+
         try{
             saveToOffline(element, currentTime);
             lastOfflineSave = currentTime;
@@ -108,7 +107,6 @@ public class DataHandler<T extends Saveable> {
         }catch (NotOnlineException e){
             throw new RuntimeException();
         }
-        //TODO: Online part
     }
 
     /**
@@ -138,6 +136,11 @@ public class DataHandler<T extends Saveable> {
             //If no data was loaded, was it lost or no data existed in the first place.
             throw new NoDataException("No data to load.");
         }else if(this.lastOfflineSave > this.lastOnlineSave){
+            //NOTE: If timestamps are equal than either can be chosen
+            //However in a matter of testing the objects will be saved at the same time
+            //Thus for testing purposes online will be preferred to verify it is saving
+            //and loading correctly. This inequality may be changed to greater than or equals
+            //if online fails or wanting to test offline features.
             return loadedElementOffline;
         }else{
             return loadedElementOnline;
@@ -164,8 +167,6 @@ public class DataHandler<T extends Saveable> {
         collection.add(currentTime);
         collection.add(dataToSave);
         gson.toJson(collection, out);
-        //gson.toJson(currentTime, out);
-        //gson.toJson(dataToSave, typeOfElement, out); //OBJECT, TYPE, APPENDABLE
 
         //Close the writing stream.
         out.flush();
@@ -213,9 +214,6 @@ public class DataHandler<T extends Saveable> {
         tempTime = gson.fromJson(jsonArray.get(0), long.class);
         loadedElement = gson.fromJson(jsonArray.get(1), typeOfElement);
 
-
-        //this.loadingOfflineTime = gson.fromJson(in, new TypeToken<Long>(){}.getType());
-        //loadedElement = gson.fromJson(in, typeOfElement);
         //Close stream
         fis.close();
 
@@ -246,11 +244,11 @@ public class DataHandler<T extends Saveable> {
             e.printStackTrace();
         }
 
-        //Placeholders to allow code to compile
+        //NOTE: Im not sure what ES returns on fail, however this at least prevents
+        //NullPointerExceptions.
         if(loadedElement == null){
             throw new NoDataException();
         }
-
 
         this.lastOnlineSave = loadedElement.getTimestamp();
         return loadedElement.getData();

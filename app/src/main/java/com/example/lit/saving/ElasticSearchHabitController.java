@@ -12,22 +12,25 @@ package com.example.lit.saving;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.lit.habit.NormalHabit;
-import com.example.lit.saving.Saveable;
-import com.example.lit.userprofile.UserProfile;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 
+//TODO: Further partition data by user
 
+/**
+ * The ElasticSearch class that is used to construct static objects for when needing to save
+ * data objects online. This connects to the CMPUT 301 softwareprocess server that is available
+ * for purposes of the class and uses our team ID as the index for our data.
+ *
+ * @author Max Schafer, modified by Riley Dixon
+ * @see DataHandler
+ */
 class ElasticSearchHabitController {
      private static JestDroidClient client;
 
@@ -49,22 +52,17 @@ class ElasticSearchHabitController {
                 Index index = new Index.Builder(currentT).index("cmput301f17t06" + username).type(typeOfObject).build();
 
                 try {
-
                     DocumentResult result = client.execute(index);
 
-                    if(result.isSucceeded())
-                    {
+                    if(result.isSucceeded()){
                         currentT.getData().setID(result.getId());
-                    }
-                    else
-                    {
+                    }else{
                         Log.i("Error","Elasticsearch was not able to add the T");
                         //TODO: What does ES return upon failure?
                         //throw new NotOnlineException();
                         //Let user know it couldn't save online successfully.
                     }
-                }
-                catch (Exception e) {
+                }catch (Exception e) {
                     Log.i("Error", "The application failed to build and send the T");
                 }
 
@@ -95,14 +93,10 @@ class ElasticSearchHabitController {
             try {
                 // get the results of the query
                 SearchResult result = client.execute(search);
-                if(result.isSucceeded())
-                {
-                    //List<NormalHabit> foundHabit = result.getSourceAsObjectList(NormalHabit.class);
-                    //habits.addAll(foundHabit);
+                if(result.isSucceeded()) {
                     loadingObject = result.getSourceAsObject(ElasticSearchTimestampWrapper.class);
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
             }
 
