@@ -26,10 +26,15 @@
     <string name="take_photo">Take Photo</string>
 
     <string-array name="navigation_drawer_items_array">
+        <item>Home</item>
         <item>HabitHistory</item>
         <item>Friends</item>
         <item>Map</item>
         <item>Profile</item>
     </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="main_habit">Main habit</string>
 
 </resources>

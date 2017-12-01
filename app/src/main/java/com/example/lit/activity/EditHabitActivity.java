@@ -114,12 +114,18 @@ public class EditHabitActivity extends AppCompatActivity {
         habitCommentString = currentHabit.getReason();
         habitDate = currentHabit.getDate();
         calendarList = currentHabit.getCalendars();
-        hour = calendarList.get(0).getTime().getHours();
-        minute = calendarList.get(0).getTime().getHours();
-        weekdays = new ArrayList<>();
-        for (Calendar calendar:calendarList) {
-            int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-            weekdays.add(dayOfWeek-1);
+        if (calendarList!=null) {
+            hour = calendarList.get(0).getTime().getHours();
+            minute = calendarList.get(0).getTime().getHours();
+            weekdays = new ArrayList<>();
+            for (Calendar calendar : calendarList) {
+                int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+                weekdays.add(dayOfWeek - 1);
+            }
+        }else{
+            hour = 0;
+            minute = 0;
+            weekdays = new ArrayList<>();
         }
 
         // Activity components
