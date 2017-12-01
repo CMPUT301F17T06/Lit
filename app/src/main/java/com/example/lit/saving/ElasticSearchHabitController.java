@@ -31,7 +31,6 @@ import io.searchbox.core.SearchResult;
 class ElasticSearchHabitController {
      private static JestDroidClient client;
 
-     static class AddTask<T extends Saveable> extends AsyncTask<T, Void, Void> {
         private String username;
         private String typeOfObject;
 
@@ -42,10 +41,8 @@ class ElasticSearchHabitController {
         }
 
         @Override
-        protected Void doInBackground(T... objects) {
             verifySettings();
 
-            for (T currentT : objects) {
                 Index index = new Index.Builder(currentT).index("cmput301f17t06" + username).type(typeOfObject).build();
 
                 try {
@@ -54,7 +51,7 @@ class ElasticSearchHabitController {
 
                     if(result.isSucceeded())
                     {
-                        currentT.setID(result.getId());
+                        currentT.getData().setID(result.getId());
                     }
                     else
                     {
