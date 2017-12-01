@@ -12,6 +12,7 @@ package com.example.lit.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,6 +43,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import static com.example.lit.activity.AddHabitActivity.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE;
 
 
 /**
@@ -83,6 +86,7 @@ public class EditHabitActivity extends AppCompatActivity {
     String habitCommentString;
     Date habitDate;
     List<Calendar> calendarList;
+    private Bitmap image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,10 +117,9 @@ public class EditHabitActivity extends AppCompatActivity {
         hour = calendarList.get(0).getTime().getHours();
         minute = calendarList.get(0).getTime().getHours();
         weekdays = new ArrayList<>();
-        for (Calendar calendar:calendarList
-             ) {
+        for (Calendar calendar:calendarList) {
             int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-            weekdays.add(dayOfWeek);
+            weekdays.add(dayOfWeek-1);
         }
 
         // Activity components
@@ -129,6 +132,15 @@ public class EditHabitActivity extends AppCompatActivity {
         minute_spinner = (Spinner) findViewById(R.id.minute_spinner);
         weekday_spinner = (MultiSelectionSpinner) findViewById(R.id.weekday_spinner);
         locationCheck = (CheckBox) findViewById(R.id.locationCheckBox);
+        habitImage = (ImageView) findViewById(R.id.HabitImage);
+        editImage = (Button)findViewById(R.id.takeImageButton);
+
+        editImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                takePicture();
+            }
+        });
 
         // Set up weekday selection
         weekday_spinner.setItems(createWeekdayList());
@@ -166,6 +178,33 @@ public class EditHabitActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    /**
+     * Function used to take picture by camera.
+     * taken: https://stackoverflow.com/questions/5991319/capture-image-from-camera-and-display-in-activity
+     */
+    public void takePicture(){
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+                try {
+                    image = (Bitmap) data.getExtras().get("data");
+                    habitImage.setImageBitmap(image);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+        else if (resultCode == RESULT_CANCELED) {
+            Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
