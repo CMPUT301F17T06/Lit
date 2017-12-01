@@ -31,6 +31,7 @@ import io.searchbox.core.SearchResult;
 class ElasticSearchHabitController {
      private static JestDroidClient client;
 
+     static class AddTask<T extends Saveable> extends AsyncTask<ElasticSearchTimestampWrapper<T>, Void, Void> {
         private String username;
         private String typeOfObject;
 
@@ -41,8 +42,10 @@ class ElasticSearchHabitController {
         }
 
         @Override
+        protected Void doInBackground(ElasticSearchTimestampWrapper<T>... objects) {
             verifySettings();
 
+            for (ElasticSearchTimestampWrapper<T> currentT : objects) {
                 Index index = new Index.Builder(currentT).index("cmput301f17t06" + username).type(typeOfObject).build();
 
                 try {
@@ -73,13 +76,11 @@ class ElasticSearchHabitController {
     static class GetTask<T extends Saveable> extends AsyncTask<String, Void, ElasticSearchTimestampWrapper<T>> {
         private String username;
         private String typeOfObject;
-        private Class<T> classOfObject;
 
-        GetTask(String username, String typeOfObject, Class<T> classOfObject){
+        GetTask(String username, String typeOfObject){
             super();
             this.username = username;
             this.typeOfObject = typeOfObject;
-            this.classOfObject = classOfObject;
         }
 
         @Override

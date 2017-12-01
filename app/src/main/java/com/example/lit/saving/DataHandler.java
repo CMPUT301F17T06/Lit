@@ -57,7 +57,6 @@ public class DataHandler<T extends Saveable> {
     private String username;
     private String typeOfObject;
     private String FILENAME;
-    private Class<T> referenceClass;
 
     /**
      * Builds a handler that is used to save data to both local storage for offline use as
@@ -73,12 +72,11 @@ public class DataHandler<T extends Saveable> {
      *
      * @see Gson
      */
-    public DataHandler(String username, String typeOfObject, Context context, Class<T> referenceClass){
+    public DataHandler(String username, String typeOfObject, Context context){
         this.FILENAME = context.getFilesDir().getAbsolutePath() + File.separator
                 + username;
         this.username = username;
         this.typeOfObject = typeOfObject;
-        this.referenceClass = referenceClass;
 
         File filePath = new File(FILENAME);
         //Check if the subdirectory has been created yet or not
@@ -185,8 +183,10 @@ public class DataHandler<T extends Saveable> {
     private void saveToOnline(T dataToSave, long currentTime) throws NotOnlineException{
         ElasticSearchHabitController.AddTask<T> esSaver
                 = new ElasticSearchHabitController.AddTask<T>(username, typeOfObject);
+        ElasticSearchTimestampWrapper<T> ESTWdata
+                = new ElasticSearchTimestampWrapper<T>(dataToSave, currentTime);
 
-        esSaver.execute(dataToSave);
+        esSaver.execute(ESTWdata);
     }
 
     /**
@@ -194,7 +194,7 @@ public class DataHandler<T extends Saveable> {
      * this class.
      *
      * @return Returns the object
-     * @throws IOException
+     * @throws IOException If there was a problem writing to the file
      */
     private T loadFromOffline() throws IOException{
         T loadedElement;
@@ -228,20 +228,15 @@ public class DataHandler<T extends Saveable> {
      * this class.
      *
      *
-     * @return
-     * @throws NotOnlineException
+     * @return Returns the requested data of type T
+     * @throws NotOnlineException If ES cannot connect to the internet throw this
+     * @throws NoDataException If ES pulls no data from the requested query throw this
      */
-    private T loadFromOnline() throws NotOnlineException{
-        //ElasticSearchTimestampWrapper<T> loadedElement = null;
-        T loadedElement = null;
-        long tempTime; //TempTime is used incase we do not load the actual data successfully.
-                       //lastOnlineSave is used for the last successful load of data.
+    private T loadFromOnline() throws NotOnlineException, NoDataException {
+        ElasticSearchTimestampWrapper<T> loadedElement = null;
 
         ElasticSearchHabitController.GetTask<T> esLoader
-                = new ElasticSearchHabitController.GetTask<>(username, typeOfObject, referenceClass);
-
-        //ElasticSearchHabitController.GetTask<T> esLoader
-         //       = new ElasticSearchHabitController.GetTask<>(username, typeOfObject, ElasticSearchTimestampWrapper.class);
+                = new ElasticSearchHabitController.GetTask<>(username, typeOfObject);
 
         try {
             loadedElement = esLoader.execute("").get(); //null search parameters
@@ -252,10 +247,13 @@ public class DataHandler<T extends Saveable> {
         }
 
         //Placeholders to allow code to compile
-        tempTime = 0;
+        if(loadedElement == null){
+            throw new NoDataException();
+        }
 
-        this.lastOnlineSave = tempTime;
-        return loadedElement;
+
+        this.lastOnlineSave = loadedElement.getTimestamp();
+        return loadedElement.getData();
     }
 
 }
