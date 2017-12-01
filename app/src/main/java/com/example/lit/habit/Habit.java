@@ -10,10 +10,12 @@
 
 package com.example.lit.habit;
 
+import android.graphics.Bitmap;
 import android.os.Parcelable;
 
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.location.*;
+import com.example.lit.saving.Saveable;
 import com.google.android.gms.maps.model.LatLng;
 import io.searchbox.annotations.JestId;
 
@@ -31,7 +33,7 @@ import java.util.Locale;
  * This class is an abstract habit class
  * @author Steven Weikai Lu
  */
-public abstract class Habit implements Habitable , Serializable{
+public abstract class Habit implements Habitable , Serializable, Saveable {
 
     private String title;
     private Date date;
@@ -43,10 +45,11 @@ public abstract class Habit implements Habitable , Serializable{
     private List<Calendar> calendars;
     @JestId
     private String id;
+    private Bitmap image;
 
-    public String getId(){ return id ;}
+    public String getID(){ return id ;}
 
-    public void setId(String id){ this.id = id ;}
+    public void setID(String id){ this.id = id ;}
 
 
     public Habit(String title) throws HabitFormatException {
@@ -83,6 +86,15 @@ public abstract class Habit implements Habitable , Serializable{
         this.setLocation(habitLocation);
         this.setReason(reason);
         this.setCalendars(calendarList);
+    }
+
+    public Habit(String title, Date date, HabitLocation habitLocation, String reason, List<Calendar> calendars, Bitmap image)throws HabitFormatException {
+        this.setTitle(title);
+        this.setDate(date);
+        this.setLocation(habitLocation);
+        this.setReason(reason);
+        this.setCalendars(calendars);
+        this.setImage(image);
     }
 
     // TODO: Constructor with JestID
@@ -135,6 +147,13 @@ public abstract class Habit implements Habitable , Serializable{
         return this.habitLocation;
     }
 
+    public Bitmap getImage() {
+        return image;
+    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
+    }
 
     @Override
     public String toString() {
