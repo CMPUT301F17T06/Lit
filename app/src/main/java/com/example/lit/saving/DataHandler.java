@@ -56,6 +56,8 @@ public class DataHandler<T extends Saveable> {
     private String typeOfObject;
     private String FILENAME;
 
+    private Class<T> typeOfClass;
+
     /**
      * Builds a handler that is used to save data to both local storage for offline use as
      * well as online via ElasticSearch. T is the type of object that is to be stored.
@@ -70,11 +72,12 @@ public class DataHandler<T extends Saveable> {
      *
      * @see Gson
      */
-    public DataHandler(String username, String typeOfObject, Context context){
+    public DataHandler(String username, String typeOfObject, Context context, Class<T> typeOfClass){
         this.FILENAME = context.getFilesDir().getAbsolutePath() + File.separator
                 + username;
         this.username = username;
         this.typeOfObject = typeOfObject;
+        this.typeOfClass = typeOfClass;
 
         File filePath = new File(FILENAME);
         //Check if the subdirectory has been created yet or not
@@ -212,7 +215,8 @@ public class DataHandler<T extends Saveable> {
         JsonParser jsonParser = new JsonParser();
         JsonArray jsonArray = jsonParser.parse(gson.fromJson(in, String.class)).getAsJsonArray();
         tempTime = gson.fromJson(jsonArray.get(0), long.class);
-        loadedElement = gson.fromJson(jsonArray.get(1), typeOfElement);
+        //loadedElement = gson.fromJson(jsonArray.get(1), typeOfElement);
+        loadedElement = gson.fromJson(jsonArray.get(1), typeOfClass);
 
         //Close stream
         fis.close();
