@@ -65,7 +65,6 @@ public class EditHabitActivity extends AppCompatActivity {
     EditText habitComment;
     Button saveHabit;
     Button cancelHabit;
-    CheckBox locationCheck;
     MultiSelectionSpinner weekday_spinner;
     Spinner hour_spinner;
     Spinner minute_spinner;
@@ -97,12 +96,7 @@ public class EditHabitActivity extends AppCompatActivity {
 
             Bundle bundle = getIntent().getExtras();
             currentHabit = (Habit)bundle.getSerializable("habit");
-            //double lat = bundle.getDouble("lat");
-            //double lng = bundle.getDouble("lng");
-            //LatLng latLng = new LatLng(lat, lng);
-            //HabitLocation habitLocation= new HabitLocation(latLng);
-            //currentHabit.setLocation(habitLocation);
-            HabitLocation habitLocation = currentHabit.getHabitLocation();
+
 
             if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
         }catch (LoadHabitException e){
@@ -137,7 +131,6 @@ public class EditHabitActivity extends AppCompatActivity {
         hour_spinner = (Spinner) findViewById(R.id.hour_spinner);
         minute_spinner = (Spinner) findViewById(R.id.minute_spinner);
         weekday_spinner = (MultiSelectionSpinner) findViewById(R.id.weekday_spinner);
-        locationCheck = (CheckBox) findViewById(R.id.locationCheckBox);
         habitImage = (ImageView) findViewById(R.id.HabitImage);
         editImage = (Button)findViewById(R.id.takeImageButton);
 

@@ -91,12 +91,6 @@ public class AddHabitEventActivity extends AppCompatActivity  {
         try{
             Bundle bundle = getIntent().getExtras();
             currentHabit = (Habit)bundle.getSerializable("habit");
-            double lat = bundle.getDouble("lat");
-            double lng = bundle.getDouble("lng");
-            LatLng latLng = new LatLng(lat, lng);
-            HabitLocation habitLocation= new HabitLocation(latLng);
-
-            currentHabit.setLocation(habitLocation);
             if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
         }catch (LoadHabitException e){
             //TODO: handle LoadHabitException
@@ -111,7 +105,7 @@ public class AddHabitEventActivity extends AppCompatActivity  {
         habitEventComment.setLines(3); //Maximum lines our comment should be able to show at once.
         saveHabitEvent = (Button) findViewById(R.id.save_button);
         cancelHabitEvent = (Button) findViewById(R.id.discard_button);
-        locationCheck = (CheckBox) findViewById(R.id.locationCheckBox);
+        locationCheck = (CheckBox) findViewById(R.id.Locationcheck);
         habitEventName.setText(habitTitleString);
 
 

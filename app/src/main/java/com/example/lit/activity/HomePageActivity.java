@@ -150,17 +150,6 @@ public class HomePageActivity extends AppCompatActivity {
                 Intent intent = new Intent(HomePageActivity.this,ViewHabitActivity.class);
                 Bundle bundle = new Bundle();
                 Habit selectedHabit = habitArrayList.get(i);
-                try {
-                    HabitLocation location = selectedHabit.getHabitLocation();
-                    LatLng latLng = location.getLocation();
-                    double latitude = latLng.latitude;
-                    double longitude = latLng.longitude;
-                    selectedHabit.setLocation(null);
-                    bundle.putDouble("lat", latitude);
-                    bundle.putDouble("lng", longitude);
-                }catch (Exception e){
-                //TODO: handle when location is null
-                }
                 bundle.putSerializable("habit", selectedHabit);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,2);
@@ -201,15 +190,6 @@ public class HomePageActivity extends AppCompatActivity {
                  */
                 Bundle bundle = data.getExtras();
                 Habit habit = (Habit) bundle.getSerializable("habit");
-                try {
-                    double lat = bundle.getDouble("lat");
-                    double lng = bundle.getDouble("lng");
-                    LatLng latLng = new LatLng(lat, lng);
-                    habitLocation = new HabitLocation(latLng);
-                    habit.setLocation(habitLocation);
-                }catch (Exception e){
-                    //
-                }
                 habitArrayList.add(habit);
                 habitAdapter.notifyDataSetChanged();
                 saveInFile();

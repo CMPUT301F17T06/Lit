@@ -33,5 +33,4 @@ public interface Habitable {
     String getTitle();
     String getReason();
     Date  getDate();
-    HabitLocation getHabitLocation();
 }
