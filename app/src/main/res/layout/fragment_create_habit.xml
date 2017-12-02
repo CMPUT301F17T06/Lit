@@ -13,41 +13,58 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.lit.fragments.TestFragment">
+    tools:context="com.example.lit.fragments.CurrentHabitsFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/hello_blank_fragment" />
-
-        <ListView
-            android:id="@+id/habit_ListView"
-            android:layout_width="409dp"
-            android:layout_height="379dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="31dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text" />
-
-        <Button
-            android:id="@+id/createHabitButton"
+        <EditText
+            android:id="@+id/titleInput"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/habit_ListView"
-            android:layout_marginEnd="29dp"
-            android:layout_marginRight="29dp"
-            android:layout_marginTop="33dp"
-            android:text=" New Habit" />
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="23dp"
+            android:contentDescription="Title"
+            android:ems="10"
+            android:hint="Title"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/reasonInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/titleInput"
+            android:layout_alignStart="@+id/titleInput"
+            android:layout_below="@+id/titleInput"
+            android:layout_marginTop="11dp"
+            android:contentDescription="Title"
+            android:ems="10"
+            android:hint="Reason"
+            android:inputType="textPersonName" />
+
+        <TextView
+            android:id="@+id/dateInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/reasonInput"
+            android:layout_alignStart="@+id/reasonInput"
+            android:layout_below="@+id/reasonInput"
+            android:layout_marginTop="26dp"
+            android:clickable="true" />
+
+        <TextView
+            android:id="@+id/timeInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/dateInput"
+            android:layout_alignStart="@+id/dateInput"
+            android:layout_below="@+id/dateInput"
+            android:layout_marginTop="13dp"
+            android:clickable="true" />
+
     </RelativeLayout>
 
 </FrameLayout>

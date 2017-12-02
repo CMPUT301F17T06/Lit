@@ -16,7 +16,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -29,7 +28,7 @@ import com.example.lit.Utilities.DrawerItemCustomAdapter;
 import com.example.lit.fragments.FriendsFragment;
 import com.example.lit.fragments.MapFragment;
 import com.example.lit.fragments.ProfileFragment;
-import com.example.lit.fragments.TestFragment;
+import com.example.lit.fragments.CurrentHabitsFragment;
 
 public class HomePageActivityNew extends AppCompatActivity {
 
@@ -59,7 +58,7 @@ public class HomePageActivityNew extends AppCompatActivity {
 
         DataModel[] drawerItem = new DataModel[4];
 
-        drawerItem[0] = new DataModel(R.drawable.habithistory, "HabitHistory");
+        drawerItem[0] = new DataModel(R.drawable.currenthabits, "Current Habits");
         drawerItem[1] = new DataModel(R.drawable.friends, "Friends");
         drawerItem[2] = new DataModel(R.drawable.map, "Map");
         drawerItem[3] = new DataModel(R.drawable.profile, "Profile");
@@ -91,7 +90,7 @@ public class HomePageActivityNew extends AppCompatActivity {
 
         switch (position) {
             case 0:
-                fragment = new TestFragment();
+                fragment = new CurrentHabitsFragment();
                 break;
             case 1:
                 fragment = new FriendsFragment();
@@ -117,7 +116,7 @@ public class HomePageActivityNew extends AppCompatActivity {
 
         } else {
             FragmentManager fragmentManager = getSupportFragmentManager();
-            Fragment fragmentDefault = new TestFragment();
+            Fragment fragmentDefault = new CurrentHabitsFragment();
             fragmentManager.beginTransaction().replace(R.id.content_frame,fragmentDefault);
             //Log.e("HomePageActivityNew", "Error in creating fragment");
         }
