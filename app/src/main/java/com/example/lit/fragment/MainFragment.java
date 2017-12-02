@@ -66,15 +66,15 @@ public class MainFragment extends Fragment {
 
         //habitArrayList = new ArrayList<>();
         habitArrayList = new NormalHabitList();
-        habitsListView = (ListView)findViewById(R.id.habit_ListView);
-        DataHandler<NormalHabitList> dataHandler = new DataHandler<NormalHabitList>(username,"HabitList",HomePageActivityNew.this, NormalHabitList.class);
+        habitsListView = (ListView) view.findViewById(R.id.habit_list_view);
+        DataHandler<NormalHabitList> dataHandler = new DataHandler<NormalHabitList>(username,"HabitList",getActivity(), NormalHabitList.class);
         //TODO: load all habits by DataHandler
         try {
             habitArrayList = dataHandler.loadData();
         } catch (NoDataException e) {
             e.printStackTrace();
         }
-        habitAdapter = new ArrayAdapter<Habit>(this,
+        habitAdapter = new ArrayAdapter<Habit>(getActivity(),
                 R.layout.list_item, habitArrayList.getHabits());
         habitsListView.setAdapter(habitAdapter);
 
@@ -94,7 +94,7 @@ public class MainFragment extends Fragment {
 
                 Intent intent = new Intent(getActivity(),ViewHabitActivity.class);
                 Bundle bundle = new Bundle();
-                Habit selectedHabit = habitArrayList.get(i);
+                Habit selectedHabit = habitArrayList.getHabit(i);
                 try {
                     bundle.putSerializable("habit",selectedHabit);
                 }catch (Exception e){
