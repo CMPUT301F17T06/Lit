@@ -12,10 +12,12 @@ package com.example.lit.habit;
 
 import android.graphics.Bitmap;
 import android.os.Parcel;
+import android.os.Parcelable;
 import android.provider.ContactsContract;
 
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.location.HabitLocation;
+import com.example.lit.saving.Saveable;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -36,7 +38,7 @@ import java.util.List;
  * you may find a copy of the license in the project. Otherwise please contact jiaxiong@ualberta.ca
  */
 
-public class NormalHabit extends Habit implements Serializable {
+public class NormalHabit extends Habit{
     public NormalHabit(String title)throws HabitFormatException {super(title);}
 
     public NormalHabit(String title, Date date)throws HabitFormatException {super(title, date);}
