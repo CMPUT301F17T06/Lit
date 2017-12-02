@@ -10,6 +10,7 @@
 package com.example.lit.userprofile;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.example.lit.habit.Habit;
 import com.example.lit.habit.HabitList;
@@ -35,9 +36,6 @@ public class UserProfile implements Serializable, Saveable{
     private String name;
     private String profileDescription;
     private Bitmap profileImage;
-    private HabitList currentHabits;
-    private HabitHistory habitCompletionHistory;
-    private ArrayList<String> followingUsers;
     private FollowManager followManager;
     private DataHandler<UserProfile> dataHandler;
     private String jestID;
@@ -57,7 +55,7 @@ public class UserProfile implements Serializable, Saveable{
      * @param name The user account's name.
      */
     public UserProfile(String name){ //New Account
-
+        this.name = name;
     }
 
     /**
@@ -66,16 +64,17 @@ public class UserProfile implements Serializable, Saveable{
      * @param name The user account's name.
      * @param profileDescription The optional profile description of the account.
      * @param profileImage The optional profile image attached to the account.
-     * @param currentHabits The list of Habits currently associated with the account.
-     * @param habitCompletionHistory The list of HabitEvents currently associated with the account.
      * @param followManager This object manages who is following who and who has requested to follow.
      *
      * @see Bitmap for information reguarding the profile image.
      */
+
     public UserProfile(String name, String profileDescription,
-                       Bitmap profileImage, ArrayList<Habit> currentHabits,
-                       ArrayList<HabitEvent> habitCompletionHistory,
-                       FollowManager followManager){
+                       Bitmap profileImage, FollowManager followManager){
+        this.name = name;
+        this.profileDescription = profileDescription;
+        this.profileImage = profileImage;
+        this.followManager = followManager;
 
     }
 
@@ -111,7 +110,7 @@ public class UserProfile implements Serializable, Saveable{
      *
      * @return The description associated with the profile.
      */
-    public String getProfileDecription(){
+    public String getProfileDescription(){
         return this.profileDescription;
     }
 
@@ -122,8 +121,14 @@ public class UserProfile implements Serializable, Saveable{
      *
      * @see Bitmap
      */
-    public void setProfileImage(Bitmap image){
-        //this.profileImage.createBitmap(image);
+    public void setProfileImage(Bitmap image) throws BitmapTooLargeException{
+
+        if(image.getByteCount() >= 65536){
+            Log.e("UserProfile",
+                    "Bitmap size to large to set. Rejecting the bitmap image.");
+            throw new BitmapTooLargeException();
+        }
+
         this.profileImage = image; //May not work, needs to be tested
     }
 
@@ -135,53 +140,8 @@ public class UserProfile implements Serializable, Saveable{
      * @see Bitmap
      */
     public Bitmap getProfileImage(){
-        //int[] dumbArray = new int[1];
-        //return Bitmap.createBitmap(dumbArray, 1, 1, Bitmap.Config.ARGB_8888);
 
         return this.profileImage;
-    }
-
-    /**
-     * Sets the list of Habits that the user has created.
-     *
-     * @param currentHabits A HabitList that carries information about each Habit the user created.
-     */
-    public void setCurrentHabits(HabitList currentHabits){
-        this.currentHabits = currentHabits;
-    }
-
-    /**
-     * Returns the HabitList of the Habits that the user has created.
-     *
-     * @return a HabitList of Habits.
-     *
-     * @see Habit
-     * @see HabitList
-     */
-    public HabitList getCurrentHabits(){
-        return this.currentHabits;
-    }
-
-    /**
-     * Sets the list of habits that the user has created.
-     *
-     * @param habitCompletionHistory A HabitHistory that carries information about each
-     *                               HabitEvent the user created.
-     */
-    public void setHabitCompletionHistory(HabitHistory habitCompletionHistory){
-        this.habitCompletionHistory = habitCompletionHistory;
-    }
-
-    /**
-     * Returns the HabitHistory of the HabitEvents that the user has completed.
-     *
-     * @return a HabitHistory of HabitEvents.
-     *
-     * @see HabitEvent
-     * @see HabitHistory
-     */
-    public HabitHistory getHabitCompletionHistory(){
-        return this.habitCompletionHistory;
     }
 
     /**
