@@ -16,6 +16,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -28,9 +29,14 @@ import android.support.v7.widget.Toolbar;
 import com.example.lit.R;
 import com.example.lit.Utilities.DataModel;
 import com.example.lit.Utilities.DrawerItemCustomAdapter;
+import com.example.lit.exception.HabitFormatException;
+import com.example.lit.fragment.FriendsFragment;
+import com.example.lit.fragment.HabitHistoryFragment;
+import com.example.lit.fragment.MainFragment;
+import com.example.lit.fragment.MapFragment;
+import com.example.lit.fragment.ProfileFragment;
 import com.example.lit.habit.Habit;
-import com.example.lit.habit.HabitList;
-import com.example.lit.habit.NormalHabitList;
+import com.example.lit.habit.NormalHabit;
 import com.example.lit.location.HabitLocation;
 import com.example.lit.saving.DataHandler;
 import com.example.lit.saving.NoDataException;
@@ -38,7 +44,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
-public class HomePageActivityNew extends AppCompatActivity {
+public class HomePageActivityNew extends AppCompatActivity{
 
     private String[] mNavigationDrawerItemTitles;
     private DrawerLayout mDrawerLayout;
@@ -49,13 +55,6 @@ public class HomePageActivityNew extends AppCompatActivity {
     android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
     //private FrameLayout frameLayout;
 
-    private String username;
-    private ListView habitsListView;
-    //private ArrayList<Habit> habitArrayList;
-    private HabitList habitArrayList;
-    ArrayAdapter<Habit> habitAdapter;
-
-    ImageButton addHabitButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,25 +62,19 @@ public class HomePageActivityNew extends AppCompatActivity {
         setContentView(R.layout.activity_home_page_new);
 
         mTitle = mDrawerTitle = getTitle();
-        mNavigationDrawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array);
+        mNavigationDrawerItemTitles = getResources().getStringArray(R.array.navigation_drawer_items_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         //frameLayout = (FrameLayout) findViewById(R.id.content_frame);
-
-        //habitArrayList = new ArrayList<>();
-        habitArrayList = new NormalHabitList();
-        habitsListView = (ListView)findViewById(R.id.habit_ListView);
-        habitAdapter = new ArrayAdapter<Habit>(this,R.layout.list_item,habitArrayList.getHabits());
-        habitsListView.setAdapter(habitAdapter);
-
         setupToolbar();
 
-        DataModel[] drawerItem = new DataModel[4];
+        DataModel[] drawerItem = new DataModel[5];
 
-        drawerItem[0] = new DataModel(R.drawable.habithistory, "HabitHistory");
-        drawerItem[1] = new DataModel(R.drawable.friends, "Friends");
-        drawerItem[2] = new DataModel(R.drawable.map, "Map");
-        drawerItem[3] = new DataModel(R.drawable.profile, "Profile");
+        drawerItem[0] = new DataModel(R.drawable.home,"Home");
+        drawerItem[1] = new DataModel(R.drawable.habithistory, "HabitHistory");
+        drawerItem[2] = new DataModel(R.drawable.friends, "Friends");
+        drawerItem[3] = new DataModel(R.drawable.map, "Map");
+        drawerItem[4] = new DataModel(R.drawable.profile, "Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setHomeButtonEnabled(true);
 
@@ -92,59 +85,10 @@ public class HomePageActivityNew extends AppCompatActivity {
         setupDrawerToggle();
         selectItem(0);
 
-        // Set up habit List in home page
-        try{
-            Bundle bundle = getIntent().getExtras();
-            username = bundle.getString("username");
-            assert username != null;
-        }catch (Exception e){
-            e.printStackTrace();
-        }
 
-        addHabitButton = (ImageButton) findViewById(R.id.AddHabit);
-        habitsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                Intent intent = new Intent(HomePageActivityNew.this,ViewHabitActivity.class);
-                Bundle bundle = new Bundle();
-                Habit selectedHabit = habitArrayList.getHabit(i);
-                try {
-                    bundle.putSerializable("habit",selectedHabit);
-                }catch (Exception e){
-                    //TODO: handle when location is null
-                }
-                bundle.putSerializable("habit", selectedHabit);
-                intent.putExtras(bundle);
-                startActivityForResult(intent,2);
-            }
-        });
-
-        // Set up add habit button
-        addHabitButton.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-                setResult(RESULT_OK);
-                Intent intent = new Intent(v.getContext(), AddHabitActivity.class);
-                intent.putExtra("username",username);
-                startActivityForResult(intent,1);
-            }});
     }
-
     @Override
-    protected void onStart(){
-        super.onStart();
-        DataHandler<NormalHabitList> dataHandler = new DataHandler<NormalHabitList>(username,"HabitList",HomePageActivityNew.this, NormalHabitList.class);
-        //TODO: load all habits by DataHandler
-        try {
-            habitArrayList = dataHandler.loadData();
-        } catch (NoDataException e) {
-            e.printStackTrace();
-        }
-        habitAdapter = new ArrayAdapter<Habit>(this,
-                R.layout.list_item, habitArrayList.getHabits());
-        habitsListView.setAdapter(habitAdapter);
-    }
+    protected void onStart(){ super.onStart();}
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
 
@@ -160,16 +104,19 @@ public class HomePageActivityNew extends AppCompatActivity {
 
         switch (position) {
             case 0:
-                //fragment = new TestFragment();
+                fragment = new MainFragment();
                 break;
             case 1:
-                //fragment = new FriendsFragment();
+                fragment = new HabitHistoryFragment();
                 break;
             case 2:
-                //fragment = new MapFragment();
+                fragment = new FriendsFragment();
                 break;
             case 3:
-                //fragment = new ProfileFragment();
+                fragment = new MapFragment();
+                break;
+            case 4:
+                fragment = new ProfileFragment();
 
             default:
                 break;
@@ -178,7 +125,6 @@ public class HomePageActivityNew extends AppCompatActivity {
         if (fragment != null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
             mDrawerList.setItemChecked(position, true);
             mDrawerList.setSelection(position);
             setTitle(mNavigationDrawerItemTitles[position]);
@@ -188,7 +134,7 @@ public class HomePageActivityNew extends AppCompatActivity {
             FragmentManager fragmentManager = getSupportFragmentManager();
             //Fragment fragmentDefault = new TestFragment();
             //fragmentManager.beginTransaction().replace(R.id.content_frame,fragmentDefault);
-            //Log.e("HomePageActivityNew", "Error in creating fragment");
+            Log.e("HomePageActivityNew", "Error in creating fragment");
         }
     }
 

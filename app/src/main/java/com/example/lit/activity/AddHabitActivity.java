@@ -97,7 +97,6 @@ public class AddHabitActivity extends AppCompatActivity  {
     double latitude;
     double longitude;
     String username;
-    Uri imageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -291,7 +290,6 @@ public class AddHabitActivity extends AppCompatActivity  {
 
     //TODO: should be able to set habit image
     private void setHabitImage(ImageView habitImage){
-
     }
 
     /**
