@@ -15,8 +15,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -37,8 +40,11 @@ import com.example.lit.habit.Habit;
 import com.example.lit.habitevent.HabitEvent;
 import com.example.lit.habitevent.NormalHabitEvent;
 import com.example.lit.location.HabitLocation;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
@@ -80,6 +86,9 @@ public class AddHabitEventActivity extends AppCompatActivity  {
     private String provider;
     double latitude;
     double longitude;
+    private HabitLocation eventLocation;
+    private LocationListener locationListener;
+    LatLng returnLocation;
 
 
     @Override
@@ -91,12 +100,6 @@ public class AddHabitEventActivity extends AppCompatActivity  {
         try{
             Bundle bundle = getIntent().getExtras();
             currentHabit = (Habit)bundle.getSerializable("habit");
-            double lat = bundle.getDouble("lat");
-            double lng = bundle.getDouble("lng");
-            LatLng latLng = new LatLng(lat, lng);
-            HabitLocation habitLocation= new HabitLocation(latLng);
-
-            currentHabit.setLocation(habitLocation);
             if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
         }catch (LoadHabitException e){
             //TODO: handle LoadHabitException
@@ -111,7 +114,7 @@ public class AddHabitEventActivity extends AppCompatActivity  {
         habitEventComment.setLines(3); //Maximum lines our comment should be able to show at once.
         saveHabitEvent = (Button) findViewById(R.id.save_button);
         cancelHabitEvent = (Button) findViewById(R.id.discard_button);
-        locationCheck = (CheckBox) findViewById(R.id.locationCheckBox);
+        locationCheck = (CheckBox) findViewById(R.id.Locationcheck);
         habitEventName.setText(habitTitleString);
 
 
@@ -145,24 +148,15 @@ public class AddHabitEventActivity extends AppCompatActivity  {
         commentString = habitEventComment.getText().toString();
         Intent newHabitEventIntent = new Intent(AddHabitEventActivity.this, HistoryActivity.class);
         Bundle bundle = new Bundle();
-        try{
-            Location location = buildLocation(locationCheck);
-            latitude = location.getLatitude();
-            longitude = location.getLongitude();
-            if (!(location == null)){
-                bundle.putDouble("lat",latitude);
-                bundle.putDouble("lng",longitude);
-            }
-        }
-        catch (NullPointerException e){
-            //TODO: handle when location is null
-        }
+
+        LatLng latLng = buildLocation(locationCheck);
+        eventLocation = new HabitLocation(latLng);
 
         try {
-            HabitEvent newHabitEvent = new NormalHabitEvent(habitNameString, commentString,null);
-            bundle.putSerializable("event", newHabitEvent);
+            HabitEvent newHabitEvent = new NormalHabitEvent(habitNameString, commentString,eventLocation);
+            bundle.putParcelable("event", newHabitEvent);
             newHabitEventIntent.putExtras(bundle);
-            startActivityForResult(newHabitEventIntent,1);
+            startActivity(newHabitEventIntent);
             finish();
         } catch (HabitFormatException e) {
             Toast.makeText(AddHabitEventActivity.this, "Error: Illegal Habit Event information!", Toast.LENGTH_LONG).show();
@@ -178,15 +172,12 @@ public class AddHabitEventActivity extends AppCompatActivity  {
      *
      * @return A location object, null if fail to initialize location.
      * */
-    private Location buildLocation(CheckBox locationCheck){
+    private LatLng buildLocation(CheckBox locationCheck){
                 /*if checkbox checked return current location*/
-        Location returnLocation = null;
+
         if  (locationCheck.isChecked()){
-            manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            // Define the criteria how to select the locatioin provider -> use
-            // default
-            Criteria criteria = new Criteria();
-            provider = manager.getBestProvider(criteria, false);
+            manager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            //request the location update thru location manager
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
@@ -197,16 +188,40 @@ public class AddHabitEventActivity extends AppCompatActivity  {
                 // for ActivityCompat#requestPermissions for more details.
                 return null;
             }
-            Location location = manager.getLastKnownLocation(provider);
-            if (location != null) {
-                /*get the latitude and longitude from the location*/
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
-                returnLocation = location;
-            }}
-        else{
-            returnLocation = null;
+            locationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    //get the latitude and longitude from the location
+                    double latitude = location.getLatitude();
+                    double longitude = location.getLongitude();
+                    returnLocation = new LatLng(latitude,longitude);
+
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+
+                }
+            };
+            if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            } else {
+                manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+            }
         }
+        else{
+                returnLocation = null;
+            }
         return returnLocation;
     }
 

@@ -103,16 +103,7 @@ public class HistoryActivity extends AppCompatActivity {
         Intent EventIntent = getIntent();
         Bundle bundle = EventIntent.getExtras();
         if(bundle != null) {
-            HabitEvent event = (HabitEvent) bundle.getSerializable("event");
-            try {
-                double lat = bundle.getDouble("lat");
-                double lng = bundle.getDouble("lng");
-                LatLng latLng = new LatLng(lat, lng);
-                eventLocation = new HabitLocation(latLng);
-                event.setLocation(eventLocation);
-            } catch (Exception e) {
-                //
-            }
+            HabitEvent event = (HabitEvent) bundle.getParcelable("event");
             eventArrayList.add(event);
             eventAdapter.notifyDataSetChanged();
             saveInFile();

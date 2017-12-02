@@ -38,7 +38,6 @@ public abstract class Habit implements Habitable , Serializable, Saveable {
     private String title;
     private Date date;
     public abstract String habitType();
-    private HabitLocation habitLocation;
     private String reason;
     private int titleLength = 20;
     private int reasonLength = 30;
@@ -62,10 +61,9 @@ public abstract class Habit implements Habitable , Serializable, Saveable {
         this.setDate(date);
     }
 
-    public Habit(String title, Date date, HabitLocation habitLocation, String reason) throws HabitFormatException {
+    public Habit(String title, Date date, String reason) throws HabitFormatException {
         this.setTitle(title);
         this.setDate(date);
-        this.setLocation(habitLocation);
         this.setReason(reason);
     }
 
@@ -75,23 +73,20 @@ public abstract class Habit implements Habitable , Serializable, Saveable {
      * @see com.example.lit.activity.AddHabitActivity
      * @param title Habit name, should be at most 20 char long.
      * @param reason Habit Comment, should be at most 30 char long.
-     * @param habitLocation Set by default when creating the habit
      * @param date Set by GPS when creating the habit
      * @param calendarList Set by user when creating the habit
      * @throws HabitFormatException thrown when title longer than 20 char or reason longer than 30 char
      * */
-    public Habit(String title, Date date, HabitLocation habitLocation, String reason, List<Calendar> calendarList) throws HabitFormatException {
+    public Habit(String title, Date date, String reason, List<Calendar> calendarList) throws HabitFormatException {
         this.setTitle(title);
         this.setDate(date);
-        this.setLocation(habitLocation);
         this.setReason(reason);
         this.setCalendars(calendarList);
     }
 
-    public Habit(String title, Date date, HabitLocation habitLocation, String reason, List<Calendar> calendars, Bitmap image)throws HabitFormatException {
+    public Habit(String title, Date date, String reason, List<Calendar> calendars, Bitmap image)throws HabitFormatException {
         this.setTitle(title);
         this.setDate(date);
-        this.setLocation(habitLocation);
         this.setReason(reason);
         this.setCalendars(calendars);
         this.setImage(image);
@@ -139,13 +134,6 @@ public abstract class Habit implements Habitable , Serializable, Saveable {
         this.calendars = calendars;
     }
 
-    public void setLocation(HabitLocation habitLocation){
-        this.habitLocation = habitLocation;
-    }
-
-    public HabitLocation getHabitLocation(){
-        return this.habitLocation;
-    }
 
     public Bitmap getImage() {
         return image;

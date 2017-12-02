@@ -71,7 +71,6 @@ public class AddHabitActivity extends AppCompatActivity  {
 
     private EditText habitName;
     private EditText habitComment;
-    private CheckBox locationCheck;
     private MultiSelectionSpinner weekday_spinner;
     private Spinner hour_spinner;
     private Spinner minute_spinner;
@@ -91,11 +90,7 @@ public class AddHabitActivity extends AppCompatActivity  {
     List<Calendar> calendarList;
     DataHandler dataHandler;
 
-    LocationManager manager;
-    private HabitLocation habitLocation;
-    private String provider;
-    double latitude;
-    double longitude;
+
     String username;
 
     @Override
@@ -126,7 +121,6 @@ public class AddHabitActivity extends AppCompatActivity  {
         hour_spinner = (Spinner) findViewById(R.id.hour_spinner);
         minute_spinner = (Spinner) findViewById(R.id.minute_spinner);
         weekday_spinner = (MultiSelectionSpinner) findViewById(R.id.weekday_spinner);
-        locationCheck = (CheckBox) findViewById(R.id.locationCheckBox);
         habitImage = (ImageView) findViewById(R.id.HabitImage);
         editImage = (Button)findViewById(R.id.takeImageButton);
 
@@ -190,10 +184,10 @@ public class AddHabitActivity extends AppCompatActivity  {
 
         //TODO: should build location implicitly when building new habit.
         //habitLocation = buildLocation(locationCheck);
-        habitLocation = null;
+
 
         try {Habit newHabit = new NormalHabit(habitNameString, habitStartDate,
-                habitLocation, commentString, calendarList,image);
+                commentString, calendarList,image);
             dataHandler.saveData(newHabit);
             finish();
         } catch (HabitFormatException e){
@@ -309,44 +303,6 @@ public class AddHabitActivity extends AppCompatActivity  {
         return numberList;
     }
 
-    /**
-     * This function will return a Location object containing Latitude and Longitude attribute.
-     *
-     * @param locationCheck location checkbox in AddHabitActivity.
-     *
-     * @return A location object, null if fail to initialize location.
-     * */
-    private Location buildLocation(CheckBox locationCheck){
-                /*if checkbox checked return current location*/
-        Location returnLocation = null;
-        if  (locationCheck.isChecked()){
-            manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            // Define the criteria how to select the locatioin provider -> use
-            // default
-            Criteria criteria = new Criteria();
-            provider = manager.getBestProvider(criteria, false);
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return null;
-            }
-            Location location = manager.getLastKnownLocation(provider);
-            if (location != null) {
-                /*get the latitude and longitude from the location*/
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
-                returnLocation = location;
-            }}
-        else{
-            returnLocation = null;
-        }
-        return returnLocation;
-    }
 
     /**
      * Function used to take picture by camera.

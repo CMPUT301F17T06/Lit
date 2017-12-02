@@ -10,6 +10,7 @@
 
 package com.example.lit.habitevent;
 
+import android.os.Parcel;
 import android.support.annotation.NonNull;
 
 import com.example.lit.exception.HabitFormatException;
@@ -39,4 +40,30 @@ public class NormalHabitEvent extends HabitEvent{
     public int compareTo(@NonNull Object o) {
         return 0;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+    }
+
+    protected NormalHabitEvent(Parcel in) {
+        super(in);
+    }
+
+    public static final Creator<NormalHabitEvent> CREATOR = new Creator<NormalHabitEvent>() {
+        @Override
+        public NormalHabitEvent createFromParcel(Parcel source) {
+            return new NormalHabitEvent(source);
+        }
+
+        @Override
+        public NormalHabitEvent[] newArray(int size) {
+            return new NormalHabitEvent[size];
+        }
+    };
 }
