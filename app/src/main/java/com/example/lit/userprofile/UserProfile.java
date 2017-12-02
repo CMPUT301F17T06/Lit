@@ -28,7 +28,7 @@ import java.util.ArrayList;
 
 public class UserProfile implements Serializable, Saveable{
 
-    private final static String CLASS_TYPE = "UserProfile";
+    public final static String CLASS_TYPE = "UserProfile";
 
     /**
      * The name of the user account. This is assumed to be unique for the app's purposes.
@@ -46,7 +46,10 @@ public class UserProfile implements Serializable, Saveable{
      * debugging, use the other two constructors.
      */
     public UserProfile() { //Dummy Constructor, sets nullable.
-
+        this.name = null;
+        this.profileDescription = null;
+        this.profileImage = null;
+        this.followManager = null;
     }
 
     /**
@@ -56,10 +59,12 @@ public class UserProfile implements Serializable, Saveable{
      */
     public UserProfile(String name){ //New Account
         this.name = name;
+        this.followManager = new FollowManager(this);
     }
 
     /**
      * When creating a UserProfile object from an existing UserProfile.
+     * i.e. Loading a UserProfile
      *
      * @param name The user account's name.
      * @param profileDescription The optional profile description of the account.
@@ -144,6 +149,15 @@ public class UserProfile implements Serializable, Saveable{
         return this.profileImage;
     }
 
+
+    public void setFollowManager(FollowManager followManager){
+        this.followManager = followManager;
+    }
+
+    public FollowManager getFollowManager(){
+        return this.followManager;
+    }
+
     /**
      * Sets a list of the other users that the user is currently following.
      *
@@ -151,7 +165,7 @@ public class UserProfile implements Serializable, Saveable{
      */
     public void setFollowingUsers(
             ArrayList<String> followingUsers){
-        this.followingUsers = followingUsers;
+        this.followManager.setFollowingUsers(followingUsers);
     }
 
     /**
@@ -160,7 +174,7 @@ public class UserProfile implements Serializable, Saveable{
      * @return An ArrayList that contains the users names
      */
     public ArrayList<String> getFollowingUsers(){
-        return this.followingUsers;
+        return followManager.getFollowingUsers();
     }
 
     /**
@@ -171,8 +185,8 @@ public class UserProfile implements Serializable, Saveable{
      *
      * @see UserProfile#getFollowingUserProfile(int) if the UserProfile is desired instead.
      */
-    public String getFollowingUser(int userPosition){
-        return this.followingUsers.get(userPosition);
+    public String getFollowingUser(int userPosition) throws IndexOutOfBoundsException{
+        return followManager.getFollowingUsers().get(userPosition);
     }
 
     /**
@@ -189,15 +203,33 @@ public class UserProfile implements Serializable, Saveable{
     }
 
     /**
+     * Returns the UserProfile of an account that is currently followed by the user.
+     *
+     * @param username The name of the UserProfile we want to load.
+     * @return A UserProfile object that is the desired requested account
+     * @see UserProfile#getFollowingUser(int) if just the name is needed instead.
+     */
+    public UserProfile getFollowingUserProfile(String username){
+        //TODO: Use ElasticSearch to obtain the details of the followed users account
+
+        return this; //TODO: Don't forget to change this.
+    }
+
+    /**
      * Approve a request for a user to follow the current user.
      *
      * @param name The user requesting following access.
      * @return True is the user is added successfully. False otherwise.
      */
-    public boolean addFollowingUser(String name){
-        if(followingUsers == null){
-            followingUsers = new ArrayList<String>();
-        }
+    public boolean requestToFollowUser(UserProfile requestingUser){
+        //this.followManager
+
+
+        return true;
+    }
+
+    public boolean cancelRequestToFollowUser(UserProfile cancellingUser){
+
         return true;
     }
 
@@ -208,7 +240,18 @@ public class UserProfile implements Serializable, Saveable{
      * @return True if the user has been revoked permissions successfully. False otherwise.
      */
     public boolean removeFollowingUser(String name){
+
+
         return true;
+    }
+
+    /**
+     * Respond to whether a current request to follow the user.
+     *
+     * @param decision True if the user approves the follow request. False otherwise.
+     */
+    public void respondToFollowRequest(boolean decision){
+
     }
 
     /**
@@ -221,14 +264,7 @@ public class UserProfile implements Serializable, Saveable{
         return -1;
     }
 
-    /**
-     * Respond to whether a current request to follow the user.
-     *
-     * @param decision True if the user approves the follow request. False otherwise.
-     */
-    public void respondToFollowRequest(boolean decision){
 
-    }
 
     public void setID(String ID){
         this.jestID = ID;
