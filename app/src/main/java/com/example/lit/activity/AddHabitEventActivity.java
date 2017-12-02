@@ -80,6 +80,7 @@ public class AddHabitEventActivity extends AppCompatActivity  {
     private String provider;
     double latitude;
     double longitude;
+    private HabitLocation eventLocation;
 
 
     @Override
@@ -139,24 +140,18 @@ public class AddHabitEventActivity extends AppCompatActivity  {
         commentString = habitEventComment.getText().toString();
         Intent newHabitEventIntent = new Intent(AddHabitEventActivity.this, HistoryActivity.class);
         Bundle bundle = new Bundle();
-        try{
-            Location location = buildLocation(locationCheck);
-            latitude = location.getLatitude();
-            longitude = location.getLongitude();
-            if (!(location == null)){
-                bundle.putDouble("lat",latitude);
-                bundle.putDouble("lng",longitude);
-            }
-        }
-        catch (NullPointerException e){
-            //TODO: handle when location is null
-        }
+
+        Location location = buildLocation(locationCheck);
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+        LatLng latLng = new LatLng(latitude, longitude);
+        eventLocation = new HabitLocation(latLng);
 
         try {
-            HabitEvent newHabitEvent = new NormalHabitEvent(habitNameString, commentString,null);
-            bundle.putSerializable("event", newHabitEvent);
+            HabitEvent newHabitEvent = new NormalHabitEvent(habitNameString, commentString,eventLocation);
+            bundle.putParcelable("event", newHabitEvent);
             newHabitEventIntent.putExtras(bundle);
-            startActivityForResult(newHabitEventIntent,1);
+            startActivity(newHabitEventIntent);
             finish();
         } catch (HabitFormatException e) {
             Toast.makeText(AddHabitEventActivity.this, "Error: Illegal Habit Event information!", Toast.LENGTH_LONG).show();
@@ -191,16 +186,19 @@ public class AddHabitEventActivity extends AppCompatActivity  {
                 // for ActivityCompat#requestPermissions for more details.
                 return null;
             }
-            Location location = manager.getLastKnownLocation(provider);
-            if (location != null) {
+            try {
+                Location location = manager.getLastKnownLocation(provider);
                 /*get the latitude and longitude from the location*/
                 latitude = location.getLatitude();
                 longitude = location.getLongitude();
                 returnLocation = location;
+            }catch (SecurityException s) {
+                Toast.makeText(AddHabitEventActivity.this,"Permission needed to access GPS services.", Toast.LENGTH_LONG).show();
+
             }}
         else{
-            returnLocation = null;
-        }
+                returnLocation = null;
+            }
         return returnLocation;
     }
 
