@@ -134,7 +134,7 @@ public class HomePageActivityNew extends AppCompatActivity {
     @Override
     protected void onStart(){
         super.onStart();
-        DataHandler<HabitList> dataHandler = new DataHandler<HabitList>(username,"HabitList",HomePageActivityNew.this);
+        DataHandler<NormalHabitList> dataHandler = new DataHandler<NormalHabitList>(username,"HabitList",HomePageActivityNew.this, NormalHabitList.class);
         //TODO: load all habits by DataHandler
         try {
             habitArrayList = dataHandler.loadData();

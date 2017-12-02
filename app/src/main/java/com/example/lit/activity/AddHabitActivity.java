@@ -89,7 +89,7 @@ public class AddHabitActivity extends AppCompatActivity  {
     Integer hour;
     Integer minute;
     List<Calendar> calendarList;
-    DataHandler dataHandler;
+    DataHandler <Habit> dataHandler;
 
     LocationManager manager;
     private HabitLocation habitLocation;
@@ -116,7 +116,7 @@ public class AddHabitActivity extends AppCompatActivity  {
             e.printStackTrace();
         }
 
-        dataHandler = new DataHandler(username,"habit",this);
+        dataHandler = new DataHandler<Habit>(username,"habit",this, Habit.class);
 
         // Activity components
         habitName = (EditText) findViewById(R.id.Habit_EditText);
