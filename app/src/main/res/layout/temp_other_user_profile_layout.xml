@@ -18,8 +18,8 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="108"
-        android:layout_height="126"
+        android:layout_width="108dp"
+        android:layout_height="126dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -50,8 +50,8 @@
 
     <TextView
         android:id="@+id/textView7"
-        android:layout_width="122"
-        android:layout_height="31"
+        android:layout_width="122dp"
+        android:layout_height="31dp"
         android:layout_marginEnd="16dp"
         android:text="Followers"
         app:layout_constraintBaseline_toBaselineOf="@+id/textView6"
@@ -59,8 +59,8 @@
 
     <TextView
         android:id="@+id/textView8"
-        android:layout_width="122"
-        android:layout_height="32"
+        android:layout_width="122dp"
+        android:layout_height="32dp"
         android:layout_marginStart="16dp"
         android:text="Number"
         app:layout_constraintEnd_toEndOf="@+id/textView6"
@@ -69,7 +69,7 @@
 
     <TextView
         android:id="@+id/textView9"
-        android:layout_width="122"
+        android:layout_width="122dp"
         android:layout_height="32dp"
         android:layout_marginEnd="16dp"
         android:text="TextView"
@@ -79,8 +79,8 @@
 
     <TextView
         android:id="@+id/textView10"
-        android:layout_width="190"
-        android:layout_height="55"
+        android:layout_width="190dp"
+        android:layout_height="55dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="@+id/textView2"
         app:layout_constraintStart_toStartOf="@+id/textView2"
