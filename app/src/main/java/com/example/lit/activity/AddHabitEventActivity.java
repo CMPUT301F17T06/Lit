@@ -15,8 +15,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -37,8 +40,11 @@ import com.example.lit.habit.Habit;
 import com.example.lit.habitevent.HabitEvent;
 import com.example.lit.habitevent.NormalHabitEvent;
 import com.example.lit.location.HabitLocation;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
@@ -81,6 +87,8 @@ public class AddHabitEventActivity extends AppCompatActivity  {
     double latitude;
     double longitude;
     private HabitLocation eventLocation;
+    private LocationListener locationListener;
+    LatLng returnLocation;
 
 
     @Override
@@ -141,10 +149,7 @@ public class AddHabitEventActivity extends AppCompatActivity  {
         Intent newHabitEventIntent = new Intent(AddHabitEventActivity.this, HistoryActivity.class);
         Bundle bundle = new Bundle();
 
-        Location location = buildLocation(locationCheck);
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-        LatLng latLng = new LatLng(latitude, longitude);
+        LatLng latLng = buildLocation(locationCheck);
         eventLocation = new HabitLocation(latLng);
 
         try {
@@ -167,15 +172,12 @@ public class AddHabitEventActivity extends AppCompatActivity  {
      *
      * @return A location object, null if fail to initialize location.
      * */
-    private Location buildLocation(CheckBox locationCheck){
+    private LatLng buildLocation(CheckBox locationCheck){
                 /*if checkbox checked return current location*/
-        Location returnLocation = null;
+
         if  (locationCheck.isChecked()){
-            manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            // Define the criteria how to select the locatioin provider -> use
-            // default
-            Criteria criteria = new Criteria();
-            provider = manager.getBestProvider(criteria, false);
+            manager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            //request the location update thru location manager
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
@@ -186,16 +188,37 @@ public class AddHabitEventActivity extends AppCompatActivity  {
                 // for ActivityCompat#requestPermissions for more details.
                 return null;
             }
-            try {
-                Location location = manager.getLastKnownLocation(provider);
-                /*get the latitude and longitude from the location*/
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
-                returnLocation = location;
-            }catch (SecurityException s) {
-                Toast.makeText(AddHabitEventActivity.this,"Permission needed to access GPS services.", Toast.LENGTH_LONG).show();
+            locationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    //get the latitude and longitude from the location
+                    double latitude = location.getLatitude();
+                    double longitude = location.getLongitude();
+                    returnLocation = new LatLng(latitude,longitude);
 
-            }}
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+
+                }
+            };
+            if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            } else {
+                manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+            }
+        }
         else{
                 returnLocation = null;
             }
