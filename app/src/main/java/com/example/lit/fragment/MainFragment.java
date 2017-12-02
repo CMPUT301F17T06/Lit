@@ -21,16 +21,17 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.lit.R;
+import com.example.lit.Utilities.ObjectHolder;
 import com.example.lit.activity.AddHabitActivity;
-import com.example.lit.activity.HomePageActivityNew;
 import com.example.lit.activity.ViewHabitActivity;
-import com.example.lit.exception.HabitFormatException;
 import com.example.lit.habit.Habit;
 import com.example.lit.habit.NormalHabit;
 import com.example.lit.saving.DataHandler;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_OK;
@@ -45,11 +46,24 @@ public class MainFragment extends Fragment {
     ListView habitsListView;
     ArrayList<Habit> habitArrayList;
     ArrayAdapter<Habit> habitAdapter;
+    ObjectHolder usernameHolder;
+    String username;
 
     public MainFragment() {
         // Required empty public constructor
     }
 
+    public void onResume(){
+        super.onResume();
+        Bundle bundle = getArguments();
+        if (bundle == null){
+            Toast.makeText(getActivity(), "arguments is null " , Toast.LENGTH_LONG).show();
+        }
+        else {
+            usernameHolder = (ObjectHolder) bundle.getSerializable("username");
+            username = (String) usernameHolder.getInput();
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,7 +79,7 @@ public class MainFragment extends Fragment {
         habitAdapter = new ArrayAdapter<Habit>(getActivity(),R.layout.list_item, habitArrayList);
         habitsListView.setAdapter(habitAdapter);
 
-        // Test habit
+        // A dummy habit for testing
         try {
             Habit testHabit = new NormalHabit("test habit title");
             habitArrayList.add(testHabit);

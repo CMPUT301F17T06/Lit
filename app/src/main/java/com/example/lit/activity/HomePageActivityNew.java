@@ -10,7 +10,6 @@
 
 package com.example.lit.activity;
 
-import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -20,28 +19,17 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.support.v7.widget.Toolbar;
-
 import com.example.lit.R;
 import com.example.lit.Utilities.DataModel;
 import com.example.lit.Utilities.DrawerItemCustomAdapter;
-import com.example.lit.exception.HabitFormatException;
+import com.example.lit.Utilities.ObjectHolder;
 import com.example.lit.fragment.FriendsFragment;
 import com.example.lit.fragment.HabitHistoryFragment;
 import com.example.lit.fragment.MainFragment;
 import com.example.lit.fragment.MapFragment;
 import com.example.lit.fragment.ProfileFragment;
-import com.example.lit.habit.Habit;
-import com.example.lit.habit.NormalHabit;
-import com.example.lit.location.HabitLocation;
-import com.example.lit.saving.DataHandler;
-import com.google.android.gms.maps.model.LatLng;
-
-import java.util.ArrayList;
 
 public class HomePageActivityNew extends AppCompatActivity{
 
@@ -52,13 +40,20 @@ public class HomePageActivityNew extends AppCompatActivity{
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
-    //private FrameLayout frameLayout;
+    //private FrameLayout frameLayout;\
+
+    ObjectHolder usernameHolder;
+    private String username;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page_new);
+
+        username = getIntent().getExtras().getString("username");
+        usernameHolder = new ObjectHolder();
+        usernameHolder.setInput(username);
 
         mTitle = mDrawerTitle = getTitle();
         mNavigationDrawerItemTitles = getResources().getStringArray(R.array.navigation_drawer_items_array);
@@ -123,6 +118,9 @@ public class HomePageActivityNew extends AppCompatActivity{
         }
 
         if (fragment != null) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("username",usernameHolder);
+            fragment.setArguments(bundle);
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
             mDrawerList.setItemChecked(position, true);
