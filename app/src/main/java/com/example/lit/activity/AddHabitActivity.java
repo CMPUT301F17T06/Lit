@@ -37,6 +37,7 @@ import android.widget.Toast;
 import com.example.lit.Utilities.MultiSelectionSpinner;
 import com.example.lit.R;
 import com.example.lit.Utilities.SchduledTask;
+import com.example.lit.exception.BitmapTooLargeException;
 import com.example.lit.habit.Habit;
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.habit.NormalHabit;
@@ -199,8 +200,11 @@ public class AddHabitActivity extends AppCompatActivity  {
             finish();
         } catch (HabitFormatException e){
             Toast.makeText(AddHabitActivity.this,"Error: Illegal Habit information!",Toast.LENGTH_LONG).show();
-        }catch (Exception e){
-            e.printStackTrace();
+        }catch (BitmapTooLargeException e2){
+            Toast.makeText(AddHabitActivity.this,"Error: Image too large!",Toast.LENGTH_LONG).show();
+        }
+        catch (Exception e3){
+            e3.printStackTrace();
         }
     }
 
@@ -338,6 +342,24 @@ public class AddHabitActivity extends AppCompatActivity  {
         startActivityForResult(cameraIntent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
     }
 
+    public Bitmap compressPicture(Bitmap bitmap){
+        final int maxSize = 665536 / (1024*1024);
+        int outWidth;
+        int outHeight;
+        int inWidth = bitmap.getWidth();
+        int inHeight = bitmap.getHeight();
+        if(inWidth > inHeight){
+            outWidth = maxSize;
+            outHeight = (inHeight * maxSize) / inWidth;
+        } else {
+            outHeight = maxSize;
+            outWidth = (inWidth * maxSize) / inHeight;
+        }
+
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, outWidth, outHeight, false);
+        return resizedBitmap;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -345,6 +367,7 @@ public class AddHabitActivity extends AppCompatActivity  {
             if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
                 try {
                     image = (Bitmap) data.getExtras().get("data");
+                    image = compressPicture(image);
                     habitImage.setImageBitmap(image);
                 }catch (Exception e){
                     e.printStackTrace();

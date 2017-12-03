@@ -15,6 +15,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.ContactsContract;
 
+import com.example.lit.exception.BitmapTooLargeException;
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.location.HabitLocation;
 import com.example.lit.saving.Saveable;
@@ -45,7 +46,7 @@ public class NormalHabit extends Habit{
 
     public NormalHabit(String title, Date date, String reason) throws HabitFormatException{super(title, date, reason);}
 
-    public NormalHabit(String title, Date date, String reason, List<Calendar> calenderList, Bitmap image) throws HabitFormatException {
+    public NormalHabit(String title, Date date, String reason, List<Calendar> calenderList, Bitmap image) throws HabitFormatException, BitmapTooLargeException {
         super(title, date, reason, calenderList,image);
     }
 

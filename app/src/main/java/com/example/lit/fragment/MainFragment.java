@@ -89,11 +89,6 @@ public class MainFragment extends Fragment {
                 Intent intent = new Intent(getActivity(),ViewHabitActivity.class);
                 Bundle bundle = new Bundle();
                 Habit selectedHabit = habitArrayList.get(i);
-                try {
-                    bundle.putSerializable("habit",selectedHabit);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
                 bundle.putSerializable("habit", selectedHabit);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,2);

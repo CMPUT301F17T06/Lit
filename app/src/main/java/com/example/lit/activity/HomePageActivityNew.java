@@ -24,7 +24,6 @@ import android.support.v7.widget.Toolbar;
 import com.example.lit.R;
 import com.example.lit.Utilities.DataModel;
 import com.example.lit.Utilities.DrawerItemCustomAdapter;
-import com.example.lit.Utilities.ObjectHolder;
 import com.example.lit.fragment.FriendsFragment;
 import com.example.lit.fragment.HabitHistoryFragment;
 import com.example.lit.fragment.MainFragment;
