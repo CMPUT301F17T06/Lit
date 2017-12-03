@@ -10,6 +10,7 @@
 
 package com.example.lit.habit;
 
+import android.graphics.Bitmap;
 import android.os.Parcelable;
 
 import com.example.lit.exception.HabitFormatException;
@@ -42,6 +43,7 @@ public abstract class Habit implements Habitable , Serializable{
     private int reasonLength = 30;
     private List<Calendar> calendars;
     private String user;
+    private Bitmap image;
     @JestId
     private String id;
 
@@ -49,6 +51,13 @@ public abstract class Habit implements Habitable , Serializable{
 
     public void setId(String id){ this.id = id ;}
 
+    public Bitmap getImage() {
+        return image;
+    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
+    }
 
     public String getUser() {
         return user;

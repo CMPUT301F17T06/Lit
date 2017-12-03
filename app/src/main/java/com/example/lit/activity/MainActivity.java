@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String name = username.getText().toString();
+                String name = username.getText().toString().toLowerCase();
                 validateInput(name);
 
 
