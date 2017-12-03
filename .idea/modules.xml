@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Lit.iml" filepath="$PROJECT_DIR$/Lit.iml" />
+      <module fileurl="file://C:\Users\ammar\OneDrive\Documents\Lit\Lit.iml" filepath="C:\Users\ammar\OneDrive\Documents\Lit\Lit.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\ammar\OneDrive\Documents\Lit\app\app.iml" filepath="C:\Users\ammar\OneDrive\Documents\Lit\app\app.iml" />
     </modules>
   </component>
 </project>

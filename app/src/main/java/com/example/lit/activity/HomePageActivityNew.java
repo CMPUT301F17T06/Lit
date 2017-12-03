@@ -25,6 +25,7 @@ import android.widget.ListView;
 import com.example.lit.R;
 import com.example.lit.Utilities.DataModel;
 import com.example.lit.Utilities.DrawerItemCustomAdapter;
+import com.example.lit.fragments.ActiveHabitsFragment;
 import com.example.lit.fragments.FriendsFragment;
 import com.example.lit.fragments.MapFragment;
 import com.example.lit.fragments.ProfileFragment;
@@ -56,12 +57,14 @@ public class HomePageActivityNew extends AppCompatActivity {
 
         setupToolbar();
 
-        DataModel[] drawerItem = new DataModel[4];
+        DataModel[] drawerItem = new DataModel[5];
 
         drawerItem[0] = new DataModel(R.drawable.currenthabits, "Current Habits");
         drawerItem[1] = new DataModel(R.drawable.friends, "Friends");
         drawerItem[2] = new DataModel(R.drawable.map, "Map");
         drawerItem[3] = new DataModel(R.drawable.profile, "Profile");
+        drawerItem[4] = new DataModel(R.drawable.activehabits, "Active Habits");
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setHomeButtonEnabled(true);
 
@@ -100,7 +103,9 @@ public class HomePageActivityNew extends AppCompatActivity {
                 break;
             case 3:
                 fragment = new ProfileFragment();
-
+                break;
+            case 4:
+                fragment = new ActiveHabitsFragment();
             default:
                 break;
         }
