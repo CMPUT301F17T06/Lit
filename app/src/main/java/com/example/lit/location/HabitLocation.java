@@ -25,8 +25,11 @@ package com.example.lit.location;
  * you may find a copy of the license in the project. Otherwise please contact jiaxiong@ualberta.ca
  */
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.android.gms.maps.model.LatLng;
-public  class HabitLocation  {
+public  class HabitLocation implements Parcelable {
 
 
     private LatLng location;
@@ -51,4 +54,29 @@ public  class HabitLocation  {
         this.location = location;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(this.location, flags);
+    }
+
+    protected HabitLocation(Parcel in) {
+        this.location = in.readParcelable(LatLng.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<HabitLocation> CREATOR = new Parcelable.Creator<HabitLocation>() {
+        @Override
+        public HabitLocation createFromParcel(Parcel source) {
+            return new HabitLocation(source);
+        }
+
+        @Override
+        public HabitLocation[] newArray(int size) {
+            return new HabitLocation[size];
+        }
+    };
 }

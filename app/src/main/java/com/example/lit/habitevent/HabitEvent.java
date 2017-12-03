@@ -10,6 +10,9 @@
 
 package com.example.lit.habitevent;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.location.HabitLocation;
 import com.example.lit.saving.Saveable;
@@ -31,7 +34,7 @@ import java.util.Date;
  * you may find a copy of the license in the project. Otherwise please contact jiaxiong@ualberta.ca
  */
 
-public abstract class HabitEvent implements HabitEventAddable, Comparable, Serializable, Saveable {
+public abstract class HabitEvent implements HabitEventAddable, Comparable, Saveable, Parcelable {
     private String habitEventName;
     private HabitLocation habitLocation;
     private Date date = new Date();
@@ -120,6 +123,31 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Seria
 
     public String getID(){
         return this.jestID;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.habitEventName);
+        dest.writeParcelable(this.habitLocation, flags);
+        dest.writeLong(this.date != null ? this.date.getTime() : -1);
+        dest.writeString(this.eventComment);
+        dest.writeInt(this.commentLength);
+        dest.writeString(this.jestID);
+    }
+
+    protected HabitEvent(Parcel in) {
+        this.habitEventName = in.readString();
+        this.habitLocation = in.readParcelable(HabitLocation.class.getClassLoader());
+        long tmpDate = in.readLong();
+        this.date = tmpDate == -1 ? null : new Date(tmpDate);
+        this.eventComment = in.readString();
+        this.commentLength = in.readInt();
+        this.jestID = in.readString();
     }
 
 }

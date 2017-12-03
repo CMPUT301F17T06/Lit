@@ -148,17 +148,6 @@
         app:layout_constraintTop_toBottomOf="@+id/Comment_EditText"
         android:layout_marginLeft="16dp" />
 
-    <CheckBox
-        android:id="@+id/locationCheckBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/habit_check_location"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/weekday_spinner"
-        android:layout_marginStart="16dp" />
-
     <ImageView
         android:id="@+id/HabitImage"
         android:layout_width="150dp"

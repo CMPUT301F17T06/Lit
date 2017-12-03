@@ -16,13 +16,13 @@ import java.util.ArrayList;
  * Created by Riley Dixon on 31/10/2017.
  */
 
-public class FollowManager {
+class FollowManager {
     //Follow Manager should not exist without being constructed with an accompanying UserProfile
-    String currentUsersName;
-    ArrayList<String> followingUsers;
-    ArrayList<String> followedUsers;
-    ArrayList<String> requestToFollow;
-    ArrayList<String> requestedToFollow;
+    private String currentUsersName;
+    private ArrayList<String> followingUsers;
+    private ArrayList<String> followedUsers;
+    private ArrayList<String> requestToFollow;
+    private ArrayList<String> requestedToFollow;
 
     FollowManager(UserProfile userProfile){
         currentUsersName = userProfile.getName();
@@ -74,6 +74,10 @@ public class FollowManager {
     public void setRequestedToFollow(ArrayList<String> requestedToFollow) {
         this.requestedToFollow = requestedToFollow;
     }
+
+
+
+
 
     public void requestToFollowUser(String requestingToFollowThisUser){
         requestToFollow.add(requestingToFollowThisUser);

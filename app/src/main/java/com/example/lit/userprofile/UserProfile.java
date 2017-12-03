@@ -10,11 +10,13 @@
 package com.example.lit.userprofile;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.example.lit.habit.Habit;
 import com.example.lit.habit.HabitList;
 import com.example.lit.habitevent.HabitEvent;
 import com.example.lit.habitevent.HabitHistory;
+import com.example.lit.saving.DataHandler;
 import com.example.lit.saving.Saveable;
 
 import java.io.Serializable;
@@ -26,16 +28,16 @@ import java.util.ArrayList;
 
 public class UserProfile implements Serializable, Saveable{
 
+    public final static String CLASS_TYPE = "UserProfile";
+
     /**
      * The name of the user account. This is assumed to be unique for the app's purposes.
      */
     private String name;
     private String profileDescription;
     private Bitmap profileImage;
-    private HabitList currentHabits;
-    private HabitHistory habitCompletionHistory;
-    private ArrayList<String> followingUsers;
     private FollowManager followManager;
+    private DataHandler<UserProfile> dataHandler;
     private String jestID;
 
     /**
@@ -44,7 +46,10 @@ public class UserProfile implements Serializable, Saveable{
      * debugging, use the other two constructors.
      */
     public UserProfile() { //Dummy Constructor, sets nullable.
-
+        this.name = null;
+        this.profileDescription = null;
+        this.profileImage = null;
+        this.followManager = null;
     }
 
     /**
@@ -53,25 +58,28 @@ public class UserProfile implements Serializable, Saveable{
      * @param name The user account's name.
      */
     public UserProfile(String name){ //New Account
-
+        this.name = name;
+        this.followManager = new FollowManager(this);
     }
 
     /**
      * When creating a UserProfile object from an existing UserProfile.
+     * i.e. Loading a UserProfile
      *
      * @param name The user account's name.
      * @param profileDescription The optional profile description of the account.
      * @param profileImage The optional profile image attached to the account.
-     * @param currentHabits The list of Habits currently associated with the account.
-     * @param habitCompletionHistory The list of HabitEvents currently associated with the account.
      * @param followManager This object manages who is following who and who has requested to follow.
      *
      * @see Bitmap for information reguarding the profile image.
      */
+
     public UserProfile(String name, String profileDescription,
-                       Bitmap profileImage, ArrayList<Habit> currentHabits,
-                       ArrayList<HabitEvent> habitCompletionHistory,
-                       FollowManager followManager){
+                       Bitmap profileImage, FollowManager followManager){
+        this.name = name;
+        this.profileDescription = profileDescription;
+        this.profileImage = profileImage;
+        this.followManager = followManager;
 
     }
 
@@ -107,7 +115,7 @@ public class UserProfile implements Serializable, Saveable{
      *
      * @return The description associated with the profile.
      */
-    public String getProfileDecription(){
+    public String getProfileDescription(){
         return this.profileDescription;
     }
 
@@ -118,8 +126,14 @@ public class UserProfile implements Serializable, Saveable{
      *
      * @see Bitmap
      */
-    public void setProfileImage(Bitmap image){
-        //this.profileImage.createBitmap(image);
+    public void setProfileImage(Bitmap image) throws BitmapTooLargeException{
+
+        if(image.getByteCount() >= 65536){
+            Log.e("UserProfile",
+                    "Bitmap size to large to set. Rejecting the bitmap image.");
+            throw new BitmapTooLargeException();
+        }
+
         this.profileImage = image; //May not work, needs to be tested
     }
 
@@ -131,53 +145,17 @@ public class UserProfile implements Serializable, Saveable{
      * @see Bitmap
      */
     public Bitmap getProfileImage(){
-        //int[] dumbArray = new int[1];
-        //return Bitmap.createBitmap(dumbArray, 1, 1, Bitmap.Config.ARGB_8888);
 
         return this.profileImage;
     }
 
-    /**
-     * Sets the list of Habits that the user has created.
-     *
-     * @param currentHabits A HabitList that carries information about each Habit the user created.
-     */
-    public void setCurrentHabits(HabitList currentHabits){
-        this.currentHabits = currentHabits;
+
+    public void setFollowManager(FollowManager followManager){
+        this.followManager = followManager;
     }
 
-    /**
-     * Returns the HabitList of the Habits that the user has created.
-     *
-     * @return a HabitList of Habits.
-     *
-     * @see Habit
-     * @see HabitList
-     */
-    public HabitList getCurrentHabits(){
-        return this.currentHabits;
-    }
-
-    /**
-     * Sets the list of habits that the user has created.
-     *
-     * @param habitCompletionHistory A HabitHistory that carries information about each
-     *                               HabitEvent the user created.
-     */
-    public void setHabitCompletionHistory(HabitHistory habitCompletionHistory){
-        this.habitCompletionHistory = habitCompletionHistory;
-    }
-
-    /**
-     * Returns the HabitHistory of the HabitEvents that the user has completed.
-     *
-     * @return a HabitHistory of HabitEvents.
-     *
-     * @see HabitEvent
-     * @see HabitHistory
-     */
-    public HabitHistory getHabitCompletionHistory(){
-        return this.habitCompletionHistory;
+    public FollowManager getFollowManager(){
+        return this.followManager;
     }
 
     /**
@@ -187,7 +165,7 @@ public class UserProfile implements Serializable, Saveable{
      */
     public void setFollowingUsers(
             ArrayList<String> followingUsers){
-        this.followingUsers = followingUsers;
+        this.followManager.setFollowingUsers(followingUsers);
     }
 
     /**
@@ -196,7 +174,7 @@ public class UserProfile implements Serializable, Saveable{
      * @return An ArrayList that contains the users names
      */
     public ArrayList<String> getFollowingUsers(){
-        return this.followingUsers;
+        return followManager.getFollowingUsers();
     }
 
     /**
@@ -207,8 +185,8 @@ public class UserProfile implements Serializable, Saveable{
      *
      * @see UserProfile#getFollowingUserProfile(int) if the UserProfile is desired instead.
      */
-    public String getFollowingUser(int userPosition){
-        return this.followingUsers.get(userPosition);
+    public String getFollowingUser(int userPosition) throws IndexOutOfBoundsException{
+        return followManager.getFollowingUsers().get(userPosition);
     }
 
     /**
@@ -225,15 +203,33 @@ public class UserProfile implements Serializable, Saveable{
     }
 
     /**
+     * Returns the UserProfile of an account that is currently followed by the user.
+     *
+     * @param username The name of the UserProfile we want to load.
+     * @return A UserProfile object that is the desired requested account
+     * @see UserProfile#getFollowingUser(int) if just the name is needed instead.
+     */
+    public UserProfile getFollowingUserProfile(String username){
+        //TODO: Use ElasticSearch to obtain the details of the followed users account
+
+        return this; //TODO: Don't forget to change this.
+    }
+
+    /**
      * Approve a request for a user to follow the current user.
      *
      * @param name The user requesting following access.
      * @return True is the user is added successfully. False otherwise.
      */
-    public boolean addFollowingUser(String name){
-        if(followingUsers == null){
-            followingUsers = new ArrayList<String>();
-        }
+    public boolean requestToFollowUser(UserProfile requestingUser){
+        //this.followManager
+
+
+        return true;
+    }
+
+    public boolean cancelRequestToFollowUser(UserProfile cancellingUser){
+
         return true;
     }
 
@@ -244,7 +240,18 @@ public class UserProfile implements Serializable, Saveable{
      * @return True if the user has been revoked permissions successfully. False otherwise.
      */
     public boolean removeFollowingUser(String name){
+
+
         return true;
+    }
+
+    /**
+     * Respond to whether a current request to follow the user.
+     *
+     * @param decision True if the user approves the follow request. False otherwise.
+     */
+    public void respondToFollowRequest(boolean decision){
+
     }
 
     /**
@@ -257,14 +264,7 @@ public class UserProfile implements Serializable, Saveable{
         return -1;
     }
 
-    /**
-     * Respond to whether a current request to follow the user.
-     *
-     * @param decision True if the user approves the follow request. False otherwise.
-     */
-    public void respondToFollowRequest(boolean decision){
 
-    }
 
     public void setID(String ID){
         this.jestID = ID;
