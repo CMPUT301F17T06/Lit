@@ -24,14 +24,12 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.lit.R;
-import com.example.lit.Utilities.ObjectHolder;
 import com.example.lit.activity.AddHabitActivity;
 import com.example.lit.activity.ViewHabitActivity;
 import com.example.lit.habit.Habit;
 import com.example.lit.habit.NormalHabit;
 import com.example.lit.saving.DataHandler;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_OK;

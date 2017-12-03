@@ -42,7 +42,6 @@ public class HomePageActivityNew extends AppCompatActivity{
     android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
     //private FrameLayout frameLayout;\
 
-    ObjectHolder usernameHolder;
     private String username;
 
 
@@ -52,8 +51,6 @@ public class HomePageActivityNew extends AppCompatActivity{
         setContentView(R.layout.activity_home_page_new);
 
         username = getIntent().getExtras().getString("username");
-        usernameHolder = new ObjectHolder();
-        usernameHolder.setInput(username);
 
         mTitle = mDrawerTitle = getTitle();
         mNavigationDrawerItemTitles = getResources().getStringArray(R.array.navigation_drawer_items_array);
@@ -118,9 +115,6 @@ public class HomePageActivityNew extends AppCompatActivity{
         }
 
         if (fragment != null) {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("username",usernameHolder);
-            fragment.setArguments(bundle);
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
             mDrawerList.setItemChecked(position, true);
