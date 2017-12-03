@@ -158,6 +158,13 @@ public class UserProfile implements Serializable, Saveable{
         return this.followManager;
     }
 
+    public DataHandler<UserProfile> getDataHandler() {
+        return dataHandler;
+    }
+
+    public void setDataHandler(DataHandler<UserProfile> dataHandler) {
+        this.dataHandler = dataHandler;
+    }
 
     /**
      * Returns the UserProfile's name if the only thing desired is the name
