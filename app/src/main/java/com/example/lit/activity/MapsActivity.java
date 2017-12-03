@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.lit.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -59,6 +60,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Button nearby;
     private LatLng current;
     private ArrayList<Marker> markers;
+    private static final String[] LOCATION_PERMS={
+            Manifest.permission.ACCESS_FINE_LOCATION
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,7 +123,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 } else {
                     manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
                 }
-                int size = markers.size();
+                if (!(markers == null)) {
+                    int size = markers.size();
+
+
+
                 for (int index = 0; index < size; index++) {
                     Marker marker = markers.get(index);
                     LatLng pos = marker.getPosition();
@@ -129,6 +137,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
                     }
 
+                }}
+                else{
+                    Toast.makeText(MapsActivity.this, "No marker on the map", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -150,7 +161,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        requestPermissions(LOCATION_PERMS, 1);
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
@@ -165,7 +176,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 (this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
 
-            mMap.setMyLocationEnabled(true);}
+            mMap.setMyLocationEnabled(true);
+        }
         mMap.getUiSettings().setZoomControlsEnabled(true);
 
 
