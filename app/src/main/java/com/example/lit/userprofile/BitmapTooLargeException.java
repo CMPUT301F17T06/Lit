@@ -14,7 +14,7 @@ package com.example.lit.userprofile;
  * Created by Riley Dixon on 01/12/2017.
  */
 
-class BitmapTooLargeException extends Exception {
+public class BitmapTooLargeException extends Exception {
     BitmapTooLargeException(){
         super();
     }
