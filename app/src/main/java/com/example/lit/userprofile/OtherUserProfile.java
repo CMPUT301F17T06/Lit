@@ -15,6 +15,7 @@ package com.example.lit.userprofile;
  */
 
 import com.example.lit.saving.DataHandler;
+import com.example.lit.saving.NoDataException;
 
 /**
  * Designed to be used when viewing a UseerProfile that does not belong to
@@ -37,7 +38,11 @@ public class OtherUserProfile {
     }
 
     OtherUserProfile(String name){
-        this.theirProfile = dataHandler.loadData();
+        try {
+            this.theirProfile = dataHandler.loadData();
+        } catch (NoDataException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean requestToFollowOtherUser(UserProfile requestingUser){
@@ -45,6 +50,9 @@ public class OtherUserProfile {
         return true;
     }
 
-    public boolean cancelRequestToFollowOtherUser
+    public boolean cancelRequestToFollowOtherUser(){
+
+        return true;
+    }
 
 }
