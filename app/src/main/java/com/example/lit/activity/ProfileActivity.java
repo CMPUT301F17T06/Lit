@@ -10,8 +10,11 @@
 
 package com.example.lit.activity;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.provider.ContactsContract;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +25,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.lit.R;
+import com.example.lit.userprofile.BitmapTooLargeException;
 import com.example.lit.userprofile.UserProfile;
 
 public class ProfileActivity extends AppCompatActivity{
@@ -118,9 +122,39 @@ public class ProfileActivity extends AppCompatActivity{
             Log.d("ProfileActivity", "Viewing following of user: " + currentUser.getName());
             startActivity(listOfFollowing);
         }else{
-            int x = 1/0; //Crash our program. There isn't really an easy way to force the entire
+            Log.wtf("ProfileActivity", "initiateFollowDivided by zero. What did Riley do?");
+            throw new RuntimeException("Crash Me!");
+            //Crash our program. There isn't really an easy way to force the entire
             //app to exit nicely. There are ways for INDIVIDUAL processes, not this entire app at
-            //once however.
+            //once however. We shouldn't be here unless Riley messed up.
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent modifiedUserProfile){
+        if(requestCode == ProfileEditActivity.EDIT_USERPROFILE_CODE){
+            if(resultCode == Activity.RESULT_OK){
+                UserProfile returnProfile = (UserProfile)modifiedUserProfile
+                                            .getSerializableExtra(ProfileEditActivity.ACTIVITY_KEY);
+                currentUser.setProfileDescription(returnProfile.getProfileDescription());
+                try {
+                    currentUser.setProfileImage(returnProfile.getProfileImage());
+                }catch (BitmapTooLargeException e){
+                    //We should be fine as this has already been checked for in the editActivity.
+                    Log.wtf("ProfileActivity", "The image somehow grew in size.");
+                    throw new RuntimeException("Crash Me!");
+                }
+            }else if(resultCode == Activity.RESULT_CANCELED){
+                Log.d("ProfileActivity", "Cancelled edit complete.");
+            }
+        }else{
+            Log.wtf("ProfileActivity", "Invalid requestCode received.");
+            //Let user know their edited data was lost.
+            AlertDialog.Builder asdBuilder = new AlertDialog.Builder(this);
+            asdBuilder.setTitle("Edit failed.");
+            asdBuilder.setMessage("The edit failed to save and the edited information is lost." +
+                    "We are unsure as to why this happened.");
+            asdBuilder.show();
         }
     }
 
