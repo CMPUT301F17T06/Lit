@@ -75,12 +75,11 @@ public class UserProfile implements Serializable, Saveable{
      */
 
     public UserProfile(String name, String profileDescription,
-                       Bitmap profileImage, FollowManager followManager){
-        this.name = name;
-        this.profileDescription = profileDescription;
-        this.profileImage = profileImage;
-        this.followManager = followManager;
-
+                       Bitmap profileImage, FollowManager followManager) throws BitmapTooLargeException{
+        setName(name);
+        setProfileDescription(profileDescription);
+        setProfileImage(profileImage);
+        setFollowManager(followManager);
     }
 
     /**
