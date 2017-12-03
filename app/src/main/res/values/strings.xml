@@ -24,6 +24,11 @@
     <string name="main_menu">Main Menu</string>
     <string name="your_habits">Your Habits :</string>
     <string name="take_photo">Take Photo</string>
+    <string name="following_text">Following</string>
+    <string name="followers_text">Followers</string>
+    <string name="change_profile_image">Change Profile Image</string>
+    <string name="user_description_hint">Enter in your profile bio!</string>
+    <string name="other_user_empty_description">This user has nothing in their bio.</string>
 
     <string-array name="navigation_drawer_items_array">
         <item>Home</item>
