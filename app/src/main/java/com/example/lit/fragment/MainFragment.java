@@ -46,7 +46,6 @@ public class MainFragment extends Fragment {
     ListView habitsListView;
     ArrayList<Habit> habitArrayList;
     ArrayAdapter<Habit> habitAdapter;
-    ObjectHolder usernameHolder;
     String username;
 
     public MainFragment() {
@@ -55,13 +54,9 @@ public class MainFragment extends Fragment {
 
     public void onResume(){
         super.onResume();
-        Bundle bundle = getArguments();
-        if (bundle == null){
+        username = getActivity().getIntent().getExtras().getString("username");
+        if (username == null){
             Toast.makeText(getActivity(), "arguments is null " , Toast.LENGTH_LONG).show();
-        }
-        else {
-            usernameHolder = (ObjectHolder) bundle.getSerializable("username");
-            username = (String) usernameHolder.getInput();
         }
     }
 

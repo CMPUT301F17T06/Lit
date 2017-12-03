@@ -137,10 +137,12 @@ public class AddHabitActivity extends AppCompatActivity  {
         ArrayAdapter<String> hourAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, createHourList());
         hourAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         hour_spinner.setAdapter(hourAdapter);
+        hourAdapter.notifyDataSetChanged();
         // Set up minute selection
         ArrayAdapter<String> minuteAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, createMinuteList());
         minuteAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         minute_spinner.setAdapter(minuteAdapter);
+        minuteAdapter.notifyDataSetChanged();
 
         saveHabit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,13 +175,18 @@ public class AddHabitActivity extends AppCompatActivity  {
         habitNameString = habitName.getText().toString();
         commentString = habitComment.getText().toString();
         habitStartDate = Calendar.getInstance().getTime();
-        hour = Integer.parseInt(hour_spinner.getSelectedItem().toString());
-        minute = Integer.parseInt(minute_spinner.getSelectedItem().toString());
         weekdays = weekday_spinner.getSelectedStrings();
         try {
+            hour = Integer.parseInt(hour_spinner.getSelectedItem().toString());
+            minute = Integer.parseInt(minute_spinner.getSelectedItem().toString());
             calendarList = buildCalender(weekdays, hour, minute);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        }catch (Exception e) {
+            try{
+                calendarList = buildCalender(weekdays);
+            }catch (ParseException e2){
+                e2.printStackTrace();
+            }
+
         }
 
         //TODO: should build location implicitly when building new habit.
@@ -223,12 +230,12 @@ public class AddHabitActivity extends AppCompatActivity  {
     }
 
     private List<String> createHourList(){
-        List<String> hourList = createNumberList(1,24,1);
+        List<String> hourList = createNumberList(0,23,1);
         return hourList;
     }
 
     private List<String> createMinuteList(){
-        List<String> hourList = createNumberList(1,60,1);
+        List<String> hourList = createNumberList(0,59,1);
         return hourList;
     }
 
@@ -251,6 +258,23 @@ public class AddHabitActivity extends AppCompatActivity  {
             calendar.set(Calendar.DAY_OF_WEEK,weekOfDay);
             calendar.set(Calendar.HOUR_OF_DAY,hour);
             calendar.set(Calendar.MINUTE,minute);
+            calendarList.add(calendar);
+
+            // Periodic Timer, only a prototype now
+            Timer timer = new Timer();
+            timer.schedule(new SchduledTask(), calendar.getTime());
+        }
+        return calendarList;
+    }
+
+
+    private List<Calendar> buildCalender(List<String> weekdays)throws ParseException{
+        List<Calendar> calendarList = new ArrayList<Calendar>();
+        for (String weekday:weekdays
+                ) {
+            Calendar calendar = Calendar.getInstance();
+            int weekOfDay = parseDayOfWeek(weekday,Locale.CANADA);
+            calendar.set(Calendar.DAY_OF_WEEK,weekOfDay);
             calendarList.add(calendar);
 
             // Periodic Timer, only a prototype now
@@ -297,6 +321,7 @@ public class AddHabitActivity extends AppCompatActivity  {
      */
     private ArrayList<String> createNumberList(int low, int high, int interval){
         ArrayList<String> numberList = new ArrayList<>();
+        numberList.add(" ");
         for(int i = low; i <= high; i += interval){
             numberList.add(String.valueOf(i));
         }
