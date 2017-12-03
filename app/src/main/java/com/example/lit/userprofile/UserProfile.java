@@ -158,24 +158,6 @@ public class UserProfile implements Serializable, Saveable{
         return this.followManager;
     }
 
-    /**
-     * Sets a list of the other users that the user is currently following.
-     *
-     * @param followingUsers An ArrayList that contains the users names
-     */
-    public void setFollowingUsers(
-            ArrayList<String> followingUsers){
-        this.followManager.setFollowingUsers(followingUsers);
-    }
-
-    /**
-     * Returns a list of the other users that the user is currently following.
-     *
-     * @return An ArrayList that contains the users names
-     */
-    public ArrayList<String> getFollowingUsers(){
-        return followManager.getFollowingUsers();
-    }
 
     /**
      * Returns the UserProfile's name if the only thing desired is the name
@@ -240,7 +222,6 @@ public class UserProfile implements Serializable, Saveable{
      * @return True if the user has been revoked permissions successfully. False otherwise.
      */
     public boolean removeFollowingUser(String name){
-
 
         return true;
     }

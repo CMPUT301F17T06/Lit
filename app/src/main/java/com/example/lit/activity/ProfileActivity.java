@@ -11,6 +11,7 @@
 package com.example.lit.activity;
 
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +34,8 @@ public class ProfileActivity extends AppCompatActivity{
     private TextView numFollowingView;
     private ListView habitListView; //May be deprecated based on what our design actually is?
     private Button editProfileView;
+    private TextView followersView;
+    private TextView followingView;
 
     private UserProfile currentUser;
 
@@ -41,6 +44,8 @@ public class ProfileActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        //TODO: Get the intent to initialize currentUser!
+
         profileImageView = (ImageView) findViewById(R.id.profileImageView);
         usernameView = (TextView) findViewById(R.id.usernameView);
         userDescriptionView = (TextView) findViewById(R.id.profileDescriptionView);
@@ -48,6 +53,8 @@ public class ProfileActivity extends AppCompatActivity{
         numFollowingView = (TextView) findViewById(R.id.numFollowingView);
         habitListView = (ListView) findViewById(R.id.listHabitView);
         editProfileView = (Button) findViewById(R.id.editProfileButton);
+        followersView = (TextView) findViewById(R.id.followersView);
+        followingView = (TextView) findViewById(R.id.followingView);
 
         editProfileView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,16 +67,28 @@ public class ProfileActivity extends AppCompatActivity{
         numFollowersView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent listOfFollowers = new Intent(ProfileActivity.this, ProfileFollowActivity.class);
-                Log.d("ProfileActivity", "Viewing followers of user: " + currentUser.getName());
+                initiateFollowActivity("follower");
             }
         });
 
         numFollowingView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent listOfFollowing = new Intent(ProfileActivity.this, ProfileFollowActivity.class);
-                Log.d("ProfileActivity", "Viewing following of user: " + currentUser.getName());
+                initiateFollowActivity("following");
+            }
+        });
+
+        followersView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                initiateFollowActivity("follower");
+            }
+        });
+
+        followingView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                initiateFollowActivity("following");
             }
         });
 
@@ -83,5 +102,26 @@ public class ProfileActivity extends AppCompatActivity{
         //Update Habit list?
     }
 
+    private void initiateFollowActivity(String option){
+        if(option.equals("following")){
+            Intent listOfFollowers = new Intent(ProfileActivity.this, ProfileFollowActivity.class);
+
+            listOfFollowers.putExtra(ProfileActivity.ACTIVITY_KEY, currentUser.getFollowManager().getFollowingUsers());
+            listOfFollowers.putExtra("OPERATION_MODE", "Followers");
+            Log.d("ProfileActivity", "Viewing followers of user: " + currentUser.getName());
+            startActivity(listOfFollowers);
+        }else if(option.equals("follower")){
+            Intent listOfFollowing = new Intent(ProfileActivity.this, ProfileFollowActivity.class);
+
+            listOfFollowing.putExtra(ProfileActivity.ACTIVITY_KEY, currentUser.getFollowManager().getFollowedUsers());
+            listOfFollowing.putExtra("OPERATION_MODE", "Following");
+            Log.d("ProfileActivity", "Viewing following of user: " + currentUser.getName());
+            startActivity(listOfFollowing);
+        }else{
+            int x = 1/0; //Crash our program. There isn't really an easy way to force the entire
+            //app to exit nicely. There are ways for INDIVIDUAL processes, not this entire app at
+            //once however.
+        }
+    }
 
 }
