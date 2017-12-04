@@ -36,6 +36,7 @@
     <string-array name="navigation_drawer_items_array">
         <item>Home</item>
         <item>HabitHistory</item>
+        <item>ActiveHabits</item>
         <item>Friends</item>
         <item>Map</item>
         <item>Profile</item>

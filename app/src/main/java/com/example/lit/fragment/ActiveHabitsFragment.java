@@ -41,7 +41,7 @@ import static android.app.Activity.RESULT_OK;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MainFragment extends Fragment {
+public class ActiveHabitsFragment extends Fragment {
 
 
     ImageButton addHabitButton;
