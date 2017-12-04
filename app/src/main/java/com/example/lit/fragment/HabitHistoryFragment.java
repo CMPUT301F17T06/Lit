@@ -11,15 +11,19 @@
 package com.example.lit.fragment;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.example.lit.R;
@@ -28,8 +32,11 @@ import com.example.lit.activity.MapsActivity;
 import com.example.lit.activity.ViewHabitActivity;
 import com.example.lit.activity.ViewHabitEventActivity;
 import com.example.lit.habit.Habit;
+import com.example.lit.habit.NormalHabit;
 import com.example.lit.habitevent.HabitEvent;
+import com.example.lit.habitevent.NormalHabitEvent;
 import com.example.lit.location.HabitLocation;
+import com.example.lit.saving.ElasticSearchHabitController;
 
 import java.util.ArrayList;
 
@@ -40,27 +47,57 @@ import static android.app.Activity.RESULT_OK;
  */
 public class HabitHistoryFragment extends Fragment {
     ListView eventListView;
-    ArrayList<HabitEvent> eventArrayList ;
-    ArrayAdapter<HabitEvent> eventAdapter;
+    ArrayList<NormalHabitEvent> eventArrayList ;
+    ArrayAdapter<NormalHabitEvent> eventAdapter;
     HabitLocation eventLocation;
-    HabitEvent event;
+    NormalHabitEvent event;
     Button mapButton;
+    String username;
 
-    public HabitHistoryFragment() {
-        // Required empty public constructor
+    FragmentActivity listener;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try{
+            this.listener = (FragmentActivity) context;
+        }catch (ClassCastException e){
+            throw new ClassCastException(context.toString());
+        }
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        username = getActivity().getIntent().getExtras().getString("username");
+        //DataHandler dataHandler = new DataHandler("username", "HabitList", getActivity());
+        //habitArrayList = dataHandler.loadData();
+        eventArrayList = new ArrayList<>();
+        ElasticSearchHabitController.GetCurrentEventsTask getCurrentEventsTask = new ElasticSearchHabitController.GetCurrentEventsTask();
+        getCurrentEventsTask.execute(username);
+        //habitAdapter.notifyDataSetChanged();
+
+        try {
+            eventArrayList = getCurrentEventsTask.get();
+        } catch (Exception e) {
+            Log.i("Error", "Failed to get the habits from the asyc object");
+        }
+
+        eventAdapter = new ArrayAdapter<NormalHabitEvent>(getActivity(), R.layout.list_item, eventArrayList);
+    }
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_habit_history, container, false);
-        eventArrayList = new ArrayList<>();
-        eventListView = (ListView) view.findViewById(R.id.eventhistory);
-        eventAdapter = new ArrayAdapter<HabitEvent>(getActivity(), R.layout.list_item, eventArrayList);
-        eventListView.setAdapter(eventAdapter);
-        mapButton = (Button) view.findViewById(R.id.Mapbutton);
 
+        return inflater.inflate(R.layout.fragment_habit_history, container, false);
+    }
+
+    @Override
+    public void onViewCreated(final View view, Bundle savedInstanceState) {
+        eventListView = (ListView) view.findViewById(R.id.eventhistory);
+        eventListView.setAdapter(eventAdapter);
+
+        mapButton = (Button) view.findViewById(R.id.Mapbutton);
 
         eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -68,7 +105,7 @@ public class HabitHistoryFragment extends Fragment {
 
                 Intent intent = new Intent(getActivity(), ViewHabitEventActivity.class);
                 Bundle bundle = new Bundle();
-                HabitEvent selectedEvent = eventArrayList.get(i);
+                NormalHabitEvent selectedEvent = eventArrayList.get(i);
                 bundle.putParcelable("event", selectedEvent);
                 intent.putExtras(bundle);
                 startActivityForResult(intent, 2);
@@ -83,7 +120,7 @@ public class HabitHistoryFragment extends Fragment {
                 startActivityForResult(intent,1);
             }
         });
-        
-        return view;
+
+        // Inflate the layout for this fragment
     }
 }

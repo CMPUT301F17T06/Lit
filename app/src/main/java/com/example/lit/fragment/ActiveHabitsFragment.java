@@ -70,7 +70,6 @@ public class ActiveHabitsFragment extends Fragment {
         //DataHandler dataHandler = new DataHandler("username", "HabitList", getActivity());
         //habitArrayList = dataHandler.loadData();
         habitArrayList = new ArrayList<>();
-        Log.i("username",username);
         ElasticSearchHabitController.GetCurrentHabitsTask getCurrentHabitsTask = new ElasticSearchHabitController.GetCurrentHabitsTask();
         getCurrentHabitsTask.execute(username);
         //habitAdapter.notifyDataSetChanged();
@@ -124,6 +123,7 @@ public class ActiveHabitsFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 Habit selectedHabit = habitArrayList.get(i);
                 bundle.putSerializable("habit", selectedHabit);
+                bundle.putSerializable("username", username);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,2);
             }

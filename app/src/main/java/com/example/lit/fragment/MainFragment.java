@@ -26,6 +26,9 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import com.example.lit.R;
 import com.example.lit.activity.AddHabitActivity;
 import com.example.lit.activity.ViewHabitActivity;
@@ -66,16 +69,16 @@ public class MainFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         username = getActivity().getIntent().getExtras().getString("username");
+        String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         //DataHandler dataHandler = new DataHandler("username", "HabitList", getActivity());
         //habitArrayList = dataHandler.loadData();
         habitArrayList = new ArrayList<>();
-        Log.i("username",username);
-        ElasticSearchHabitController.GetCurrentHabitsTask getCurrentHabitsTask = new ElasticSearchHabitController.GetCurrentHabitsTask();
-        getCurrentHabitsTask.execute(username);
+        ElasticSearchHabitController.GetTodayHabitsTask getTodayHabitsTask = new ElasticSearchHabitController.GetTodayHabitsTask();
+        getTodayHabitsTask.execute(username,date);
         //habitAdapter.notifyDataSetChanged();
 
         try {
-            habitArrayList = getCurrentHabitsTask.get();
+            habitArrayList = getTodayHabitsTask.get();
         } catch (Exception e) {
             Log.i("Error", "Failed to get the habits from the asyc object");
         }
