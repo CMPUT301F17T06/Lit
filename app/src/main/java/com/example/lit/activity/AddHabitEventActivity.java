@@ -85,6 +85,7 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
     final int maxSize = 665536 / (1024*10);
 
     Habit currentHabit;
+    ArrayList<NormalHabitEvent> eventArrayList;
     String habitTitleString;
     private TextView habitEventName;
     private EditText habitEventComment;
@@ -106,7 +107,7 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
     private GoogleApiClient mGoogleApiClient;
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
             new LatLng(-40, -168), new LatLng(71, 136));
-    DataHandler<ArrayList<NormalHabitEvent>> dataHandler;
+    DataHandler eventdataHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +118,7 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
         try{
             Bundle bundle = getIntent().getExtras();
             currentHabit = (Habit)bundle.getParcelable("habit");
+            eventdataHandler = (DataHandler)bundle.getSerializable("eventdatahandler");
             username = (String)bundle.getString("username");
             if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
         }catch (LoadHabitException e){
@@ -137,7 +139,7 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
         SearchText = (AutoCompleteTextView) findViewById(R.id.searchlocation);
         habitImage = (ImageView) findViewById(R.id.HabitEventImage);
         editImage = (Button)findViewById(R.id.eventImageButton);
-
+        eventArrayList = new ArrayList<>();
         editImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -151,12 +153,7 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
             public void onClick(View view) {
                 Log.i("AddHabitEventActivity", "Save Button pressed.");
                 setResult(RESULT_OK);
-                Intent intent = new Intent(view.getContext(),HabitHistoryFragment.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("dataHandler",dataHandler);
-                intent.putExtras(bundle);
-                startActivity(intent);
-                finish();
+                returnNewHabitEvent(view);
             }
         });
 
@@ -191,7 +188,7 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
     public void returnNewHabitEvent(View saveNewHabitButton) {
         habitNameString = habitEventName.getText().toString();
         commentString = habitEventComment.getText().toString();
-        Intent newHabitEventIntent = new Intent(AddHabitEventActivity.this, HistoryActivity.class);
+        Intent newHabitEventIntent = new Intent();
         Bundle bundle = new Bundle();
 
         LatLng latLng = buildLocation(locationCheck);
@@ -199,12 +196,15 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
 
         try {
             NormalHabitEvent newHabitEvent = new NormalHabitEvent(habitNameString, commentString,eventLocation);
-            bundle.putParcelable("event", newHabitEvent);
-            newHabitEventIntent.putExtras(bundle);
-            newHabitEvent.setUser(username);
-            ElasticSearchHabitController.AddHabitEventTask addHabitEventTask = new ElasticSearchHabitController.AddHabitEventTask();
-            addHabitEventTask.execute(newHabitEvent);
-
+            eventArrayList.add(newHabitEvent);
+            eventdataHandler.saveData(eventArrayList);
+            //newHabitEvent.setUser(username);
+           // ElasticSearchHabitController.AddHabitEventTask addHabitEventTask = new ElasticSearchHabitController.AddHabitEventTask();
+            //addHabitEventTask.execute(newHabitEvent);
+            bundle.putSerializable("eventdatahandler", eventdataHandler);
+            //set Fragmentclass Arguments
+            HabitHistoryFragment fragment=new HabitHistoryFragment();
+            fragment.setArguments(bundle);
             finish();
         } catch (HabitFormatException e) {
             Toast.makeText(AddHabitEventActivity.this, "Error: Illegal Habit Event information!", Toast.LENGTH_LONG).show();

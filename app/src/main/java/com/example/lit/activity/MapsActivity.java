@@ -100,7 +100,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         double latitude = location.getLatitude();
                         double longitude = location.getLongitude();
                         current = new LatLng(latitude, longitude);
-
+                        Marker marker = mMap.addMarker(new MarkerOptions().position(current).title("currentlocation"));
                     }
 
                     @Override
