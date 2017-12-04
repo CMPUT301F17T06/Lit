@@ -33,6 +33,7 @@ public class ProfileEditActivity extends AppCompatActivity {
 
     public final static String ACTIVITY_KEY = "com.example.lit.activity.ProfileEditActivity";
     public final static int EDIT_USERPROFILE_CODE = 2983472; //a "random" number
+    public final static int GET_FROM_GALLERY = 598739; //Our requestCode
 
     private Button discardButton;
     private Button saveButton;
@@ -78,7 +79,7 @@ public class ProfileEditActivity extends AppCompatActivity {
 
                 Intent sendModifiedUserProfile = new Intent();
                 sendModifiedUserProfile.putExtra(ACTIVITY_KEY, editingUser);
-                setResult(Activity.RESULT_CANCELED);
+                setResult(Activity.RESULT_OK);
                 finish();
             }
         });
@@ -86,8 +87,12 @@ public class ProfileEditActivity extends AppCompatActivity {
         editProfileImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("ProfileEditActivity", "User requested to change profile iamge.");
-                changeProfileImage();
+                Log.d("ProfileEditActivity", "User requested to change profile image.");
+                //Next line sourced from https://stackoverflow.com/questions/9107900/how-to-upload-image-from-gallery-in-android
+                //By user Dhruv Gairola. Accessed Dec. 3rd.
+                startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), GET_FROM_GALLERY);
+
+                //changeProfileImage();
             }
         });
 
@@ -98,13 +103,27 @@ public class ProfileEditActivity extends AppCompatActivity {
         switch(selection.getItemId()){
             case android.R.id.home: //Up button pressed
                 Log.d("ProfileEditActivity", "Up Button Pressed. Edit Cancelled");
-
-                Intent sendModifiedUserProfile = new Intent();
-                sendModifiedUserProfile.putExtra(ACTIVITY_KEY, editingUser);
                 setResult(Activity.RESULT_CANCELED);
                 finish();
         }
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent selectedImage){
+        if(requestCode == GET_FROM_GALLERY){
+            //User is coming back from selecting an image
+            if(resultCode == Activity.RESULT_OK){
+            }else if(resultCode == Activity.RESULT_CANCELED){
+
+            }else{
+                Log.wtf("ProfileEditActivity", "Unknown resultCode received.");
+                throw new RuntimeException("Crash Me!");
+            }
+        }else{
+            Log.wtf("ProfileEditActivity", "Came from an unknown activity.");
+            throw new RuntimeException("Crash Me!");
+        }
     }
 
     private void saveButtonPressed(){
