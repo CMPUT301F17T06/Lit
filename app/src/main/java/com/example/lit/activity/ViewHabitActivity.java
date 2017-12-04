@@ -33,6 +33,9 @@ import com.example.lit.location.HabitLocation;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Calendar;
+
 /**
  * viewHabitActivity
  * Version 1.0
@@ -153,6 +156,10 @@ public class ViewHabitActivity extends AppCompatActivity {
     //TODO: delete current habit and return to previous activity
     public void deleteHabit(Habit habit){
         //
+    }
+
+    public String showWeekdayCalender(ArrayList<Calendar> calendarArrayList){
+
     }
 
 }
