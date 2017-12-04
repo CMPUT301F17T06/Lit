@@ -186,7 +186,6 @@ public class AddHabitActivity extends AppCompatActivity  {
             }catch (ParseException e2){
                 e2.printStackTrace();
             }
-
         }
 
 
