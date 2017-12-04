@@ -57,15 +57,15 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(v.getContext(), HomePageActivityNew.class);
                 String username = usernameEditText.getText().toString().toLowerCase();
 
-                ElasticSearchHabitController.GetUserTask getUserTask = new ElasticSearchHabitController.GetUserTask();
-                getUserTask.execute(username);
+                //ElasticSearchHabitController.GetUserTask getUserTask = new ElasticSearchHabitController.GetUserTask();
+                //getUserTask.execute(username);
                 if (!username.isEmpty()){
                     try{
-                        user = getUserTask.get();
+                        //user = getUserTask.get();
                         if(user == null){
                             user = new UserProfile(username);
-                            ElasticSearchHabitController.AddUserTask addUserTask = new ElasticSearchHabitController.AddUserTask();
-                            addUserTask.execute(user);
+                            //ElasticSearchHabitController.AddUserTask addUserTask = new ElasticSearchHabitController.AddUserTask();
+                            //addUserTask.execute(user);
                             Toast.makeText(getApplicationContext(),"New User created.",Toast.LENGTH_LONG).show();
                         }else{
                             Toast.makeText(getApplicationContext(),"User exists.",Toast.LENGTH_LONG).show();

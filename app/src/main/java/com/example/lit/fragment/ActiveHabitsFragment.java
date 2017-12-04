@@ -34,6 +34,7 @@ import com.example.lit.habit.NormalHabit;
 import com.example.lit.saving.DataHandler;
 import com.example.lit.saving.ElasticSearchHabitController;
 import com.example.lit.saving.NoDataException;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 
@@ -95,7 +96,7 @@ public class ActiveHabitsFragment extends Fragment {
         habitsListView.setAdapter(habitAdapter);
         habitAdapter.notifyDataSetChanged();
 
-        dataHandler = new DataHandler<>(username,"habit",getActivity());
+        dataHandler = new DataHandler<>(username,"habit",getActivity(), new TypeToken<ArrayList<NormalHabit>>(){}.getType());
         try {
             habitArrayList = dataHandler.loadData();
         }catch (NoDataException e){

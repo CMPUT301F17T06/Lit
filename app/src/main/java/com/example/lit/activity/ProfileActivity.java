@@ -28,6 +28,7 @@ import com.example.lit.R;
 import com.example.lit.saving.DataHandler;
 import com.example.lit.userprofile.BitmapTooLargeException;
 import com.example.lit.userprofile.UserProfile;
+import com.google.gson.reflect.TypeToken;
 
 public class ProfileActivity extends AppCompatActivity{
     public final static String ACTIVITY_KEY = "com.exmample.lit.activity.ProfileActivity";
@@ -61,7 +62,7 @@ public class ProfileActivity extends AppCompatActivity{
         editProfileView = (Button) findViewById(R.id.editProfileButton);
         followersView = (TextView) findViewById(R.id.followersView);
         followingView = (TextView) findViewById(R.id.followingView);
-        dataHandler = new DataHandler<>(currentUser.getName(), "UserProfile", this);
+        dataHandler = new DataHandler<>(currentUser.getName(), "UserProfile", this, new TypeToken<UserProfile>(){}.getType());
 
         editProfileView.setOnClickListener(new View.OnClickListener() {
             @Override
