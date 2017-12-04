@@ -10,13 +10,14 @@
 
 package com.example.lit.userprofile;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Riley Dixon on 31/10/2017.
  */
 
-class FollowManager {
+public class FollowManager implements Serializable{
     //Follow Manager should not exist without being constructed with an accompanying UserProfile
     private String currentUsersName;
     private ArrayList<String> followingUsers;

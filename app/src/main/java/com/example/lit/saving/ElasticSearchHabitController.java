@@ -219,7 +219,7 @@ public class ElasticSearchHabitController {
         }
     }
 
-     static class AddTask<T extends Saveable> extends AsyncTask<ElasticSearchTimestampWrapper<T>, Void, Void> {
+     static class AddTask<T> extends AsyncTask<ElasticSearchTimestampWrapper<T>, Void, Void> {
         private String username;
         private String typeOfObject;
 
@@ -240,7 +240,7 @@ public class ElasticSearchHabitController {
                     DocumentResult result = client.execute(index);
 
                     if(result.isSucceeded()){
-                        currentT.getData().setID(result.getId());
+                        //currentT.getData().setID(result.getId());
                     }else{
                         Log.i("Error","Elasticsearch was not able to add the T");
                         //TODO: What does ES return upon failure?
@@ -256,7 +256,7 @@ public class ElasticSearchHabitController {
         }
     }
 
-    static class GetTask<T extends Saveable> extends AsyncTask<String, Void, ElasticSearchTimestampWrapper<T>> {
+    static class GetTask<T> extends AsyncTask<String, Void, ElasticSearchTimestampWrapper<T>> {
         private String username;
         private String typeOfObject;
 

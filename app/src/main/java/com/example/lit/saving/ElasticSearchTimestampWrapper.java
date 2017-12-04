@@ -35,8 +35,10 @@ import java.io.Serializable;
  * @see DataHandler
  * @author Riley Dixon
  */
-class ElasticSearchTimestampWrapper<T extends Saveable> implements Serializable{
-    private T data;
+//class ElasticSearchTimestampWrapper<T extends Saveable> implements Serializable{
+class ElasticSearchTimestampWrapper<T> implements Serializable{
+
+        private T data;
     private long timestamp;
 
     ElasticSearchTimestampWrapper(T data, long timestamp) {
