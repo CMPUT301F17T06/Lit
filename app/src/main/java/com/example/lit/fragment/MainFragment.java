@@ -68,11 +68,10 @@ public class MainFragment extends Fragment {
         }
     }
 
-    @Override
+   /* @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        username = getActivity().getIntent().getExtras().getString("username");
-        habitArrayList = new ArrayList<>();
+
 
         /*ElasticSearchHabitController.GetTodayHabitsTask getTodayHabitsTask = new ElasticSearchHabitController.GetTodayHabitsTask();
         getTodayHabitsTask.execute(username,date);
@@ -84,18 +83,17 @@ public class MainFragment extends Fragment {
             Log.i("Error", "Failed to get the habits from the asyc object");
         }*/
 
-        habitAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item, habitArrayList);
-    }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        return inflater.inflate(R.layout.fragment_main, container, false);
-    }
-
-    @Override
-    public void onViewCreated(final View view, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        username = getActivity().getIntent().getExtras().getString("username");
+        habitArrayList = new ArrayList<>();
+        habitAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item, habitArrayList);
         habitsListView = (ListView) view.findViewById(R.id.habit_list_view);
         habitsListView.setAdapter(habitAdapter);
         habitAdapter.notifyDataSetChanged();
@@ -145,8 +143,22 @@ public class MainFragment extends Fragment {
                 intent.putExtras(bundle);
                 startActivityForResult(intent,1);
             }});
-
+        return view;
         // Inflate the layout for this fragment
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        habitAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item, habitArrayList);
+        habitsListView.setAdapter(habitAdapter);
+        try {
+            habitArrayList = dataHandler.loadData();
+        }catch (NoDataException e){
+            Toast.makeText(getActivity(), "Error: Can't load data! code:3", Toast.LENGTH_SHORT).show();
+        }
+
+        habitAdapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -158,17 +170,6 @@ public class MainFragment extends Fragment {
             }catch (NoDataException e){
                 Toast.makeText(getActivity(), "Error: Can't load data! code:1", Toast.LENGTH_SHORT).show();
             }
-        }
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-        try{
-            habitArrayList = dataHandler.loadData();
-            habitAdapter.notifyDataSetChanged();
-        }catch (NoDataException e){
-            Toast.makeText(getActivity(), "Error: Can't load data! code:2", Toast.LENGTH_SHORT).show();
         }
     }
 
