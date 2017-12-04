@@ -25,8 +25,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.lit.R;
+import com.example.lit.saving.DataHandler;
 import com.example.lit.userprofile.BitmapTooLargeException;
 import com.example.lit.userprofile.UserProfile;
+import com.google.gson.reflect.TypeToken;
 
 public class ProfileActivity extends AppCompatActivity{
     public final static String ACTIVITY_KEY = "com.exmample.lit.activity.ProfileActivity";
@@ -40,6 +42,7 @@ public class ProfileActivity extends AppCompatActivity{
     private Button editProfileView;
     private TextView followersView;
     private TextView followingView;
+    private DataHandler<UserProfile> dataHandler;
 
     private UserProfile currentUser;
 
@@ -59,12 +62,14 @@ public class ProfileActivity extends AppCompatActivity{
         editProfileView = (Button) findViewById(R.id.editProfileButton);
         followersView = (TextView) findViewById(R.id.followersView);
         followingView = (TextView) findViewById(R.id.followingView);
+        dataHandler = new DataHandler<>(currentUser.getName(), "UserProfile", this, new TypeToken<UserProfile>(){}.getType());
 
         editProfileView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("ProfileActivity", "Editting profile of user: " + currentUser.getName());
+                Log.d("ProfileActivity", "Editing profile of user: " + currentUser.getName());
                 Intent editThisProfile = new Intent(ProfileActivity.this, ProfileEditActivity.class);
+                startActivityForResult(editThisProfile, ProfileEditActivity.EDIT_USERPROFILE_CODE);
             }
         });
 
@@ -101,26 +106,23 @@ public class ProfileActivity extends AppCompatActivity{
     @Override
     protected void onStart(){
         super.onStart();
-        //Update numFollowers
-        //Update numFollowing
+        //Update numFollowers?
+        //Update numFollowing?
         //Update Habit list?
     }
 
     private void initiateFollowActivity(String option){
+        Intent listOfFollowingers = new Intent(ProfileActivity.this, ProfileFollowActivity.class);
+        listOfFollowingers.putExtra(ProfileActivity.ACTIVITY_KEY, currentUser);
+
         if(option.equals("following")){
-            Intent listOfFollowers = new Intent(ProfileActivity.this, ProfileFollowActivity.class);
-
-            listOfFollowers.putExtra(ProfileActivity.ACTIVITY_KEY, currentUser.getFollowManager().getFollowingUsers());
-            listOfFollowers.putExtra("OPERATION_MODE", "Followers");
+            listOfFollowingers.putExtra("OPERATION_MODE", "Followers");
             Log.d("ProfileActivity", "Viewing followers of user: " + currentUser.getName());
-            startActivity(listOfFollowers);
+            startActivity(listOfFollowingers);
         }else if(option.equals("follower")){
-            Intent listOfFollowing = new Intent(ProfileActivity.this, ProfileFollowActivity.class);
-
-            listOfFollowing.putExtra(ProfileActivity.ACTIVITY_KEY, currentUser.getFollowManager().getFollowedUsers());
-            listOfFollowing.putExtra("OPERATION_MODE", "Following");
+            listOfFollowingers.putExtra("OPERATION_MODE", "Following");
             Log.d("ProfileActivity", "Viewing following of user: " + currentUser.getName());
-            startActivity(listOfFollowing);
+            startActivity(listOfFollowingers);
         }else{
             Log.wtf("ProfileActivity", "initiateFollowDivided by zero. What did Riley do?");
             throw new RuntimeException("Crash Me!");
@@ -138,6 +140,7 @@ public class ProfileActivity extends AppCompatActivity{
                                             .getSerializableExtra(ProfileEditActivity.ACTIVITY_KEY);
                 currentUser.setProfileDescription(returnProfile.getProfileDescription());
                 currentUser.setProfileImage(returnProfile.getProfileImage());
+                dataHandler.saveData(currentUser);
 
             }else if(resultCode == Activity.RESULT_CANCELED){
                 Log.d("ProfileActivity", "Cancelled edit complete.");
@@ -148,7 +151,7 @@ public class ProfileActivity extends AppCompatActivity{
             AlertDialog.Builder asdBuilder = new AlertDialog.Builder(this);
             asdBuilder.setTitle("Edit failed.");
             asdBuilder.setMessage("The edit failed to save and the edited information is lost." +
-                    "We are unsure as to why this happened.");
+                    " We are unsure as to why this happened.");
             asdBuilder.show();
         }
     }

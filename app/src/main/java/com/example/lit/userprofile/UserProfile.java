@@ -33,7 +33,7 @@ public class UserProfile implements Serializable, Saveable{
     private String profileDescription;
     private Bitmap profileImage;
     private FollowManager followManager;
-    private DataHandler<UserProfile> dataHandler;
+    //private DataHandler<UserProfile> dataHandler;
     private String jestID;
 
     /**
@@ -123,7 +123,7 @@ public class UserProfile implements Serializable, Saveable{
      */
     public void setProfileImage(Bitmap image){
         int maxSize = 181; //For simplicity we are scaling to a square
-        if(image.getByteCount() >= 65536){
+        if(image.getByteCount() >= 65536){ //ensures the space requirement
             Log.e("UserProfile",
                     "Bitmap size to large, resizing.");
             image = Bitmap.createScaledBitmap(image, maxSize, maxSize, true);
@@ -153,7 +153,7 @@ public class UserProfile implements Serializable, Saveable{
     public FollowManager getFollowManager(){
         return this.followManager;
     }
-
+/*
     public DataHandler<UserProfile> getDataHandler() {
         return dataHandler;
     }
@@ -161,7 +161,7 @@ public class UserProfile implements Serializable, Saveable{
     public void setDataHandler(DataHandler<UserProfile> dataHandler) {
         this.dataHandler = dataHandler;
     }
-
+*/
     /**
      * Returns the UserProfile's name if the only thing desired is the name
      *
