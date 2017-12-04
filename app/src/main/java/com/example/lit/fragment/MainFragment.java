@@ -34,6 +34,7 @@ import com.example.lit.activity.AddHabitActivity;
 import com.example.lit.activity.ViewHabitActivity;
 import com.example.lit.habit.Habit;
 import com.example.lit.habit.NormalHabit;
+import com.example.lit.habitevent.NormalHabitEvent;
 import com.example.lit.saving.DataHandler;
 import com.example.lit.saving.ElasticSearchHabitController;
 import com.example.lit.saving.NoDataException;
@@ -56,6 +57,7 @@ public class MainFragment extends Fragment {
     ArrayAdapter<NormalHabit> habitAdapter;
     String username;
     DataHandler<ArrayList<NormalHabit>> dataHandler;
+    DataHandler<ArrayList<NormalHabitEvent>> eventdataHandler;
 
     FragmentActivity listener;
 
@@ -95,6 +97,7 @@ public class MainFragment extends Fragment {
         habitAdapter.notifyDataSetChanged();
 
         dataHandler = new DataHandler<>(username,"habit",getActivity(), new TypeToken<ArrayList<NormalHabit>>(){}.getType());
+        eventdataHandler = new DataHandler<>(username,"habitevent",getActivity(),new TypeToken<ArrayList<NormalHabitEvent>>(){}.getType());
         try {
             habitArrayList = dataHandler.loadData();
         }catch (NoDataException e){
@@ -122,6 +125,7 @@ public class MainFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 Habit selectedHabit = habitArrayList.get(i);
                 bundle.putParcelable("habit", selectedHabit);
+                bundle.putSerializable("eventdataHandler",eventdataHandler);
                 bundle.putString("username",username);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,2);
@@ -168,6 +172,7 @@ public class MainFragment extends Fragment {
                 Toast.makeText(getActivity(), "Error: Can't load data! code:1", Toast.LENGTH_SHORT).show();
             }
         }
+
     }
 
 }

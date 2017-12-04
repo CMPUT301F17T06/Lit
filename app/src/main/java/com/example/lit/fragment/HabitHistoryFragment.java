@@ -57,7 +57,7 @@ public class HabitHistoryFragment extends Fragment {
     NormalHabitEvent event;
     Button mapButton;
     String username;
-    DataHandler<ArrayList<NormalHabitEvent>> dataHandler;
+    DataHandler<ArrayList<NormalHabitEvent>>  eventdatahandler;
 
     FragmentActivity listener;
 
@@ -74,28 +74,40 @@ public class HabitHistoryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        try {
+            eventdatahandler = (DataHandler) getArguments().getSerializable("eventdatahandler");
+        }catch (NullPointerException e){
+            eventdatahandler = null;
 
+        }
         View view = inflater.inflate(R.layout.fragment_habit_history, container, false);
         username = getActivity().getIntent().getExtras().getString("username");
         //DataHandler dataHandler = new DataHandler("username", "HabitList", getActivity());
-        //habitArrayList = dataHandler.loadData();
-        eventArrayList = new ArrayList<>();
-        ElasticSearchHabitController.GetCurrentEventsTask getCurrentEventsTask = new ElasticSearchHabitController.GetCurrentEventsTask();
+        try {
+            eventArrayList = eventdatahandler.loadData();
+        }catch (NoDataException e) {
+            eventArrayList = new ArrayList<>();
+            Toast.makeText(getActivity(), "No data!", Toast.LENGTH_SHORT).show();
+        }
+
+
+       /* ElasticSearchHabitController.GetCurrentEventsTask getCurrentEventsTask = new ElasticSearchHabitController.GetCurrentEventsTask();
         getCurrentEventsTask.execute(username);
-        //habitAdapter.notifyDataSetChanged();
+
 
         try {
             eventArrayList = getCurrentEventsTask.get();
         } catch (Exception e) {
             Log.i("Error", "Failed to get the habits from the asyc object");
-        }
+        }*/
 
         eventAdapter = new ArrayAdapter<NormalHabitEvent>(getActivity(), R.layout.list_item, eventArrayList);
         eventListView = (ListView) view.findViewById(R.id.eventhistory);
         eventListView.setAdapter(eventAdapter);
+        eventAdapter.notifyDataSetChanged();
 
         mapButton = (Button) view.findViewById(R.id.Mapbutton);
-        dataHandler = new DataHandler<>(username,"habitevent",getActivity(), new TypeToken<ArrayList<NormalHabit>>(){}.getType());
+
 
         eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -116,7 +128,6 @@ public class HabitHistoryFragment extends Fragment {
                 getActivity().setResult(RESULT_OK);
                 Intent intent = new Intent(view.getContext(), MapsActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("dataHandler",dataHandler);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -131,7 +142,7 @@ public class HabitHistoryFragment extends Fragment {
         eventAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item, eventArrayList);
         eventListView.setAdapter(eventAdapter);
         try {
-            eventArrayList = dataHandler.loadData();
+            eventArrayList = eventdatahandler.loadData();
         }catch (NoDataException e){
             Toast.makeText(getActivity(), "Error: Can't load data! code:3", Toast.LENGTH_SHORT).show();
         }
