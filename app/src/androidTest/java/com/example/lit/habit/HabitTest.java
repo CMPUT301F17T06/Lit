@@ -11,11 +11,14 @@
 package com.example.lit.habit;
 
 import android.test.ActivityInstrumentationTestCase2;
+import android.util.Log;
 
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.location.*;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -27,6 +30,11 @@ public class HabitTest extends  ActivityInstrumentationTestCase2{
 
     public HabitTest(){
         super(Habit.class);
+    }
+
+    public void testHabitDate()throws HabitFormatException{
+        Habit habit = new NormalHabit("test title");
+        Log.i("date",habit.getDate().toString());
     }
 
     public void testJestId()throws HabitFormatException{
@@ -101,15 +109,31 @@ public class HabitTest extends  ActivityInstrumentationTestCase2{
         Date date = new Date();
         Habit habit = new NormalHabit("test habit", date);
 
+        // Format the current time.
+        SimpleDateFormat format = new SimpleDateFormat ("dd-MM-yyyy");
+        String dateString = format.format(date);
+
+        // Parse the previous string back into a Date.
+        ParsePosition pos = new ParsePosition(0);
+        date = format.parse(dateString, pos);
+
         assertEquals(habit.getDate(),date);
     }
 
     public void testSetDate()throws HabitFormatException{
-        Date date = new Date(System.currentTimeMillis());
+        Date date = new Date();
         Habit habit = new NormalHabit("test habit", date);
 
-        date = new Date(System.currentTimeMillis() - 3600*1000);
+        date = new Date();
         habit.setDate(date);
+
+        // Format the current time.
+        SimpleDateFormat format = new SimpleDateFormat ("dd-MM-yyyy");
+        String dateString = format.format(date);
+
+        // Parse the previous string back into a Date.
+        ParsePosition pos = new ParsePosition(0);
+        date = format.parse(dateString, pos);
 
         assertEquals(habit.getDate(),date);
     }

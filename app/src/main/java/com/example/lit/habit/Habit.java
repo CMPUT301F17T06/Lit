@@ -21,6 +21,8 @@ import com.example.lit.exception.HabitFormatException;
 import io.searchbox.annotations.JestId;
 
 import java.io.Serializable;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,6 +35,7 @@ import java.util.List;
 public abstract class Habit implements Habitable , Parcelable, Saveable {
 
     private String title;
+    private SimpleDateFormat format;
     private Date date;
     public abstract String habitType();
     private String user;
@@ -116,7 +119,13 @@ public abstract class Habit implements Habitable , Parcelable, Saveable {
     }
 
     public void setDate(Date date) {
-        this.date = date;
+        // Format the current time.
+        SimpleDateFormat format = new SimpleDateFormat ("dd-MM-yyyy");
+        String dateString = format.format(date);
+
+        // Parse the previous string back into a Date.
+        ParsePosition pos = new ParsePosition(0);
+        this.date = format.parse(dateString, pos);
     }
 
     public String getReason() {
