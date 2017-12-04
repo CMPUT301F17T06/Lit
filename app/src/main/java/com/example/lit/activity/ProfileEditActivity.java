@@ -12,7 +12,10 @@ package com.example.lit.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
@@ -24,6 +27,8 @@ import android.widget.TextView;
 
 import com.example.lit.R;
 import com.example.lit.userprofile.UserProfile;
+
+import java.io.IOException;
 
 /**
  * Created by Riley Dixon on 02/12/2017.
@@ -114,6 +119,16 @@ public class ProfileEditActivity extends AppCompatActivity {
         if(requestCode == GET_FROM_GALLERY){
             //User is coming back from selecting an image
             if(resultCode == Activity.RESULT_OK){
+                //Next lines sourced from https://stackoverflow.com/questions/9107900/how-to-upload-image-from-gallery-in-android
+                //By user Dhruv Gairola. Accessed Dec. 3rd.
+                Uri selectedImagePath = selectedImage.getData();
+                Bitmap changeImage;
+                try {
+                    changeImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImagePath);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e("ProfileEditActivity", "Image failed to load.");
+                }
             }else if(resultCode == Activity.RESULT_CANCELED){
 
             }else{
