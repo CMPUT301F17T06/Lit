@@ -32,17 +32,11 @@ public class HabitTest extends  ActivityInstrumentationTestCase2{
         super(Habit.class);
     }
 
-    public void testHabitDate()throws HabitFormatException{
-        Habit habit = new NormalHabit("test title");
-        Log.i("date",habit.getDate().toString());
-    }
-
     public void testJestId()throws HabitFormatException{
         Habit habit = new NormalHabit("test title");
         String id = "test ID";
-        //habit.setId(id);
-
-        //assertEquals(habit.getId(),id);
+        habit.setID(id);
+        assertEquals(habit.getID(),id);
     }
 
     public void testGetTitle()throws HabitFormatException{
@@ -138,6 +132,9 @@ public class HabitTest extends  ActivityInstrumentationTestCase2{
         assertEquals(habit.getDate(),date);
     }
 
+    public void testSetCalenders()throws HabitFormatException{
+        Habit habit = new NormalHabit("test habit");
 
+    }
 
 }
