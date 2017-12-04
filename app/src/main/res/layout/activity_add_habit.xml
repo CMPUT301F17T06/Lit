@@ -164,7 +164,8 @@
         android:layout_marginTop="4dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_camera" />
 
     <Button
         android:id="@+id/takeImageButton"

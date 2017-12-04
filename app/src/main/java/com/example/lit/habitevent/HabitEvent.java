@@ -10,9 +10,11 @@
 
 package com.example.lit.habitevent;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.lit.exception.BitmapTooLargeException;
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.location.HabitLocation;
 import com.example.lit.saving.Saveable;
@@ -39,8 +41,10 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Savea
     private HabitLocation habitLocation;
     private Date date = new Date();
     private String eventComment;
+    private String user;
     private int commentLength = 20;
     private String jestID;
+    private Bitmap image;
 
 
     public HabitEvent(String habitEventName) {
@@ -117,6 +121,14 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Savea
                 '}';
     }
 
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
     public void setID(String ID){
         this.jestID = ID;
     }
@@ -150,4 +162,17 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Savea
         this.jestID = in.readString();
     }
 
+
+    public Bitmap getImage() {
+        return image;
+    }
+
+    public void setImage(Bitmap image) throws BitmapTooLargeException {
+        if (image.getByteCount() > 65536){
+            throw new BitmapTooLargeException();
+        }
+        else {
+            this.image = image;
+        }
+    }
 }

@@ -10,18 +10,10 @@
 
 package com.example.lit.activity;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationManager;
-import android.net.Uri;
 import android.os.StrictMode;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,7 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -41,7 +32,6 @@ import com.example.lit.exception.BitmapTooLargeException;
 import com.example.lit.habit.Habit;
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.habit.NormalHabit;
-import com.example.lit.location.HabitLocation;
 import com.example.lit.saving.DataHandler;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -69,6 +59,7 @@ public class AddHabitActivity extends AppCompatActivity  {
 
     private static final String CLASS_KEY = "com.example.lit.activity.AddHabitActivity";
     protected static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 0;
+    final int maxSize = 181;
 
     private EditText habitName;
     private EditText habitComment;
@@ -80,7 +71,6 @@ public class AddHabitActivity extends AppCompatActivity  {
     private Bitmap image;
     private ImageView habitImage;
     Button editImage;
-    //TODO: Implement image feature
 
     Date habitStartDate;
     String habitNameString;
@@ -343,9 +333,9 @@ public class AddHabitActivity extends AppCompatActivity  {
     }
 
     public Bitmap compressPicture(Bitmap bitmap){
-        final int maxSize = 665536 / (1024*10);
 
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap,maxSize,maxSize,true);
+        resizedBitmap.reconfigure(maxSize,maxSize, Bitmap.Config.RGB_565);
 
         return resizedBitmap;
     }

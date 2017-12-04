@@ -33,6 +33,7 @@ import com.example.lit.habit.Habit;
 import com.example.lit.habit.NormalHabit;
 import com.example.lit.saving.DataHandler;
 import com.example.lit.saving.ElasticSearchHabitController;
+import com.example.lit.saving.NoDataException;
 
 import java.util.ArrayList;
 
@@ -69,7 +70,6 @@ public class ActiveHabitsFragment extends Fragment {
         //DataHandler dataHandler = new DataHandler("username", "HabitList", getActivity());
         //habitArrayList = dataHandler.loadData();
         habitArrayList = new ArrayList<>();
-        Log.i("username",username);
         ElasticSearchHabitController.GetCurrentHabitsTask getCurrentHabitsTask = new ElasticSearchHabitController.GetCurrentHabitsTask();
         getCurrentHabitsTask.execute(username);
         //habitAdapter.notifyDataSetChanged();
@@ -104,6 +104,15 @@ public class ActiveHabitsFragment extends Fragment {
             e.printStackTrace();
         }*/
 
+        DataHandler<ArrayList<NormalHabit>> dataHandler = new DataHandler(username,"habit",getActivity());
+
+        try{
+            habitArrayList = dataHandler.loadData();
+        }catch (NoDataException e){
+            habitArrayList = new ArrayList<NormalHabit>();
+            habitAdapter.notifyDataSetChanged();
+        }
+
         addHabitButton = (ImageButton) view.findViewById(R.id.add_habit_button);
 
         habitsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -114,6 +123,7 @@ public class ActiveHabitsFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 Habit selectedHabit = habitArrayList.get(i);
                 bundle.putSerializable("habit", selectedHabit);
+                bundle.putSerializable("username", username);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,2);
             }
