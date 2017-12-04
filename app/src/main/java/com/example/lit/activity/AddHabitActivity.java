@@ -33,6 +33,8 @@ import com.example.lit.habit.Habit;
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.habit.NormalHabit;
 import com.example.lit.saving.DataHandler;
+import com.example.lit.saving.NoDataException;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,7 +61,7 @@ public class AddHabitActivity extends AppCompatActivity  {
 
     private static final String CLASS_KEY = "com.example.lit.activity.AddHabitActivity";
     protected static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 0;
-    final int maxSize = 181;
+    final int maxSize = 64;
 
     private EditText habitName;
     private EditText habitComment;
@@ -70,8 +72,7 @@ public class AddHabitActivity extends AppCompatActivity  {
     Button cancelHabit;
     private Bitmap image;
     private ImageView habitImage;
-    Button editImage;
-
+    Button takeImage;
     Date habitStartDate;
     String habitNameString;
     String commentString;
@@ -80,9 +81,7 @@ public class AddHabitActivity extends AppCompatActivity  {
     Integer minute;
     List<Calendar> calendarList;
     DataHandler dataHandler;
-
-
-    String username;
+    ArrayList<NormalHabit> habitArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,14 +93,24 @@ public class AddHabitActivity extends AppCompatActivity  {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
 
-        try{
-            username = getIntent().getExtras().getString("username");
-            assert username != null;
-        }catch (Exception e){
-            e.printStackTrace();
+        // Retrieve data handler
+        try {
+            Bundle bundle = getIntent().getExtras();
+            dataHandler = (DataHandler) bundle.getSerializable("dataHandler");
+        }catch (NullPointerException e){
+            Toast.makeText(AddHabitActivity.this,"Error: Can't load data! code:3",Toast.LENGTH_LONG).show();
         }
-
-        dataHandler = new DataHandler(username,"habit",this);
+        try {
+            habitArrayList = (ArrayList<NormalHabit>) dataHandler.loadData();
+        }catch (NoDataException e){
+            //Toast.makeText(AddHabitActivity.this,"Error: Can't load habit!",Toast.LENGTH_LONG).show();
+            habitArrayList = new ArrayList<>();
+        }catch (Exception e1){
+            Toast.makeText(AddHabitActivity.this,"Error: Unexpected Exception!",Toast.LENGTH_LONG).show();
+            e1.printStackTrace();
+            habitArrayList = new ArrayList<>();
+            //finish();
+        }
 
         // Activity components
         habitName = (EditText) findViewById(R.id.Habit_EditText);
@@ -113,9 +122,9 @@ public class AddHabitActivity extends AppCompatActivity  {
         minute_spinner = (Spinner) findViewById(R.id.minute_spinner);
         weekday_spinner = (MultiSelectionSpinner) findViewById(R.id.weekday_spinner);
         habitImage = (ImageView) findViewById(R.id.HabitImage);
-        editImage = (Button)findViewById(R.id.takeImageButton);
+        takeImage = (Button)findViewById(R.id.takeImageButton);
 
-        editImage.setOnClickListener(new View.OnClickListener() {
+        takeImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 takePicture();
@@ -180,13 +189,12 @@ public class AddHabitActivity extends AppCompatActivity  {
 
         }
 
-        //TODO: should build location implicitly when building new habit.
-        //habitLocation = buildLocation(locationCheck);
 
-
-        try {Habit newHabit = new NormalHabit(habitNameString, habitStartDate,
+        try {NormalHabit newHabit = new NormalHabit(habitNameString, habitStartDate,
                 commentString, calendarList,image);
-            dataHandler.saveData(newHabit);
+            habitArrayList.add(newHabit);
+            dataHandler.saveData(habitArrayList);
+            Log.i("AddHabitActivity", "Save button pressed. Habit saved successfully.");
             finish();
         } catch (HabitFormatException e){
             Toast.makeText(AddHabitActivity.this,"Error: Illegal Habit information!",Toast.LENGTH_LONG).show();
@@ -299,9 +307,6 @@ public class AddHabitActivity extends AppCompatActivity  {
         return dayOfWeek;
     }
 
-    //TODO: should be able to set habit image
-    private void setHabitImage(ImageView habitImage){
-    }
 
     /**
      * Returns an array list of numbers in a string format. This list is from low to high
@@ -335,7 +340,7 @@ public class AddHabitActivity extends AppCompatActivity  {
     public Bitmap compressPicture(Bitmap bitmap){
 
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap,maxSize,maxSize,true);
-        resizedBitmap.reconfigure(maxSize,maxSize, Bitmap.Config.RGB_565);
+        //resizedBitmap.reconfigure(maxSize,maxSize, Bitmap.Config.RGB_565);
 
         return resizedBitmap;
     }

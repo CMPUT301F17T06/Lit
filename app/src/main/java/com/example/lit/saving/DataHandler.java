@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,7 +51,7 @@ import java.util.concurrent.ExecutionException;
  * @param <T> The type of data we are trying to save.
  */
 //public class DataHandler<T extends Saveable> {
-public class DataHandler<T>{
+public class DataHandler<T> implements Serializable{
     private long lastOfflineSave;
     private long lastOnlineSave;
     private String username;
@@ -126,12 +127,14 @@ public class DataHandler<T>{
             this.lastOfflineSave = 0;
             loadedElementOffline = null;
         }
+        /*
         try {
             loadedElementOnline = loadFromOnline();
         } catch (NotOnlineException e) {
             this.lastOnlineSave = 0;
             loadedElementOnline = null;
         }
+        */
 
         if (this.lastOfflineSave == 0 && this.lastOnlineSave == 0) {
             //If no data was loaded, was it lost or no data existed in the first place.
@@ -144,7 +147,7 @@ public class DataHandler<T>{
             //if online fails or wanting to test offline features.
             return loadedElementOffline;
         }else{
-            return loadedElementOnline;
+            return loadedElementOffline;//loadedElementOnline;
         }
     }
 

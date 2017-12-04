@@ -50,9 +50,10 @@ public class ActiveHabitsFragment extends Fragment {
     ArrayList<NormalHabit> habitArrayList;
     ArrayAdapter<NormalHabit> habitAdapter;
     String username;
-
     FragmentActivity listener;
+    DataHandler<ArrayList<NormalHabit>> dataHandler;
 
+    /*
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -62,23 +63,21 @@ public class ActiveHabitsFragment extends Fragment {
             throw new ClassCastException(context.toString());
         }
     }
+    */
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         username = getActivity().getIntent().getExtras().getString("username");
-        //DataHandler dataHandler = new DataHandler("username", "HabitList", getActivity());
-        //habitArrayList = dataHandler.loadData();
         habitArrayList = new ArrayList<>();
-        ElasticSearchHabitController.GetCurrentHabitsTask getCurrentHabitsTask = new ElasticSearchHabitController.GetCurrentHabitsTask();
+        /*ElasticSearchHabitController.GetCurrentHabitsTask getCurrentHabitsTask = new ElasticSearchHabitController.GetCurrentHabitsTask();
         getCurrentHabitsTask.execute(username);
-        //habitAdapter.notifyDataSetChanged();
 
         try {
             habitArrayList = getCurrentHabitsTask.get();
         } catch (Exception e) {
             Log.i("Error", "Failed to get the habits from the asyc object");
-        }
+        }*/
 
         habitAdapter = new ArrayAdapter<NormalHabit>(getActivity(), R.layout.list_item, habitArrayList);
     }
@@ -94,6 +93,14 @@ public class ActiveHabitsFragment extends Fragment {
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         habitsListView = (ListView) view.findViewById(R.id.habit_list_view);
         habitsListView.setAdapter(habitAdapter);
+        habitAdapter.notifyDataSetChanged();
+
+        dataHandler = new DataHandler<>(username,"habit",getActivity());
+        try {
+            habitArrayList = dataHandler.loadData();
+        }catch (NoDataException e){
+            habitArrayList = new ArrayList<>();
+        }
 
         // A dummy habit for testing
         /*try {
@@ -104,15 +111,6 @@ public class ActiveHabitsFragment extends Fragment {
             e.printStackTrace();
         }*/
 
-        DataHandler<ArrayList<NormalHabit>> dataHandler = new DataHandler(username,"habit",getActivity());
-
-        try{
-            habitArrayList = dataHandler.loadData();
-        }catch (NoDataException e){
-            habitArrayList = new ArrayList<NormalHabit>();
-            habitAdapter.notifyDataSetChanged();
-        }
-
         addHabitButton = (ImageButton) view.findViewById(R.id.add_habit_button);
 
         habitsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -121,9 +119,9 @@ public class ActiveHabitsFragment extends Fragment {
 
                 Intent intent = new Intent(getActivity(),ViewHabitActivity.class);
                 Bundle bundle = new Bundle();
-                Habit selectedHabit = habitArrayList.get(i);
-                bundle.putSerializable("habit", selectedHabit);
-                bundle.putSerializable("username", username);
+                bundle.putSerializable("habitList", habitArrayList);
+                bundle.putInt("index",i);
+                bundle.putSerializable("dataHandler",dataHandler);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,2);
             }
@@ -136,11 +134,25 @@ public class ActiveHabitsFragment extends Fragment {
             public void onClick(View v) {
                 getActivity().setResult(RESULT_OK);
                 Intent intent = new Intent(v.getContext(), AddHabitActivity.class);
-                //intent.putExtra("username",username);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("dataHandler",dataHandler);
+                intent.putExtras(bundle);
                 startActivityForResult(intent,1);
             }});
 
         // Inflate the layout for this fragment
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent){
+        if (requestCode == 1){
+            try{
+                habitArrayList = dataHandler.loadData();
+                habitAdapter.notifyDataSetChanged();
+            }catch (NoDataException e){
+                Toast.makeText(getActivity(), "Error: Can't load data! code:4", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
 }
