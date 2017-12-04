@@ -71,12 +71,11 @@ public class UserProfile implements Serializable, Saveable{
      */
 
     public UserProfile(String name, String profileDescription,
-                       Bitmap profileImage, FollowManager followManager){
-        this.name = name;
-        this.profileDescription = profileDescription;
-        this.profileImage = profileImage;
-        this.followManager = followManager;
-
+                       Bitmap profileImage, FollowManager followManager) throws BitmapTooLargeException{
+        setName(name);
+        setProfileDescription(profileDescription);
+        setProfileImage(profileImage);
+        setFollowManager(followManager);
     }
 
     /**
@@ -122,15 +121,16 @@ public class UserProfile implements Serializable, Saveable{
      *
      * @see Bitmap
      */
-    public void setProfileImage(Bitmap image) throws BitmapTooLargeException {
-
+    public void setProfileImage(Bitmap image){
+        int maxSize = 181; //For simplicity we are scaling to a square
         if(image.getByteCount() >= 65536){
             Log.e("UserProfile",
-                    "Bitmap size to large to set. Rejecting the bitmap image.");
-            throw new BitmapTooLargeException();
+                    "Bitmap size to large, resizing.");
+            image = Bitmap.createScaledBitmap(image, maxSize, maxSize, true);
+            image.reconfigure(maxSize, maxSize, Bitmap.Config.RGB_565);
         }
 
-        this.profileImage = image; //May not work, needs to be tested
+        this.profileImage = image;
     }
 
     /**
@@ -154,23 +154,12 @@ public class UserProfile implements Serializable, Saveable{
         return this.followManager;
     }
 
-    /**
-     * Sets a list of the other users that the user is currently following.
-     *
-     * @param followingUsers An ArrayList that contains the users names
-     */
-    public void setFollowingUsers(
-            ArrayList<String> followingUsers){
-        this.followManager.setFollowingUsers(followingUsers);
+    public DataHandler<UserProfile> getDataHandler() {
+        return dataHandler;
     }
 
-    /**
-     * Returns a list of the other users that the user is currently following.
-     *
-     * @return An ArrayList that contains the users names
-     */
-    public ArrayList<String> getFollowingUsers(){
-        return followManager.getFollowingUsers();
+    public void setDataHandler(DataHandler<UserProfile> dataHandler) {
+        this.dataHandler = dataHandler;
     }
 
     /**
@@ -236,7 +225,6 @@ public class UserProfile implements Serializable, Saveable{
      * @return True if the user has been revoked permissions successfully. False otherwise.
      */
     public boolean removeFollowingUser(String name){
-
 
         return true;
     }
