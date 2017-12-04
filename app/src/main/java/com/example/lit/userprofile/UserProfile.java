@@ -125,12 +125,12 @@ public class UserProfile implements Serializable, Saveable{
         int maxSize = 181; //For simplicity we are scaling to a square
         if(image.getByteCount() >= 65536){
             Log.e("UserProfile",
-                    "Bitmap size to large to set. Rejecting the bitmap image.");
+                    "Bitmap size to large, resizing.");
             image = Bitmap.createScaledBitmap(image, maxSize, maxSize, true);
             image.reconfigure(maxSize, maxSize, Bitmap.Config.RGB_565);
         }
 
-        this.profileImage = image; //May not work, needs to be tested
+        this.profileImage = image;
     }
 
     /**

@@ -137,13 +137,8 @@ public class ProfileActivity extends AppCompatActivity{
                 UserProfile returnProfile = (UserProfile)modifiedUserProfile
                                             .getSerializableExtra(ProfileEditActivity.ACTIVITY_KEY);
                 currentUser.setProfileDescription(returnProfile.getProfileDescription());
-                try {
-                    currentUser.setProfileImage(returnProfile.getProfileImage());
-                }catch (BitmapTooLargeException e){
-                    //We should be fine as this has already been checked for in the editActivity.
-                    Log.wtf("ProfileActivity", "The image somehow grew in size.");
-                    throw new RuntimeException("Crash Me!");
-                }
+                currentUser.setProfileImage(returnProfile.getProfileImage());
+
             }else if(resultCode == Activity.RESULT_CANCELED){
                 Log.d("ProfileActivity", "Cancelled edit complete.");
             }
