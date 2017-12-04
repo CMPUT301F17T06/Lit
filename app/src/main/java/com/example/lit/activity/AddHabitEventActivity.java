@@ -12,24 +12,20 @@ package com.example.lit.activity;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -42,26 +38,18 @@ import com.example.lit.exception.HabitFormatException;
 import com.example.lit.exception.LoadHabitException;
 import com.example.lit.fragment.HabitHistoryFragment;
 import com.example.lit.habit.Habit;
-import com.example.lit.habitevent.HabitEvent;
-import com.example.lit.habitevent.HabitHistory;
 import com.example.lit.habitevent.NormalHabitEvent;
 import com.example.lit.location.HabitLocation;
 import com.example.lit.location.PlaceAutocompleteAdapter;
 import com.example.lit.saving.DataHandler;
-import com.example.lit.saving.ElasticSearchHabitController;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import static com.example.lit.activity.AddHabitActivity.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE;
@@ -107,7 +95,7 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
     private GoogleApiClient mGoogleApiClient;
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
             new LatLng(-40, -168), new LatLng(71, 136));
-    DataHandler eventdataHandler;
+    DataHandler eventDataHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,8 +106,8 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
         try{
             Bundle bundle = getIntent().getExtras();
             currentHabit = (Habit)bundle.getParcelable("habit");
-            eventdataHandler = (DataHandler)bundle.getSerializable("eventdatahandler");
-            username = (String)bundle.getString("username");
+            eventDataHandler = (DataHandler)bundle.getSerializable("eventDataHandler");
+            //username = (String)bundle.getString("username");
             if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
         }catch (LoadHabitException e){
             //TODO: handle LoadHabitException
@@ -197,11 +185,12 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
         try {
             NormalHabitEvent newHabitEvent = new NormalHabitEvent(habitNameString, commentString,eventLocation);
             eventArrayList.add(newHabitEvent);
-            eventdataHandler.saveData(eventArrayList);
+            eventDataHandler.saveData(eventArrayList);
             //newHabitEvent.setUser(username);
            // ElasticSearchHabitController.AddHabitEventTask addHabitEventTask = new ElasticSearchHabitController.AddHabitEventTask();
             //addHabitEventTask.execute(newHabitEvent);
-            bundle.putSerializable("eventDataHandler", eventdataHandler);
+            bundle.putSerializable("eventDataHandler", eventDataHandler);
+            bundle.putString("username",username);
             //set Fragmentclass Arguments
             HabitHistoryFragment fragment=new HabitHistoryFragment();
             fragment.setArguments(bundle);
@@ -211,8 +200,6 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
         }
     }
 
-    //TODO: should be able to set habit image
-    private void setHabitImage(ImageView habitImage){}
     /**
      * This function will return a Location object containing Latitude and Longitude attribute.
      *

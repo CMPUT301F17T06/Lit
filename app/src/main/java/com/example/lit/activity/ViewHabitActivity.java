@@ -78,6 +78,7 @@ public class ViewHabitActivity extends AppCompatActivity {
     ImageView habitImageView;
     Bitmap habitImage;
     DataHandler eventDataHandler;
+    DataHandler dataHandler;
     Integer index;
     ArrayList<NormalHabit> habitArrayList;
 
@@ -90,10 +91,11 @@ public class ViewHabitActivity extends AppCompatActivity {
         try{
             Bundle bundle = getIntent().getExtras();
             currentHabit = (NormalHabit)bundle.getParcelable("habit");
-            eventDataHandler = (DataHandler)bundle.getSerializable("dataHandler");
+            dataHandler = (DataHandler) bundle.getSerializable("dataHandler");
+            eventDataHandler = (DataHandler)bundle.getSerializable("eventDataHandler");
             index = bundle.getInt("index");
 
-            habitArrayList = (ArrayList<NormalHabit>) eventDataHandler.loadData();
+            habitArrayList = (ArrayList<NormalHabit>) dataHandler.loadData();
 
             //username = (String)bundle.getString("username");
 
@@ -150,7 +152,7 @@ public class ViewHabitActivity extends AppCompatActivity {
                 Intent intent = new Intent(v.getContext(), AddHabitEventActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("habit", currentHabit);
-                bundle.putSerializable("dateHandler",eventDataHandler);
+                bundle.putSerializable("eventDataHandler",eventDataHandler);
                 //bundle.putString("username",username);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,1);
@@ -174,7 +176,7 @@ public class ViewHabitActivity extends AppCompatActivity {
         Intent intent = new Intent(ViewHabitActivity.this,EditHabitActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable("habit", habit);
-        bundle.putSerializable("eventDataHandler",eventDataHandler);
+        bundle.putSerializable("DataHandler",dataHandler);
         intent.putExtras(bundle);
         startActivityForResult(intent,2);
     }
@@ -182,11 +184,16 @@ public class ViewHabitActivity extends AppCompatActivity {
     //TODO: delete current habit and return to previous activity
     public void deleteHabit(ArrayList<NormalHabit> habitArrayList, NormalHabit currentHabit){
         habitArrayList.remove(currentHabit);
-        eventDataHandler.saveData(habitArrayList);
+        dataHandler.saveData(habitArrayList);
         Log.i("ViewHabitActivity", "Delete button pressed.");
         finish();
     }
 
+    /**
+     *
+     * @param calendarList
+     * @return
+     */
     public String getWeekdayCalenderString(List<Calendar> calendarList){
 
         final String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};

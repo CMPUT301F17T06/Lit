@@ -119,6 +119,7 @@ public class MainFragment extends Fragment {
                 Habit selectedHabit = habitArrayList.get(i);
                 bundle.putParcelable("habit", selectedHabit);
                 bundle.putSerializable("dataHandler",dataHandler);
+                bundle.putSerializable("eventDataHandler",eventDataHandler);
                 bundle.putInt("index",i);
                 //bundle.putString("username",username);
                 intent.putExtras(bundle);

@@ -78,10 +78,10 @@ public class HabitHistoryFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_habit_history, container, false);
         eventArrayList = new ArrayList<>();
         try {
-            eventdatahandler = (DataHandler) getArguments().getSerializable("eventdatahandler");
+            eventdatahandler = (DataHandler) getArguments().getSerializable("eventDataHandler");
 
-        username = getActivity().getIntent().getExtras().getString("username");
-        //DataHandler dataHandler = new DataHandler("username", "HabitList", getActivity());
+            username = getActivity().getIntent().getExtras().getString("username");
+            //DataHandler dataHandler = new DataHandler("username", "HabitList", getActivity());
 
             eventArrayList = eventdatahandler.loadData();
         }catch (NoDataException e) {
@@ -143,6 +143,7 @@ public class HabitHistoryFragment extends Fragment {
         super.onStart();
         eventAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item, eventArrayList);
         eventListView.setAdapter(eventAdapter);
+        eventAdapter.notifyDataSetChanged();
         try {
             eventArrayList = eventdatahandler.loadData();
         }catch (NoDataException e){
