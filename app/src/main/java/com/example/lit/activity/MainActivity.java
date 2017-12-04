@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch(Exception e){
                 }
                 Intent intent = new Intent(v.getContext(), HomePageActivityNew.class);
-                intent.putExtra("USERNAME",username.getText().toString());
+                intent.putExtra("USERNAME",username.getText().toString().toLowerCase());
                 startActivity(intent);
             }
         });

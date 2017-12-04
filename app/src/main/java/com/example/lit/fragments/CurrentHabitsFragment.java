@@ -67,6 +67,7 @@ public class CurrentHabitsFragment extends Fragment {
 
         ElasticSearchHabitController.GetCurrentHabitsTask getCurrentHabitsTask = new ElasticSearchHabitController.GetCurrentHabitsTask();
         getCurrentHabitsTask.execute(username);
+        //habitAdapter.notifyDataSetChanged();
 
         try{
             habitArrayList = getCurrentHabitsTask.get();
