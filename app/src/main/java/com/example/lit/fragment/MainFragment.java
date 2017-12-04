@@ -52,6 +52,7 @@ public class MainFragment extends Fragment {
     ArrayList<NormalHabit> habitArrayList;
     ArrayAdapter<NormalHabit> habitAdapter;
     String username;
+    DataHandler<NormalHabit> dataHandler;
 
     FragmentActivity listener;
 
@@ -73,15 +74,15 @@ public class MainFragment extends Fragment {
         //DataHandler dataHandler = new DataHandler("username", "HabitList", getActivity());
         //habitArrayList = dataHandler.loadData();
         habitArrayList = new ArrayList<>();
-        ElasticSearchHabitController.GetTodayHabitsTask getTodayHabitsTask = new ElasticSearchHabitController.GetTodayHabitsTask();
+        /*ElasticSearchHabitController.GetTodayHabitsTask getTodayHabitsTask = new ElasticSearchHabitController.GetTodayHabitsTask();
         getTodayHabitsTask.execute(username,date);
-        //habitAdapter.notifyDataSetChanged();
+
 
         try {
             habitArrayList = getTodayHabitsTask.get();
         } catch (Exception e) {
             Log.i("Error", "Failed to get the habits from the asyc object");
-        }
+        }*/
 
         habitAdapter = new ArrayAdapter<NormalHabit>(getActivity(), R.layout.list_item, habitArrayList);
     }
@@ -97,16 +98,18 @@ public class MainFragment extends Fragment {
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         habitsListView = (ListView) view.findViewById(R.id.habit_list_view);
         habitsListView.setAdapter(habitAdapter);
+        dataHandler = new DataHandler<>(username,"habit",getActivity());
+
 
         // A dummy habit for testing
-        try {
+        /*try {
             NormalHabit testHabit = new NormalHabit("test habit title");
             habitArrayList.add(testHabit);
             habitAdapter.notifyDataSetChanged();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+*/
         addHabitButton = (ImageButton) view.findViewById(R.id.add_habit_button);
 
         habitsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -130,7 +133,9 @@ public class MainFragment extends Fragment {
             public void onClick(View v) {
                 getActivity().setResult(RESULT_OK);
                 Intent intent = new Intent(v.getContext(), AddHabitActivity.class);
-                intent.putExtra("username",username);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("dataHandler",dataHandler);
+                intent.putExtras(bundle);
                 startActivityForResult(intent,1);
             }});
 
