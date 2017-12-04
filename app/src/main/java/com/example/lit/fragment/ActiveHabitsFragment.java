@@ -33,6 +33,7 @@ import com.example.lit.habit.Habit;
 import com.example.lit.habit.NormalHabit;
 import com.example.lit.saving.DataHandler;
 import com.example.lit.saving.ElasticSearchHabitController;
+import com.example.lit.saving.NoDataException;
 
 import java.util.ArrayList;
 
@@ -104,6 +105,14 @@ public class ActiveHabitsFragment extends Fragment {
             e.printStackTrace();
         }*/
 
+        /*DataHandler<ArrayList<NormalHabit>> dataHandler = new DataHandler(username,"habit",getActivity());
+
+        try{
+            habitArrayList = dataHandler.loadData();
+        }catch (NoDataException e){
+            habitArrayList = new ArrayList<NormalHabit>();
+        }
+*/
         addHabitButton = (ImageButton) view.findViewById(R.id.add_habit_button);
 
         habitsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -96,13 +96,13 @@ public class MainFragment extends Fragment {
         habitsListView.setAdapter(habitAdapter);
 
         // A dummy habit for testing
-        /*try {
-            Habit testHabit = new NormalHabit("test habit title");
+        try {
+            NormalHabit testHabit = new NormalHabit("test habit title");
             habitArrayList.add(testHabit);
             habitAdapter.notifyDataSetChanged();
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
 
         addHabitButton = (ImageButton) view.findViewById(R.id.add_habit_button);
 
@@ -114,6 +114,7 @@ public class MainFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 Habit selectedHabit = habitArrayList.get(i);
                 bundle.putSerializable("habit", selectedHabit);
+                bundle.putString("username",username);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,2);
             }
@@ -126,7 +127,7 @@ public class MainFragment extends Fragment {
             public void onClick(View v) {
                 getActivity().setResult(RESULT_OK);
                 Intent intent = new Intent(v.getContext(), AddHabitActivity.class);
-                //intent.putExtra("username",username);
+                intent.putExtra("username",username);
                 startActivityForResult(intent,1);
             }});
 

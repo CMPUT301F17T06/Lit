@@ -15,6 +15,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -59,6 +60,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static com.example.lit.activity.AddHabitActivity.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE;
+
 
 /*
  * AddHabitEventActivity
@@ -75,7 +78,7 @@ import java.util.List;
  */
 public class AddHabitEventActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     private static final String CLASS_KEY = "com.example.lit.activity.AddHabitEventActivity";
-
+    final int maxSize = 665536 / (1024*10);
 
     Habit currentHabit;
     String habitTitleString;
@@ -87,15 +90,13 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
     private ImageView habitImage;
     private Button editImage;
     private AutoCompleteTextView SearchText;
-    //TODO: Implement image feature
+    Bitmap image;
+    String username;
+
 
     String habitNameString;
     String commentString;
     LocationManager manager;
-    private HabitLocation habitLocation;
-    private String provider;
-    double latitude;
-    double longitude;
     private HabitLocation eventLocation;
     private LocationListener locationListener;
     LatLng returnLocation;
@@ -114,6 +115,7 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
         try{
             Bundle bundle = getIntent().getExtras();
             currentHabit = (Habit)bundle.getSerializable("habit");
+            username = (String)bundle.getString("username");
             if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
         }catch (LoadHabitException e){
             //TODO: handle LoadHabitException
@@ -131,6 +133,15 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
         locationCheck = (CheckBox) findViewById(R.id.Locationcheck);
         habitEventName.setText(habitTitleString);
         SearchText = (AutoCompleteTextView) findViewById(R.id.searchlocation);
+        habitImage = (ImageView) findViewById(R.id.HabitEventImage);
+        editImage = (Button)findViewById(R.id.eventImageButton);
+
+        editImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                takePicture();
+            }
+        });
 
 
         saveHabitEvent.setOnClickListener(new View.OnClickListener() {
@@ -273,6 +284,42 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
     }
 
         return returnLocation;
+    }
+
+
+    /**
+     * Function used to take picture by camera.
+     * taken: https://stackoverflow.com/questions/5991319/capture-image-from-camera-and-display-in-activity
+     */
+    public void takePicture(){
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+    }
+
+    public Bitmap compressPicture(Bitmap bitmap){
+
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap,maxSize,maxSize,true);
+
+        return resizedBitmap;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+                try {
+                    image = (Bitmap) data.getExtras().get("data");
+                    image = compressPicture(image);
+                    habitImage.setImageBitmap(image);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+        else if (resultCode == RESULT_CANCELED) {
+            Toast.makeText(this, "Picture was not taken", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

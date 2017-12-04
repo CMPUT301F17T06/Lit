@@ -12,6 +12,7 @@ package com.example.lit.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -50,24 +51,20 @@ public class ViewHabitActivity extends AppCompatActivity {
 
     private static final String CLASS_KEY = "com.example.lit.activity.ViewHabitActivity";
 
-
     Habit currentHabit;
     String habitTitleString;
     String habitCommentString;
     String habitDateStartedString;
-    String habitDateCompletedString;
     TextView habitTitle;
     TextView habitComment;
     TextView habitDateStarted;
     Button editHabit;
     Button deleteHabit;
     Button mainMenu;
-
-
-    // TODO: Habit image feature
-    ImageView habitImage;
-    Button habitDoneToday;          //Not sure what this should be, Button is a placeholder.
     Button addHabitEventButton;
+    String username;
+    ImageView habitImageView;
+    Bitmap habitImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,11 +75,7 @@ public class ViewHabitActivity extends AppCompatActivity {
         try{
             Bundle bundle = getIntent().getExtras();
             currentHabit = (Habit)bundle.getSerializable("habit");
-            //double lat = bundle.getDouble("lat");
-            //double lng = bundle.getDouble("lng");
-            //LatLng latLng = new LatLng(lat, lng);
-            //HabitLocation habitLocation= new HabitLocation(latLng);
-            //currentHabit.setLocation(habitLocation);
+            username = (String)bundle.getString("username");
 
             if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
         }catch (LoadHabitException e){
@@ -92,14 +85,18 @@ public class ViewHabitActivity extends AppCompatActivity {
         habitTitleString = currentHabit.getTitle();
         habitCommentString = currentHabit.getReason();
         habitDateStartedString = currentHabit.getDate().toString();
+        habitImage = currentHabit.getImage();
 
         // Set up view components
+        habitImageView = (ImageView) findViewById(R.id.ViewHabitImage);
         habitTitle = (TextView) findViewById(R.id.habit_title_TextView);
         habitComment = (TextView) findViewById(R.id.Comment_TextView);
         habitDateStarted = (TextView) findViewById(R.id.date_started_TextView);
         habitTitle.setText(habitTitleString);
         habitComment.setText(habitCommentString);
         habitDateStarted.setText(habitDateStartedString);
+        habitImageView.setImageBitmap(habitImage);
+
 
         // Set up buttons
         editHabit = (Button) findViewById(R.id.edit_habit_button);
@@ -126,6 +123,7 @@ public class ViewHabitActivity extends AppCompatActivity {
                 Intent intent = new Intent(v.getContext(), AddHabitEventActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("habit", currentHabit);
+                bundle.putString("username",username);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,1);
             }});
