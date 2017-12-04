@@ -149,8 +149,4 @@ public class ProfileEditActivity extends AppCompatActivity {
         finish();
     }
 
-    private void changeProfileImage(){
-
-    }
-
 }

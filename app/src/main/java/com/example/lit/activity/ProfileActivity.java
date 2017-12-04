@@ -49,7 +49,7 @@ public class ProfileActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.temp_user_profile_layout);
 
         //TODO: Get the intent to initialize currentUser!
 
