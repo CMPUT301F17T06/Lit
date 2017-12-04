@@ -69,21 +69,6 @@ public class MainFragment extends Fragment {
         }
     }
 
-   /* @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-
-        /*ElasticSearchHabitController.GetTodayHabitsTask getTodayHabitsTask = new ElasticSearchHabitController.GetTodayHabitsTask();
-        getTodayHabitsTask.execute(username,date);
-
-
-        try {
-            habitArrayList = getTodayHabitsTask.get();
-        } catch (Exception e) {
-            Log.i("Error", "Failed to get the habits from the asyc object");
-        }*/
-
 
 
 
@@ -93,7 +78,17 @@ public class MainFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         username = getActivity().getIntent().getExtras().getString("username");
+
         habitArrayList = new ArrayList<>();
+                /*ElasticSearchHabitController.GetTodayHabitsTask getTodayHabitsTask = new ElasticSearchHabitController.GetTodayHabitsTask();
+        getTodayHabitsTask.execute(username,date);
+
+
+        try {
+            habitArrayList = getTodayHabitsTask.get();
+        } catch (Exception e) {
+            Log.i("Error", "Failed to get the habits from the asyc object");
+        }*/
         habitAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item, habitArrayList);
         habitsListView = (ListView) view.findViewById(R.id.habit_list_view);
         habitsListView.setAdapter(habitAdapter);

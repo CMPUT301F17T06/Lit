@@ -25,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.lit.R;
 import com.example.lit.activity.AddHabitActivity;
@@ -36,7 +37,10 @@ import com.example.lit.habit.NormalHabit;
 import com.example.lit.habitevent.HabitEvent;
 import com.example.lit.habitevent.NormalHabitEvent;
 import com.example.lit.location.HabitLocation;
+import com.example.lit.saving.DataHandler;
 import com.example.lit.saving.ElasticSearchHabitController;
+import com.example.lit.saving.NoDataException;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 
@@ -53,6 +57,7 @@ public class HabitHistoryFragment extends Fragment {
     NormalHabitEvent event;
     Button mapButton;
     String username;
+    DataHandler<ArrayList<NormalHabitEvent>> dataHandler;
 
     FragmentActivity listener;
 
@@ -67,8 +72,10 @@ public class HabitHistoryFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_habit_history, container, false);
         username = getActivity().getIntent().getExtras().getString("username");
         //DataHandler dataHandler = new DataHandler("username", "HabitList", getActivity());
         //habitArrayList = dataHandler.loadData();
@@ -84,20 +91,11 @@ public class HabitHistoryFragment extends Fragment {
         }
 
         eventAdapter = new ArrayAdapter<NormalHabitEvent>(getActivity(), R.layout.list_item, eventArrayList);
-    }
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        return inflater.inflate(R.layout.fragment_habit_history, container, false);
-    }
-
-    @Override
-    public void onViewCreated(final View view, Bundle savedInstanceState) {
         eventListView = (ListView) view.findViewById(R.id.eventhistory);
         eventListView.setAdapter(eventAdapter);
 
         mapButton = (Button) view.findViewById(R.id.Mapbutton);
+        dataHandler = new DataHandler<>(username,"habitevent",getActivity(), new TypeToken<ArrayList<NormalHabit>>(){}.getType());
 
         eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -117,10 +115,28 @@ public class HabitHistoryFragment extends Fragment {
             public void onClick(View view) {
                 getActivity().setResult(RESULT_OK);
                 Intent intent = new Intent(view.getContext(), MapsActivity.class);
-                startActivityForResult(intent,1);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("dataHandler",dataHandler);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
 
         // Inflate the layout for this fragment
+        return view;
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        eventAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item, eventArrayList);
+        eventListView.setAdapter(eventAdapter);
+        try {
+            eventArrayList = dataHandler.loadData();
+        }catch (NoDataException e){
+            Toast.makeText(getActivity(), "Error: Can't load data! code:3", Toast.LENGTH_SHORT).show();
+        }
+
+        eventAdapter.notifyDataSetChanged();
+
     }
 }

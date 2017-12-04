@@ -66,9 +66,13 @@ public class ActiveHabitsFragment extends Fragment {
     }
     */
 
+
+
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        View view =  inflater.inflate(R.layout.fragment_main, container, false);
         username = getActivity().getIntent().getExtras().getString("username");
         habitArrayList = new ArrayList<>();
         /*ElasticSearchHabitController.GetCurrentHabitsTask getCurrentHabitsTask = new ElasticSearchHabitController.GetCurrentHabitsTask();
@@ -81,17 +85,6 @@ public class ActiveHabitsFragment extends Fragment {
         }*/
 
         habitAdapter = new ArrayAdapter<NormalHabit>(getActivity(), R.layout.list_item, habitArrayList);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        return inflater.inflate(R.layout.fragment_main, container, false);
-    }
-
-    @Override
-    public void onViewCreated(final View view, Bundle savedInstanceState) {
         habitsListView = (ListView) view.findViewById(R.id.habit_list_view);
         habitsListView.setAdapter(habitAdapter);
         habitAdapter.notifyDataSetChanged();
@@ -140,7 +133,7 @@ public class ActiveHabitsFragment extends Fragment {
                 intent.putExtras(bundle);
                 startActivityForResult(intent,1);
             }});
-
+        return view;
         // Inflate the layout for this fragment
     }
 
