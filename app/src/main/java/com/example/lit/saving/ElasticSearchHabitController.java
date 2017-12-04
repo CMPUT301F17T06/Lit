@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.lit.habit.NormalHabit;
+import com.example.lit.habitevent.NormalHabitEvent;
 import com.example.lit.userprofile.UserProfile;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
@@ -110,6 +111,77 @@ public class ElasticSearchHabitController {
         }
     }
 
+    // Add Habit to elastic search
+    public static class AddHabitEventTask extends AsyncTask<NormalHabitEvent, Void, Void> {
+
+        @Override
+        protected Void doInBackground(NormalHabitEvent... habitEvents) {
+            verifySettings();
+
+            for (NormalHabitEvent habitEvent : habitEvents) {
+                Index index = new Index.Builder(habitEvent).index("cmput301f17t06").type("habitEvent").build();
+
+                try {
+
+                    DocumentResult result = client.execute(index);
+
+                    if(result.isSucceeded())
+                    {
+                        habitEvent.setID(result.getId());
+                    }
+                    else
+                    {
+                        Log.i("Error","Elasticsearch was not able to add the habit event");
+                    }
+                }
+                catch (Exception e) {
+                    Log.i("Error", "The application failed to build and send the habit events");
+                }
+
+            }
+            return null;
+        }
+    }
+
+    // Gets all habits for the user specified
+    public static class GetCurrentEventsTask extends AsyncTask<String, Void, ArrayList<NormalHabitEvent>> {
+        @Override
+        protected ArrayList<NormalHabitEvent> doInBackground(String... search_parameters) {
+            verifySettings();
+
+            ArrayList<NormalHabitEvent> habitEvents;
+            habitEvents = new ArrayList<NormalHabitEvent>();
+
+
+            String query = "{\n" +
+                    "    \"query\" : {\n" +
+                    "       \"constant_score\" : {\n" +
+                    "           \"filter\" : {\n" +
+                    "               \"term\" : {\"user\": \"" + search_parameters[0] + "\"}\n" +
+                    "             }\n" +
+                    "         }\n" +
+                    "    }\n" +
+                    "}";
+            Search search = new Search.Builder(query).addIndex("cmput301f17t06").addType("habitEvent").build();
+
+
+            try {
+                // get the results of the query
+                SearchResult result = client.execute(search);
+                if(result.isSucceeded())
+                {
+                    List<NormalHabitEvent> foundHabit = result.getSourceAsObjectList(NormalHabitEvent.class);
+                    habitEvents.addAll(foundHabit);
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+
+            return habitEvents;
+        }
+    }
+
     // Gets all habits for the user specified
     public static class GetTodayHabitsTask extends AsyncTask<String, Void, ArrayList<NormalHabit>> {
         @Override
@@ -124,7 +196,7 @@ public class ElasticSearchHabitController {
                     "    \"query\" : {\n" +
                     "       \"constant_score\" : {\n" +
                     "           \"filter\" : {\n" +
-                    "               \"term\" : {\"date\": \"" + search_parameters[0] + "\"}\n" +
+                    "               \"term\" : {\"user\": \"" + search_parameters[0] + "\"}\n" +
                     "             }\n" +
                     "         }\n" +
                     "    }\n" +

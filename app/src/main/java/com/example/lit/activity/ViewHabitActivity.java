@@ -62,6 +62,7 @@ public class ViewHabitActivity extends AppCompatActivity {
     Button editHabit;
     Button deleteHabit;
     Button mainMenu;
+    String username;
 
 
     // TODO: Habit image feature
@@ -78,6 +79,8 @@ public class ViewHabitActivity extends AppCompatActivity {
         try{
             Bundle bundle = getIntent().getExtras();
             currentHabit = (Habit)bundle.getSerializable("habit");
+            username = (String)bundle.getSerializable("username");
+
             //double lat = bundle.getDouble("lat");
             //double lng = bundle.getDouble("lng");
             //LatLng latLng = new LatLng(lat, lng);
@@ -126,6 +129,7 @@ public class ViewHabitActivity extends AppCompatActivity {
                 Intent intent = new Intent(v.getContext(), AddHabitEventActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("habit", currentHabit);
+                bundle.putSerializable("username", username);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,1);
             }});

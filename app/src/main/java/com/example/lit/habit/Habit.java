@@ -32,6 +32,7 @@ public abstract class Habit implements Habitable , Serializable, Saveable {
     private String title;
     private Date date;
     public abstract String habitType();
+    private String user;
     private String reason;
     private int titleLength = 20;
     private int reasonLength = 30;
@@ -97,6 +98,14 @@ public abstract class Habit implements Habitable , Serializable, Saveable {
             throw new HabitFormatException();
         }
         this.title = title;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 
     public Date getDate() {

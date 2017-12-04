@@ -44,6 +44,7 @@ import com.example.lit.habitevent.HabitEvent;
 import com.example.lit.habitevent.NormalHabitEvent;
 import com.example.lit.location.HabitLocation;
 import com.example.lit.location.PlaceAutocompleteAdapter;
+import com.example.lit.saving.ElasticSearchHabitController;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
@@ -91,6 +92,7 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
 
     String habitNameString;
     String commentString;
+    String username;
     LocationManager manager;
     private HabitLocation habitLocation;
     private String provider;
@@ -114,6 +116,7 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
         try{
             Bundle bundle = getIntent().getExtras();
             currentHabit = (Habit)bundle.getSerializable("habit");
+            username = (String)bundle.getSerializable("username");
             if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
         }catch (LoadHabitException e){
             //TODO: handle LoadHabitException
@@ -180,9 +183,13 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
         eventLocation = new HabitLocation(latLng);
 
         try {
-            HabitEvent newHabitEvent = new NormalHabitEvent(habitNameString, commentString,eventLocation);
+            NormalHabitEvent newHabitEvent = new NormalHabitEvent(habitNameString, commentString,eventLocation);
             bundle.putParcelable("event", newHabitEvent);
             newHabitEventIntent.putExtras(bundle);
+            newHabitEvent.setUser(username);
+            ElasticSearchHabitController.AddHabitEventTask addHabitEventTask = new ElasticSearchHabitController.AddHabitEventTask();
+            addHabitEventTask.execute(newHabitEvent);
+
             finish();
         } catch (HabitFormatException e) {
             Toast.makeText(AddHabitEventActivity.this, "Error: Illegal Habit Event information!", Toast.LENGTH_LONG).show();
