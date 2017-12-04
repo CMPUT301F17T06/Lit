@@ -57,8 +57,6 @@ public class DataHandler<T>{
     private String typeOfObject;
     private String FILENAME;
 
-    private Class<T> typeOfClass;
-
     /**
      * Builds a handler that is used to save data to both local storage for offline use as
      * well as online via ElasticSearch. T is the type of object that is to be stored.
@@ -73,12 +71,11 @@ public class DataHandler<T>{
      *
      * @see Gson
      */
-    public DataHandler(String username, String typeOfObject, Context context, Class<T> typeOfClass){
+    public DataHandler(String username, String typeOfObject, Context context){
         this.FILENAME = context.getFilesDir().getAbsolutePath() + File.separator
                 + username;
         this.username = username;
         this.typeOfObject = typeOfObject;
-        this.typeOfClass = typeOfClass;
 
         File filePath = new File(FILENAME);
         //Check if the subdirectory has been created yet or not
@@ -214,12 +211,11 @@ public class DataHandler<T>{
         //Read from input stream
         Gson gson = new Gson();
         JsonParser jsonParser = new JsonParser();
-        //JsonArray jsonArray = jsonParser.parse(gson.fromJson(in, String.class)).getAsJsonArray();
         JsonArray jsonArray = jsonParser.parse(in.readLine()).getAsJsonArray();
 
+        //JsonArray jsonArray = jsonParser.parse(gson.fromJson(in, String.class)).getAsJsonArray();
         tempTime = gson.fromJson(jsonArray.get(0), long.class);
-        //loadedElement = gson.fromJson(jsonArray.get(1), typeOfElement);
-        loadedElement = gson.fromJson(jsonArray.get(1), typeOfClass);
+        loadedElement = gson.fromJson(jsonArray.get(1), typeOfElement);
 
         //Close stream
         fis.close();
