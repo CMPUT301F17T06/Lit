@@ -207,7 +207,6 @@ public class ElasticSearchHabitController {
                 if(result.isSucceeded() && result.getFirstHit(UserProfile.class).source != null)
                 {
                     userProfile = result.getFirstHit(UserProfile.class).source;
-                    String blah = "p";
                 } else {
                     Log.i("Error", "The search query failed to find any Users that matched");
                 }
