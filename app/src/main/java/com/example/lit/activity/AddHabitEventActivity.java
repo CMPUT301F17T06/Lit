@@ -183,7 +183,6 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
             HabitEvent newHabitEvent = new NormalHabitEvent(habitNameString, commentString,eventLocation);
             bundle.putParcelable("event", newHabitEvent);
             newHabitEventIntent.putExtras(bundle);
-            startActivity(newHabitEventIntent);
             finish();
         } catch (HabitFormatException e) {
             Toast.makeText(AddHabitEventActivity.this, "Error: Illegal Habit Event information!", Toast.LENGTH_LONG).show();
