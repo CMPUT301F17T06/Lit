@@ -20,6 +20,8 @@ import com.example.lit.location.HabitLocation;
 import com.example.lit.saving.Saveable;
 
 import java.io.Serializable;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -39,7 +41,7 @@ import java.util.Date;
 public abstract class HabitEvent implements HabitEventAddable, Comparable, Saveable, Parcelable {
     private String habitEventName;
     private HabitLocation habitLocation;
-    private Date date = new Date();
+    private Date date;
     private String eventComment;
     private String user;
     private int commentLength = 20;
@@ -48,15 +50,27 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Savea
 
 
     public HabitEvent(String habitEventName) {
-        this.habitEventName = habitEventName;
-        this.date = new Date();
+        setHabitEventName(habitEventName);
+        setEventDate(new Date());
+    }
+
+    public HabitEvent(String habitEventName, Date date) {
+        setHabitEventName(habitEventName);
+        setEventDate(date);
     }
 
     public HabitEvent(String habitEventName, String habitEventComment) throws HabitFormatException{
-        this.habitEventName = habitEventName;
-        this.date = new Date();
-        this.eventComment= habitEventComment;
+        setHabitEventName(habitEventName);
+        setEventDate(new Date());
+        setEventComment(habitEventComment);
     }
+
+    public HabitEvent(String habitEventName, String habitEventComment, Date date) throws HabitFormatException{
+        setHabitEventName(habitEventName);
+        setEventDate(date);
+        setEventComment(habitEventComment);
+    }
+
     /**
      * This is the main constructor we are using in AddHabitActivity
      *
@@ -66,12 +80,20 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Savea
      * @param location if user chose to attach location will get the current location
      * @throws HabitFormatException thrown when title longer than 20 char or reason longer than 30 char
      * */
-    public HabitEvent(String habitEventName, String habitEventComment,HabitLocation location) throws HabitFormatException{
-        this.habitEventName = habitEventName;
-        this.habitLocation = location;
-        this.date = new Date();
-        this.eventComment= habitEventComment;
+    public HabitEvent(String habitEventName, String habitEventComment, Date date, HabitLocation location) throws HabitFormatException{
+        setHabitEventName(habitEventName);
+        setLocation(location);
+        setEventDate(date);
+        setEventComment(habitEventComment);
     }
+
+    public HabitEvent(String habitEventName, String habitEventComment,HabitLocation location) throws HabitFormatException{
+        setHabitEventName(habitEventName);
+        setLocation(location);
+        setEventDate(new Date());
+        setEventComment(habitEventComment);
+    }
+
     public int compareTo(HabitEvent habitEvent){
         return this.date.compareTo(habitEvent.date);
     }
@@ -88,8 +110,14 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Savea
         return date;
     }
 
-    public void setEventDate(Date date) {
-        this.date = date;
+    public void setEventDate(Date date){
+        // Format the current time.
+        SimpleDateFormat format = new SimpleDateFormat ("dd-MM-yyyy");
+        String dateString = format.format(date);
+
+        // Parse the previous string back into a Date.
+        ParsePosition pos = new ParsePosition(0);
+        this.date = format.parse(dateString, pos);
     }
 
     public String getEventComment() {
