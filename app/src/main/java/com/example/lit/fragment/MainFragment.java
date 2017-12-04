@@ -11,9 +11,12 @@
 package com.example.lit.fragment;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +32,7 @@ import com.example.lit.activity.ViewHabitActivity;
 import com.example.lit.habit.Habit;
 import com.example.lit.habit.NormalHabit;
 import com.example.lit.saving.DataHandler;
+import com.example.lit.saving.ElasticSearchHabitController;
 
 import java.util.ArrayList;
 
@@ -42,45 +46,65 @@ public class MainFragment extends Fragment {
 
     ImageButton addHabitButton;
     ListView habitsListView;
-    ArrayList<Habit> habitArrayList;
-    ArrayAdapter<Habit> habitAdapter;
+    ArrayList<NormalHabit> habitArrayList;
+    ArrayAdapter<NormalHabit> habitAdapter;
     String username;
 
-    public MainFragment() {
-        // Required empty public constructor
+    FragmentActivity listener;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try{
+            this.listener = (FragmentActivity) context;
+        }catch (ClassCastException e){
+            throw new ClassCastException(context.toString());
+        }
     }
 
-    public void onResume(){
-        super.onResume();
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         username = getActivity().getIntent().getExtras().getString("username");
-        if (username == null){
-            Toast.makeText(getActivity(), "arguments is null " , Toast.LENGTH_LONG).show();
+        //DataHandler dataHandler = new DataHandler("username", "HabitList", getActivity());
+        //habitArrayList = dataHandler.loadData();
+        habitArrayList = new ArrayList<>();
+        Log.i("username",username);
+        ElasticSearchHabitController.GetCurrentHabitsTask getCurrentHabitsTask = new ElasticSearchHabitController.GetCurrentHabitsTask();
+        getCurrentHabitsTask.execute(username);
+        //habitAdapter.notifyDataSetChanged();
+
+        try {
+            habitArrayList = getCurrentHabitsTask.get();
+        } catch (Exception e) {
+            Log.i("Error", "Failed to get the habits from the asyc object");
         }
+
+        habitAdapter = new ArrayAdapter<NormalHabit>(getActivity(), R.layout.list_item, habitArrayList);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        return inflater.inflate(R.layout.fragment_main, container, false);
+    }
 
-        addHabitButton = (ImageButton) view.findViewById(R.id.add_habit_button);
-        DataHandler dataHandler = new DataHandler("username","HabitList",getActivity());
-        //habitArrayList = dataHandler.loadData();
-        habitArrayList = new ArrayList<>();
+    @Override
+    public void onViewCreated(final View view, Bundle savedInstanceState) {
         habitsListView = (ListView) view.findViewById(R.id.habit_list_view);
-        habitAdapter = new ArrayAdapter<Habit>(getActivity(),R.layout.list_item, habitArrayList);
         habitsListView.setAdapter(habitAdapter);
 
         // A dummy habit for testing
-        try {
+        /*try {
             Habit testHabit = new NormalHabit("test habit title");
             habitArrayList.add(testHabit);
             habitAdapter.notifyDataSetChanged();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
+        addHabitButton = (ImageButton) view.findViewById(R.id.add_habit_button);
 
         habitsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -107,8 +131,6 @@ public class MainFragment extends Fragment {
             }});
 
         // Inflate the layout for this fragment
-        return view;
-
     }
 
 }

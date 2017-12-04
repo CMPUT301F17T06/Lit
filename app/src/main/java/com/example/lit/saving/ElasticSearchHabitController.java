@@ -131,7 +131,6 @@ public class ElasticSearchHabitController {
                     "}";
             Search search = new Search.Builder(query).addIndex("cmput301f17t06").addType("habit").build();
 
-
             try {
                 // get the results of the query
                 SearchResult result = client.execute(search);
