@@ -55,8 +55,9 @@ public class DataHandler<T> implements Serializable{
     private long lastOfflineSave;
     private long lastOnlineSave;
     private String username;
-    private String typeOfObject;
+    private String nameOfObject;
     private String FILENAME;
+    private Type typeOfObject;
 
     /**
      * Builds a handler that is used to save data to both local storage for offline use as
@@ -72,11 +73,13 @@ public class DataHandler<T> implements Serializable{
      *
      * @see Gson
      */
-    public DataHandler(String username, String typeOfObject, Context context){
+    public DataHandler(String username, String nameOfObject, Context context, Type typeOfObject){
         this.FILENAME = context.getFilesDir().getAbsolutePath() + File.separator
                 + username;
         this.username = username;
+        this.nameOfObject = nameOfObject;
         this.typeOfObject = typeOfObject;
+
 
         File filePath = new File(FILENAME);
         //Check if the subdirectory has been created yet or not
@@ -186,12 +189,12 @@ public class DataHandler<T> implements Serializable{
      * @throws NotOnlineException If we cannot connect to the server
      */
     private void saveToOnline(T dataToSave, long currentTime) throws NotOnlineException{
-        ElasticSearchHabitController.AddTask<T> esSaver
-                = new ElasticSearchHabitController.AddTask<T>(username, typeOfObject);
-        ElasticSearchTimestampWrapper<T> ESTWdata
-                = new ElasticSearchTimestampWrapper<T>(dataToSave, currentTime);
+        //ElasticSearchHabitController.AddTask<T> esSaver
+        //        = new ElasticSearchHabitController.AddTask<T>(username, typeOfObject);
+        //ElasticSearchTimestampWrapper<T> ESTWdata
+        //        = new ElasticSearchTimestampWrapper<T>(dataToSave, currentTime);
 
-        esSaver.execute(ESTWdata);
+        //esSaver.execute(ESTWdata);
     }
 
     /**
@@ -218,7 +221,7 @@ public class DataHandler<T> implements Serializable{
 
         //JsonArray jsonArray = jsonParser.parse(gson.fromJson(in, String.class)).getAsJsonArray();
         tempTime = gson.fromJson(jsonArray.get(0), long.class);
-        loadedElement = gson.fromJson(jsonArray.get(1), typeOfElement);
+        loadedElement = gson.fromJson(jsonArray.get(1), typeOfObject);
 
         //Close stream
         fis.close();
@@ -239,8 +242,8 @@ public class DataHandler<T> implements Serializable{
     private T loadFromOnline() throws NotOnlineException, NoDataException {
         ElasticSearchTimestampWrapper<T> loadedElement = null;
 
-        ElasticSearchHabitController.GetTask<T> esLoader
-                = new ElasticSearchHabitController.GetTask<>(username, typeOfObject);
+        /*ElasticSearchHabitController.GetTask<T> esLoader
+               = new ElasticSearchHabitController.GetTask<>(username, typeOfObject);
 
         try {
             loadedElement = esLoader.execute("").get(); //null search parameters
@@ -248,7 +251,7 @@ public class DataHandler<T> implements Serializable{
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
-        }
+        }*/
 
         //NOTE: Im not sure what ES returns on fail, however this at least prevents
         //NullPointerExceptions.
