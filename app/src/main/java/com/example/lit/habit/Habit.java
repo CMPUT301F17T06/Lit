@@ -11,23 +11,17 @@
 package com.example.lit.habit;
 
 import android.graphics.Bitmap;
-import android.os.Parcelable;
 
+import com.example.lit.exception.BitmapTooLargeException;
 import com.example.lit.exception.HabitFormatException;
-import com.example.lit.location.*;
 import com.example.lit.saving.Saveable;
-import com.google.android.gms.maps.model.LatLng;
+import com.example.lit.exception.HabitFormatException;
 import io.searchbox.annotations.JestId;
 
 import java.io.Serializable;
-import java.sql.Time;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * This class is an abstract habit class
@@ -84,7 +78,7 @@ public abstract class Habit implements Habitable , Serializable, Saveable {
         this.setCalendars(calendarList);
     }
 
-    public Habit(String title, Date date, String reason, List<Calendar> calendars, Bitmap image)throws HabitFormatException {
+    public Habit(String title, Date date, String reason, List<Calendar> calendars, Bitmap image)throws HabitFormatException, BitmapTooLargeException{
         this.setTitle(title);
         this.setDate(date);
         this.setReason(reason);
@@ -139,8 +133,13 @@ public abstract class Habit implements Habitable , Serializable, Saveable {
         return image;
     }
 
-    public void setImage(Bitmap image) {
-        this.image = image;
+    public void setImage(Bitmap image) throws BitmapTooLargeException {
+        if (image.getByteCount() > 65536){
+            throw new BitmapTooLargeException();
+        }
+        else {
+            this.image = image;
+        }
     }
 
     @Override

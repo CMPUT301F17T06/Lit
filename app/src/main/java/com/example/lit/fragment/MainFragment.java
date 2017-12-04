@@ -21,12 +21,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.lit.R;
 import com.example.lit.activity.AddHabitActivity;
-import com.example.lit.activity.HomePageActivityNew;
 import com.example.lit.activity.ViewHabitActivity;
-import com.example.lit.exception.HabitFormatException;
 import com.example.lit.habit.Habit;
 import com.example.lit.habit.NormalHabit;
 import com.example.lit.saving.DataHandler;
@@ -45,11 +44,19 @@ public class MainFragment extends Fragment {
     ListView habitsListView;
     ArrayList<Habit> habitArrayList;
     ArrayAdapter<Habit> habitAdapter;
+    String username;
 
     public MainFragment() {
         // Required empty public constructor
     }
 
+    public void onResume(){
+        super.onResume();
+        username = getActivity().getIntent().getExtras().getString("username");
+        if (username == null){
+            Toast.makeText(getActivity(), "arguments is null " , Toast.LENGTH_LONG).show();
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,7 +72,7 @@ public class MainFragment extends Fragment {
         habitAdapter = new ArrayAdapter<Habit>(getActivity(),R.layout.list_item, habitArrayList);
         habitsListView.setAdapter(habitAdapter);
 
-        // Test habit
+        // A dummy habit for testing
         try {
             Habit testHabit = new NormalHabit("test habit title");
             habitArrayList.add(testHabit);
@@ -82,11 +89,6 @@ public class MainFragment extends Fragment {
                 Intent intent = new Intent(getActivity(),ViewHabitActivity.class);
                 Bundle bundle = new Bundle();
                 Habit selectedHabit = habitArrayList.get(i);
-                try {
-                    bundle.putSerializable("habit",selectedHabit);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
                 bundle.putSerializable("habit", selectedHabit);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,2);

@@ -12,10 +12,6 @@ package com.example.lit.userprofile;
 import android.graphics.Bitmap;
 import android.util.Log;
 
-import com.example.lit.habit.Habit;
-import com.example.lit.habit.HabitList;
-import com.example.lit.habitevent.HabitEvent;
-import com.example.lit.habitevent.HabitHistory;
 import com.example.lit.saving.DataHandler;
 import com.example.lit.saving.Saveable;
 
@@ -125,7 +121,7 @@ public class UserProfile implements Serializable, Saveable{
      *
      * @see Bitmap
      */
-    public void setProfileImage(Bitmap image) throws BitmapTooLargeException{
+    public void setProfileImage(Bitmap image) throws BitmapTooLargeException {
 
         if(image.getByteCount() >= 65536){
             Log.e("UserProfile",
