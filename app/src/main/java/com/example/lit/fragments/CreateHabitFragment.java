@@ -12,21 +12,30 @@ package com.example.lit.fragments;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.app.TimePickerDialog;
+import android.graphics.Bitmap;
+import android.media.Image;
 import android.support.v4.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.example.lit.R;
+import com.example.lit.elasticsearch.ElasticSearchHabitController;
+import com.example.lit.habit.NormalHabit;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -40,6 +49,7 @@ import java.util.Locale;
 public class CreateHabitFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener,TimePickerDialog.OnTimeSetListener {
 
     private static final String TIME_PATTERN = "HH:mm";
+    private static final int CAMERA_PIC_REQUEST = 1337;
 
     private Calendar calendar;
     private DateFormat dateFormat;
@@ -49,6 +59,8 @@ public class CreateHabitFragment extends DialogFragment implements DatePickerDia
     EditText reasonInput;
     TextView dateInput;
     TextView timeInput;
+    ImageButton imageInput;
+    Button postHabitButton;
 
     FragmentActivity listener;
     String username;
@@ -122,11 +134,21 @@ public class CreateHabitFragment extends DialogFragment implements DatePickerDia
         reasonInput = (EditText) view.findViewById(R.id.reasonInput);
         dateInput = (TextView) view.findViewById(R.id.dateInput);
         timeInput = (TextView) view.findViewById(R.id.timeInput);
+        imageInput = (ImageButton) view.findViewById(R.id.imageInput);
+        postHabitButton = (Button) view.findViewById(R.id.postHabitButton);
 
 
 
         dateInput.setText(dateFormat.format(calendar.getTime()));
         timeInput.setText(timeFormat.format(calendar.getTime()));
+
+        imageInput.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
+            }
+        });
 
 
         dateInput.setOnClickListener(new View.OnClickListener() {
@@ -142,7 +164,31 @@ public class CreateHabitFragment extends DialogFragment implements DatePickerDia
             }
         });
 
+        postHabitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try{
+                    NormalHabit newHabit = new NormalHabit(titleInput.getText().toString());
+                    newHabit.setDate(calendar.getTime());
+                    newHabit.setImage(imageInput.getDrawingCache());
+                    newHabit.setUser(username);
+                    ElasticSearchHabitController.AddHabitsTask addHabitsTask = new ElasticSearchHabitController.AddHabitsTask();
+                    addHabitsTask.execute(newHabit);
+                    Toast.makeText(getContext(),"New Habit Created!.",Toast.LENGTH_LONG).show();
+                    getFragmentManager().popBackStack();
+                } catch(Exception e){
+                }
+            }
+        });
 
+
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CAMERA_PIC_REQUEST) {
+            Bitmap image = (Bitmap) data.getExtras().get("data");
+            imageInput.setImageBitmap(image);
+        }
     }
 
 

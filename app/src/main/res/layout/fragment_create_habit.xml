@@ -65,6 +65,28 @@
             android:layout_marginTop="13dp"
             android:clickable="true" />
 
+        <ImageButton
+            android:id="@+id/imageInput"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:layout_alignEnd="@+id/reasonInput"
+            android:layout_alignRight="@+id/reasonInput"
+            android:layout_below="@+id/timeInput"
+            android:layout_marginTop="16dp"
+            android:layout_toEndOf="@+id/timeInput"
+            android:layout_toRightOf="@+id/timeInput"
+            android:scaleType="fitCenter"
+            android:src="@android:drawable/ic_menu_report_image" />
+
+        <Button
+            android:id="@+id/postHabitButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageInput"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="28dp"
+            android:text="post" />
+
     </RelativeLayout>
 
 </FrameLayout>
