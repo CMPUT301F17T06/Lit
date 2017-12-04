@@ -29,6 +29,9 @@
     <string name="change_profile_image">Change Profile Image</string>
     <string name="user_description_hint">Enter in your profile bio!</string>
     <string name="other_user_empty_description">This user has nothing in their bio.</string>
+    <string name="follow">Follow User</string>
+    <string name="requested_follow">Requested</string>
+    <string name="following_user">Following</string>
 
     <string-array name="navigation_drawer_items_array">
         <item>Home</item>
