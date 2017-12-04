@@ -110,6 +110,45 @@ public class ElasticSearchHabitController {
         }
     }
 
+    // Gets all habits for the user specified
+    public static class GetTodayHabitsTask extends AsyncTask<String, Void, ArrayList<NormalHabit>> {
+        @Override
+        protected ArrayList<NormalHabit> doInBackground(String... search_parameters) {
+            verifySettings();
+
+            ArrayList<NormalHabit> habits;
+            habits = new ArrayList<NormalHabit>();
+
+
+            String query = "{\n" +
+                    "    \"query\" : {\n" +
+                    "       \"constant_score\" : {\n" +
+                    "           \"filter\" : {\n" +
+                    "               \"term\" : {\"date\": \"" + search_parameters[0] + "\"}\n" +
+                    "             }\n" +
+                    "         }\n" +
+                    "    }\n" +
+                    "}";
+            Search search = new Search.Builder(query).addIndex("cmput301f17t06").addType("habit").build();
+
+
+            try {
+                // get the results of the query
+                SearchResult result = client.execute(search);
+                if(result.isSucceeded())
+                {
+                    List<NormalHabit> foundHabit = result.getSourceAsObjectList(NormalHabit.class);
+                    habits.addAll(foundHabit);
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+
+            return habits;
+        }
+    }
+
     // Add new user to elastic search
     public static class AddUserTask extends AsyncTask<UserProfile, Void, Void> {
 
