@@ -214,7 +214,9 @@ public class DataHandler<T> implements Serializable{
         //Read from input stream
         Gson gson = new Gson();
         JsonParser jsonParser = new JsonParser();
-        JsonArray jsonArray = jsonParser.parse(gson.fromJson(in, String.class)).getAsJsonArray();
+        JsonArray jsonArray = jsonParser.parse(in.readLine()).getAsJsonArray();
+
+        //JsonArray jsonArray = jsonParser.parse(gson.fromJson(in, String.class)).getAsJsonArray();
         tempTime = gson.fromJson(jsonArray.get(0), long.class);
         loadedElement = gson.fromJson(jsonArray.get(1), typeOfElement);
 
