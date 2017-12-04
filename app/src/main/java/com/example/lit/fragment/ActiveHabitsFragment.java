@@ -111,13 +111,6 @@ public class ActiveHabitsFragment extends Fragment {
             e.printStackTrace();
         }*/
 
-        try{
-            habitArrayList = dataHandler.loadData();
-            Toast.makeText(getActivity(),"Habit list loaded successfully!",Toast.LENGTH_LONG).show();
-        }catch (NoDataException e){
-            habitArrayList = new ArrayList<>();
-        }
-
         addHabitButton = (ImageButton) view.findViewById(R.id.add_habit_button);
 
         habitsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -157,7 +150,7 @@ public class ActiveHabitsFragment extends Fragment {
                 habitArrayList = dataHandler.loadData();
                 habitAdapter.notifyDataSetChanged();
             }catch (NoDataException e){
-                Toast.makeText(getActivity(), "Error: Can't load data!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Error: Can't load data! code:4", Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -98,12 +98,12 @@ public class AddHabitActivity extends AppCompatActivity  {
             Bundle bundle = getIntent().getExtras();
             dataHandler = (DataHandler) bundle.getSerializable("dataHandler");
         }catch (NullPointerException e){
-            Toast.makeText(AddHabitActivity.this,"Error: Can't load data!",Toast.LENGTH_LONG).show();
+            Toast.makeText(AddHabitActivity.this,"Error: Can't load data! code:3",Toast.LENGTH_LONG).show();
         }
         try {
             habitArrayList = (ArrayList<NormalHabit>) dataHandler.loadData();
         }catch (NoDataException e){
-            Toast.makeText(AddHabitActivity.this,"Error: Can't load habit!",Toast.LENGTH_LONG).show();
+            //Toast.makeText(AddHabitActivity.this,"Error: Can't load habit!",Toast.LENGTH_LONG).show();
             habitArrayList = new ArrayList<>();
         }catch (Exception e1){
             Toast.makeText(AddHabitActivity.this,"Error: Unexpected Exception!",Toast.LENGTH_LONG).show();
@@ -194,6 +194,7 @@ public class AddHabitActivity extends AppCompatActivity  {
                 commentString, calendarList,image);
             habitArrayList.add(newHabit);
             dataHandler.saveData(habitArrayList);
+            Log.i("AddHabitActivity", "Save button pressed. Habit saved successfully.");
             finish();
         } catch (HabitFormatException e){
             Toast.makeText(AddHabitActivity.this,"Error: Illegal Habit information!",Toast.LENGTH_LONG).show();
