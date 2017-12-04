@@ -165,8 +165,9 @@ public abstract class Habit implements Habitable , Parcelable, Saveable {
 
     @Override
     public String toString() {
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
         return "Habit Name: " + this.getTitle() + '\n' +
-                "Started From: " + this.getDate();
+                "Started From: " + format.format(this.getDate());
     }
 
     @Override

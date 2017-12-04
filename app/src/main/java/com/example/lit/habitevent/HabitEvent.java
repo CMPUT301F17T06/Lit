@@ -142,9 +142,10 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Savea
 
     @Override
     public String toString() {
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
         return "Habit Event{" +
                 "habitEventName='" + habitEventName + '\'' +
-                ", date=" + date + '\'' +
+                ", date=" + format.format(date) + '\'' +
                 ", comment=" + eventComment +
                 '}';
     }
