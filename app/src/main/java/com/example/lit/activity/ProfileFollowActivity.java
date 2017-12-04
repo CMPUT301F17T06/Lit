@@ -10,27 +10,11 @@
 
 package com.example.lit.activity;
 
-import android.app.Activity;
-import android.test.ActivityInstrumentationTestCase2;
-
-import com.robotium.solo.Solo;
+import android.support.v7.app.AppCompatActivity;
 
 /**
- * Created by weikailu on 2017-11-13.
+ * Created by Riley Dixon on 02/12/2017.
  */
 
-public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
-    private Solo solo;
-
-    public MapsActivityTest(){
-        super(AddHabitActivity.class);
-    }
-
-    public void setUp(){
-        solo = new Solo(getInstrumentation(),getActivity());
-    }
-
-    public void testStart() throws Exception{
-        Activity activity = getActivity();
-    }
+public class ProfileFollowActivity extends AppCompatActivity {
 }

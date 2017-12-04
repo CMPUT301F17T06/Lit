@@ -49,7 +49,8 @@ import java.util.concurrent.ExecutionException;
  * @author Riley Dixon
  * @param <T> The type of data we are trying to save.
  */
-public class DataHandler<T extends Saveable> {
+//public class DataHandler<T extends Saveable> {
+public class DataHandler<T>{
     private long lastOfflineSave;
     private long lastOnlineSave;
     private String username;
@@ -103,13 +104,13 @@ public class DataHandler<T extends Saveable> {
         }catch (IOException e){
             throw new RuntimeException();
         }
-
+        /*
         try{
             saveToOnline(element, currentTime);
             lastOnlineSave = currentTime;
         }catch (NotOnlineException e){
             throw new RuntimeException();
-        }
+        }*/
     }
 
     /**

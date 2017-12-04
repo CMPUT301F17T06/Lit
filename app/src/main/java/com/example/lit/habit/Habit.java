@@ -11,23 +11,17 @@
 package com.example.lit.habit;
 
 import android.graphics.Bitmap;
-import android.os.Parcelable;
 
+import com.example.lit.exception.BitmapTooLargeException;
 import com.example.lit.exception.HabitFormatException;
-import com.example.lit.location.*;
 import com.example.lit.saving.Saveable;
-import com.google.android.gms.maps.model.LatLng;
+import com.example.lit.exception.HabitFormatException;
 import io.searchbox.annotations.JestId;
 
 import java.io.Serializable;
-import java.sql.Time;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * This class is an abstract habit class
@@ -38,7 +32,7 @@ public abstract class Habit implements Habitable , Serializable, Saveable {
     private String title;
     private Date date;
     public abstract String habitType();
-    private HabitLocation habitLocation;
+    private String user;
     private String reason;
     private int titleLength = 20;
     private int reasonLength = 30;
@@ -62,10 +56,9 @@ public abstract class Habit implements Habitable , Serializable, Saveable {
         this.setDate(date);
     }
 
-    public Habit(String title, Date date, HabitLocation habitLocation, String reason) throws HabitFormatException {
+    public Habit(String title, Date date, String reason) throws HabitFormatException {
         this.setTitle(title);
         this.setDate(date);
-        this.setLocation(habitLocation);
         this.setReason(reason);
     }
 
@@ -75,23 +68,20 @@ public abstract class Habit implements Habitable , Serializable, Saveable {
      * @see com.example.lit.activity.AddHabitActivity
      * @param title Habit name, should be at most 20 char long.
      * @param reason Habit Comment, should be at most 30 char long.
-     * @param habitLocation Set by default when creating the habit
      * @param date Set by GPS when creating the habit
      * @param calendarList Set by user when creating the habit
      * @throws HabitFormatException thrown when title longer than 20 char or reason longer than 30 char
      * */
-    public Habit(String title, Date date, HabitLocation habitLocation, String reason, List<Calendar> calendarList) throws HabitFormatException {
+    public Habit(String title, Date date, String reason, List<Calendar> calendarList) throws HabitFormatException {
         this.setTitle(title);
         this.setDate(date);
-        this.setLocation(habitLocation);
         this.setReason(reason);
         this.setCalendars(calendarList);
     }
 
-    public Habit(String title, Date date, HabitLocation habitLocation, String reason, List<Calendar> calendars, Bitmap image)throws HabitFormatException {
+    public Habit(String title, Date date, String reason, List<Calendar> calendars, Bitmap image)throws HabitFormatException, BitmapTooLargeException{
         this.setTitle(title);
         this.setDate(date);
-        this.setLocation(habitLocation);
         this.setReason(reason);
         this.setCalendars(calendars);
         this.setImage(image);
@@ -108,6 +98,14 @@ public abstract class Habit implements Habitable , Serializable, Saveable {
             throw new HabitFormatException();
         }
         this.title = title;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 
     public Date getDate() {
@@ -139,20 +137,18 @@ public abstract class Habit implements Habitable , Serializable, Saveable {
         this.calendars = calendars;
     }
 
-    public void setLocation(HabitLocation habitLocation){
-        this.habitLocation = habitLocation;
-    }
-
-    public HabitLocation getHabitLocation(){
-        return this.habitLocation;
-    }
 
     public Bitmap getImage() {
         return image;
     }
 
-    public void setImage(Bitmap image) {
-        this.image = image;
+    public void setImage(Bitmap image) throws BitmapTooLargeException {
+        if (image.getByteCount() > 65536){
+            throw new BitmapTooLargeException();
+        }
+        else {
+            this.image = image;
+        }
     }
 
     @Override

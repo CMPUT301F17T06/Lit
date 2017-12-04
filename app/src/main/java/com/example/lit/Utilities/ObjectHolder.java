@@ -8,29 +8,18 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.example.lit.activity;
+package com.example.lit.Utilities;
 
-import android.app.Activity;
-import android.test.ActivityInstrumentationTestCase2;
-
-import com.robotium.solo.Solo;
+import java.io.Serializable;
 
 /**
- * Created by weikailu on 2017-11-13.
+ * Created by weikailu on 2017-12-01.
  */
 
-public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
-    private Solo solo;
+public class ObjectHolder implements Serializable{
+    private Serializable input = null;
 
-    public MapsActivityTest(){
-        super(AddHabitActivity.class);
-    }
+    public  void setInput(Serializable value) { this.input = value; }
 
-    public void setUp(){
-        solo = new Solo(getInstrumentation(),getActivity());
-    }
-
-    public void testStart() throws Exception{
-        Activity activity = getActivity();
-    }
+    public  Serializable getInput() { return input; }
 }

@@ -16,8 +16,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.lit.R;
+import com.example.lit.saving.ElasticSearchHabitController;
+import com.example.lit.userprofile.UserProfile;
+
 /**
  * MainActivity
  * This show at the begining of the app
@@ -38,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText usernameEditText;
     Button loginButton;
+    private UserProfile user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +55,25 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 setResult(RESULT_OK);
                 Intent intent = new Intent(v.getContext(), HomePageActivityNew.class);
-                String username = usernameEditText.getText().toString();
-                //username.setText("");
+                String username = usernameEditText.getText().toString().toLowerCase();
+
+                ElasticSearchHabitController.GetUserTask getUserTask = new ElasticSearchHabitController.GetUserTask();
+                getUserTask.execute(username);
+                if (!username.isEmpty()){
+                    try{
+                        user = getUserTask.get();
+                        if(user == null){
+                            user = new UserProfile(username);
+                            ElasticSearchHabitController.AddUserTask addUserTask = new ElasticSearchHabitController.AddUserTask();
+                            addUserTask.execute(user);
+                            Toast.makeText(getApplicationContext(),"New User created.",Toast.LENGTH_LONG).show();
+                        }else{
+                            Toast.makeText(getApplicationContext(),"User exists.",Toast.LENGTH_LONG).show();
+                        }
+                    }catch(Exception e){
+                    }
+                }
+
                 intent.putExtra("username",username);
                 startActivity(intent);
             }});

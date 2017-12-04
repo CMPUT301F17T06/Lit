@@ -11,29 +11,116 @@
 package com.example.lit.fragment;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ListView;
 
 import com.example.lit.R;
+import com.example.lit.activity.AddHabitActivity;
+import com.example.lit.activity.MapsActivity;
+import com.example.lit.activity.ViewHabitActivity;
+import com.example.lit.activity.ViewHabitEventActivity;
+import com.example.lit.habit.Habit;
+import com.example.lit.habit.NormalHabit;
+import com.example.lit.habitevent.HabitEvent;
+import com.example.lit.habitevent.NormalHabitEvent;
+import com.example.lit.location.HabitLocation;
+import com.example.lit.saving.ElasticSearchHabitController;
+
+import java.util.ArrayList;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class HabitHistoryFragment extends Fragment {
+    ListView eventListView;
+    ArrayList<NormalHabitEvent> eventArrayList ;
+    ArrayAdapter<NormalHabitEvent> eventAdapter;
+    HabitLocation eventLocation;
+    NormalHabitEvent event;
+    Button mapButton;
+    String username;
 
+    FragmentActivity listener;
 
-    public HabitHistoryFragment() {
-        // Required empty public constructor
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try{
+            this.listener = (FragmentActivity) context;
+        }catch (ClassCastException e){
+            throw new ClassCastException(context.toString());
+        }
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        username = getActivity().getIntent().getExtras().getString("username");
+        //DataHandler dataHandler = new DataHandler("username", "HabitList", getActivity());
+        //habitArrayList = dataHandler.loadData();
+        eventArrayList = new ArrayList<>();
+        ElasticSearchHabitController.GetCurrentEventsTask getCurrentEventsTask = new ElasticSearchHabitController.GetCurrentEventsTask();
+        getCurrentEventsTask.execute(username);
+        //habitAdapter.notifyDataSetChanged();
+
+        try {
+            eventArrayList = getCurrentEventsTask.get();
+        } catch (Exception e) {
+            Log.i("Error", "Failed to get the habits from the asyc object");
+        }
+
+        eventAdapter = new ArrayAdapter<NormalHabitEvent>(getActivity(), R.layout.list_item, eventArrayList);
+    }
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_habit_history, container, false);
     }
 
+    @Override
+    public void onViewCreated(final View view, Bundle savedInstanceState) {
+        eventListView = (ListView) view.findViewById(R.id.eventhistory);
+        eventListView.setAdapter(eventAdapter);
+
+        mapButton = (Button) view.findViewById(R.id.Mapbutton);
+
+        eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                Intent intent = new Intent(getActivity(), ViewHabitEventActivity.class);
+                Bundle bundle = new Bundle();
+                NormalHabitEvent selectedEvent = eventArrayList.get(i);
+                bundle.putParcelable("event", selectedEvent);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, 2);
+            }
+        });
+
+        mapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().setResult(RESULT_OK);
+                Intent intent = new Intent(view.getContext(), MapsActivity.class);
+                startActivityForResult(intent,1);
+            }
+        });
+
+        // Inflate the layout for this fragment
+    }
 }

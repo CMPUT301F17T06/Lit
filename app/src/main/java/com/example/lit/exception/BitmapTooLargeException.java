@@ -8,29 +8,12 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.example.lit.activity;
-
-import android.app.Activity;
-import android.test.ActivityInstrumentationTestCase2;
-
-import com.robotium.solo.Solo;
+package com.example.lit.exception;
 
 /**
- * Created by weikailu on 2017-11-13.
+ * Created by Riley Dixon on 01/12/2017.
  */
 
-public class MapsActivityTest extends ActivityInstrumentationTestCase2 {
-    private Solo solo;
+public class BitmapTooLargeException extends Exception {
 
-    public MapsActivityTest(){
-        super(AddHabitActivity.class);
-    }
-
-    public void setUp(){
-        solo = new Solo(getInstrumentation(),getActivity());
-    }
-
-    public void testStart() throws Exception{
-        Activity activity = getActivity();
-    }
 }

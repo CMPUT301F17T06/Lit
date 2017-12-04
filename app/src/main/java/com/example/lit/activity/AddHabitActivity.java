@@ -10,18 +10,10 @@
 
 package com.example.lit.activity;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationManager;
-import android.net.Uri;
 import android.os.StrictMode;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,7 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -37,10 +28,10 @@ import android.widget.Toast;
 import com.example.lit.Utilities.MultiSelectionSpinner;
 import com.example.lit.R;
 import com.example.lit.Utilities.SchduledTask;
+import com.example.lit.exception.BitmapTooLargeException;
 import com.example.lit.habit.Habit;
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.habit.NormalHabit;
-import com.example.lit.location.HabitLocation;
 import com.example.lit.saving.DataHandler;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -68,10 +59,10 @@ public class AddHabitActivity extends AppCompatActivity  {
 
     private static final String CLASS_KEY = "com.example.lit.activity.AddHabitActivity";
     protected static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 0;
+    final int maxSize = 181;
 
     private EditText habitName;
     private EditText habitComment;
-    private CheckBox locationCheck;
     private MultiSelectionSpinner weekday_spinner;
     private Spinner hour_spinner;
     private Spinner minute_spinner;
@@ -80,7 +71,6 @@ public class AddHabitActivity extends AppCompatActivity  {
     private Bitmap image;
     private ImageView habitImage;
     Button editImage;
-    //TODO: Implement image feature
 
     Date habitStartDate;
     String habitNameString;
@@ -91,11 +81,7 @@ public class AddHabitActivity extends AppCompatActivity  {
     List<Calendar> calendarList;
     DataHandler dataHandler;
 
-    LocationManager manager;
-    private HabitLocation habitLocation;
-    private String provider;
-    double latitude;
-    double longitude;
+
     String username;
 
     @Override
@@ -126,7 +112,6 @@ public class AddHabitActivity extends AppCompatActivity  {
         hour_spinner = (Spinner) findViewById(R.id.hour_spinner);
         minute_spinner = (Spinner) findViewById(R.id.minute_spinner);
         weekday_spinner = (MultiSelectionSpinner) findViewById(R.id.weekday_spinner);
-        locationCheck = (CheckBox) findViewById(R.id.locationCheckBox);
         habitImage = (ImageView) findViewById(R.id.HabitImage);
         editImage = (Button)findViewById(R.id.takeImageButton);
 
@@ -143,10 +128,12 @@ public class AddHabitActivity extends AppCompatActivity  {
         ArrayAdapter<String> hourAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, createHourList());
         hourAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         hour_spinner.setAdapter(hourAdapter);
+        hourAdapter.notifyDataSetChanged();
         // Set up minute selection
         ArrayAdapter<String> minuteAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, createMinuteList());
         minuteAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         minute_spinner.setAdapter(minuteAdapter);
+        minuteAdapter.notifyDataSetChanged();
 
         saveHabit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -179,27 +166,35 @@ public class AddHabitActivity extends AppCompatActivity  {
         habitNameString = habitName.getText().toString();
         commentString = habitComment.getText().toString();
         habitStartDate = Calendar.getInstance().getTime();
-        hour = Integer.parseInt(hour_spinner.getSelectedItem().toString());
-        minute = Integer.parseInt(minute_spinner.getSelectedItem().toString());
         weekdays = weekday_spinner.getSelectedStrings();
         try {
+            hour = Integer.parseInt(hour_spinner.getSelectedItem().toString());
+            minute = Integer.parseInt(minute_spinner.getSelectedItem().toString());
             calendarList = buildCalender(weekdays, hour, minute);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        }catch (Exception e) {
+            try{
+                calendarList = buildCalender(weekdays);
+            }catch (ParseException e2){
+                e2.printStackTrace();
+            }
+
         }
 
         //TODO: should build location implicitly when building new habit.
         //habitLocation = buildLocation(locationCheck);
-        habitLocation = null;
+
 
         try {Habit newHabit = new NormalHabit(habitNameString, habitStartDate,
-                habitLocation, commentString, calendarList,image);
+                commentString, calendarList,image);
             dataHandler.saveData(newHabit);
             finish();
         } catch (HabitFormatException e){
             Toast.makeText(AddHabitActivity.this,"Error: Illegal Habit information!",Toast.LENGTH_LONG).show();
-        }catch (Exception e){
-            e.printStackTrace();
+        }catch (BitmapTooLargeException e2){
+            Toast.makeText(AddHabitActivity.this,"Error: Image too large!",Toast.LENGTH_LONG).show();
+        }
+        catch (Exception e3){
+            e3.printStackTrace();
         }
     }
 
@@ -229,12 +224,12 @@ public class AddHabitActivity extends AppCompatActivity  {
     }
 
     private List<String> createHourList(){
-        List<String> hourList = createNumberList(1,24,1);
+        List<String> hourList = createNumberList(0,23,1);
         return hourList;
     }
 
     private List<String> createMinuteList(){
-        List<String> hourList = createNumberList(1,60,1);
+        List<String> hourList = createNumberList(0,59,1);
         return hourList;
     }
 
@@ -257,6 +252,23 @@ public class AddHabitActivity extends AppCompatActivity  {
             calendar.set(Calendar.DAY_OF_WEEK,weekOfDay);
             calendar.set(Calendar.HOUR_OF_DAY,hour);
             calendar.set(Calendar.MINUTE,minute);
+            calendarList.add(calendar);
+
+            // Periodic Timer, only a prototype now
+            Timer timer = new Timer();
+            timer.schedule(new SchduledTask(), calendar.getTime());
+        }
+        return calendarList;
+    }
+
+
+    private List<Calendar> buildCalender(List<String> weekdays)throws ParseException{
+        List<Calendar> calendarList = new ArrayList<Calendar>();
+        for (String weekday:weekdays
+                ) {
+            Calendar calendar = Calendar.getInstance();
+            int weekOfDay = parseDayOfWeek(weekday,Locale.CANADA);
+            calendar.set(Calendar.DAY_OF_WEEK,weekOfDay);
             calendarList.add(calendar);
 
             // Periodic Timer, only a prototype now
@@ -303,50 +315,13 @@ public class AddHabitActivity extends AppCompatActivity  {
      */
     private ArrayList<String> createNumberList(int low, int high, int interval){
         ArrayList<String> numberList = new ArrayList<>();
+        numberList.add(" ");
         for(int i = low; i <= high; i += interval){
             numberList.add(String.valueOf(i));
         }
         return numberList;
     }
 
-    /**
-     * This function will return a Location object containing Latitude and Longitude attribute.
-     *
-     * @param locationCheck location checkbox in AddHabitActivity.
-     *
-     * @return A location object, null if fail to initialize location.
-     * */
-    private Location buildLocation(CheckBox locationCheck){
-                /*if checkbox checked return current location*/
-        Location returnLocation = null;
-        if  (locationCheck.isChecked()){
-            manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            // Define the criteria how to select the locatioin provider -> use
-            // default
-            Criteria criteria = new Criteria();
-            provider = manager.getBestProvider(criteria, false);
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return null;
-            }
-            Location location = manager.getLastKnownLocation(provider);
-            if (location != null) {
-                /*get the latitude and longitude from the location*/
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
-                returnLocation = location;
-            }}
-        else{
-            returnLocation = null;
-        }
-        return returnLocation;
-    }
 
     /**
      * Function used to take picture by camera.
@@ -357,6 +332,14 @@ public class AddHabitActivity extends AppCompatActivity  {
         startActivityForResult(cameraIntent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
     }
 
+    public Bitmap compressPicture(Bitmap bitmap){
+
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap,maxSize,maxSize,true);
+        resizedBitmap.reconfigure(maxSize,maxSize, Bitmap.Config.RGB_565);
+
+        return resizedBitmap;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -364,6 +347,7 @@ public class AddHabitActivity extends AppCompatActivity  {
             if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
                 try {
                     image = (Bitmap) data.getExtras().get("data");
+                    image = compressPicture(image);
                     habitImage.setImageBitmap(image);
                 }catch (Exception e){
                     e.printStackTrace();

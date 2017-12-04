@@ -20,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -30,19 +29,12 @@ import com.example.lit.R;
 import com.example.lit.Utilities.MultiSelectionSpinner;
 import com.example.lit.exception.*;
 import com.example.lit.habit.Habit;
-import com.example.lit.habit.NormalHabit;
-import com.example.lit.location.HabitLocation;
-import com.google.android.gms.maps.model.LatLng;
 
-import java.io.Serializable;
 import java.lang.reflect.Array;
-import java.time.DayOfWeek;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import static com.example.lit.activity.AddHabitActivity.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE;
 
@@ -65,16 +57,11 @@ public class EditHabitActivity extends AppCompatActivity {
     EditText habitComment;
     Button saveHabit;
     Button cancelHabit;
-    CheckBox locationCheck;
     MultiSelectionSpinner weekday_spinner;
     Spinner hour_spinner;
     Spinner minute_spinner;
-
     ImageView habitImage;
     Button editImage;
-    //TODO: Implement image feature
-    //TODO: Implement location feature
-
     Date habitStartDate;
     String habitNameString;
     String commentString;
@@ -97,12 +84,7 @@ public class EditHabitActivity extends AppCompatActivity {
 
             Bundle bundle = getIntent().getExtras();
             currentHabit = (Habit)bundle.getSerializable("habit");
-            //double lat = bundle.getDouble("lat");
-            //double lng = bundle.getDouble("lng");
-            //LatLng latLng = new LatLng(lat, lng);
-            //HabitLocation habitLocation= new HabitLocation(latLng);
-            //currentHabit.setLocation(habitLocation);
-            HabitLocation habitLocation = currentHabit.getHabitLocation();
+
 
             if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
         }catch (LoadHabitException e){
@@ -137,7 +119,6 @@ public class EditHabitActivity extends AppCompatActivity {
         hour_spinner = (Spinner) findViewById(R.id.hour_spinner);
         minute_spinner = (Spinner) findViewById(R.id.minute_spinner);
         weekday_spinner = (MultiSelectionSpinner) findViewById(R.id.weekday_spinner);
-        locationCheck = (CheckBox) findViewById(R.id.locationCheckBox);
         habitImage = (ImageView) findViewById(R.id.HabitImage);
         editImage = (Button)findViewById(R.id.takeImageButton);
 
@@ -154,10 +135,12 @@ public class EditHabitActivity extends AppCompatActivity {
         ArrayAdapter<String> hourAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,createHourList());
         hourAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         hour_spinner.setAdapter(hourAdapter);
+        hourAdapter.notifyDataSetChanged();
         // Set up minute selection
         ArrayAdapter<String> minuteAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,createMinuteList());
         minuteAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        hour_spinner.setAdapter(minuteAdapter);
+        minute_spinner.setAdapter(minuteAdapter);
+        minuteAdapter.notifyDataSetChanged();
 
         // Set up components initial info
         habitName.setText(habitTitleString);
@@ -223,8 +206,6 @@ public class EditHabitActivity extends AppCompatActivity {
         hour = Integer.parseInt(hour_spinner.getSelectedItem().toString());
         minute = Integer.parseInt(minute_spinner.getSelectedItem().toString());
 
-
-        //TODO: should be able to edit habit within this activity
     }
 
 
@@ -289,6 +270,7 @@ public class EditHabitActivity extends AppCompatActivity {
      */
     private ArrayList<String> createNumberList(int low, int high, int interval){
         ArrayList<String> numberList = new ArrayList<>();
+        numberList.add("None");
         for(int i = low; i <= high; i += interval){
             numberList.add(String.valueOf(i));
         }
