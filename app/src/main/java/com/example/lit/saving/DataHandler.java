@@ -100,13 +100,13 @@ public class DataHandler<T extends Saveable> {
         }catch (IOException e){
             throw new RuntimeException();
         }
-
+        /*
         try{
             saveToOnline(element, currentTime);
             lastOnlineSave = currentTime;
         }catch (NotOnlineException e){
             throw new RuntimeException();
-        }
+        }*/
     }
 
     /**
