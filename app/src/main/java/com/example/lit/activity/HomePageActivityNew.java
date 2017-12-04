@@ -24,6 +24,7 @@ import android.support.v7.widget.Toolbar;
 import com.example.lit.R;
 import com.example.lit.Utilities.DataModel;
 import com.example.lit.Utilities.DrawerItemCustomAdapter;
+import com.example.lit.fragment.ActiveHabitsFragment;
 import com.example.lit.fragment.FriendsFragment;
 import com.example.lit.fragment.HabitHistoryFragment;
 import com.example.lit.fragment.MainFragment;
@@ -58,13 +59,15 @@ public class HomePageActivityNew extends AppCompatActivity{
         //frameLayout = (FrameLayout) findViewById(R.id.content_frame);
         setupToolbar();
 
-        DataModel[] drawerItem = new DataModel[5];
+        DataModel[] drawerItem = new DataModel[6];
 
         drawerItem[0] = new DataModel(R.drawable.home,"Home");
         drawerItem[1] = new DataModel(R.drawable.habithistory, "HabitHistory");
-        drawerItem[2] = new DataModel(R.drawable.friends, "Friends");
-        drawerItem[3] = new DataModel(R.drawable.map, "Map");
-        drawerItem[4] = new DataModel(R.drawable.profile, "Profile");
+        drawerItem[2] = new DataModel(R.drawable.activehabits, "Active Habits");
+        drawerItem[3] = new DataModel(R.drawable.friends, "Friends");
+        drawerItem[4] = new DataModel(R.drawable.map, "Map");
+        drawerItem[5] = new DataModel(R.drawable.profile, "Profile");
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setHomeButtonEnabled(true);
 
@@ -101,13 +104,17 @@ public class HomePageActivityNew extends AppCompatActivity{
                 fragment = new HabitHistoryFragment();
                 break;
             case 2:
-                fragment = new FriendsFragment();
+                fragment = new ActiveHabitsFragment();
                 break;
             case 3:
-                fragment = new MapFragment();
+                fragment = new FriendsFragment();
                 break;
             case 4:
+                fragment = new MapFragment();
+                break;
+            case 5:
                 fragment = new ProfileFragment();
+
 
             default:
                 break;
