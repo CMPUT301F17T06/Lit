@@ -27,6 +27,7 @@ import com.example.lit.R;
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.exception.LoadHabitException;
 import com.example.lit.habit.Habit;
+import com.example.lit.habit.NormalHabit;
 import com.example.lit.habitevent.HabitEvent;
 import com.example.lit.habitevent.NormalHabitEvent;
 import com.example.lit.location.HabitLocation;
@@ -37,6 +38,9 @@ import com.google.android.gms.maps.model.LatLng;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+
+import static org.apache.commons.lang3.BooleanUtils.and;
 
 /**
  * viewHabitActivity
@@ -56,10 +60,13 @@ public class ViewHabitActivity extends AppCompatActivity {
 
     private static final String CLASS_KEY = "com.example.lit.activity.ViewHabitActivity";
 
-    Habit currentHabit;
+    NormalHabit currentHabit;
     String habitTitleString;
     String habitCommentString;
     String habitDateStartedString;
+    List<Calendar> habitCalenderList;
+    String weeklyString;
+    TextView weeklyTextView;
     TextView habitTitle;
     TextView habitComment;
     TextView habitDateStarted;
@@ -67,10 +74,12 @@ public class ViewHabitActivity extends AppCompatActivity {
     Button deleteHabit;
     Button mainMenu;
     Button addHabitEventButton;
-    String username;
+    //String username;
     ImageView habitImageView;
     Bitmap habitImage;
-    DataHandler eventDataHanler;
+    DataHandler eventDataHandler;
+    Integer index;
+    ArrayList<NormalHabit> habitArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,29 +89,40 @@ public class ViewHabitActivity extends AppCompatActivity {
 
         try{
             Bundle bundle = getIntent().getExtras();
-            currentHabit = (Habit)bundle.getParcelable("habit");
-            eventDataHanler = (DataHandler)bundle.getSerializable("eventdatahandler");
-            username = (String)bundle.getString("username");
+            currentHabit = (NormalHabit)bundle.getParcelable("habit");
+            eventDataHandler = (DataHandler)bundle.getSerializable("dataHandler");
+            index = bundle.getInt("index");
+
+            habitArrayList = (ArrayList<NormalHabit>) eventDataHandler.loadData();
+
+            //username = (String)bundle.getString("username");
 
             if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
         }catch (LoadHabitException e){
             //TODO: handle LoadHabitException
+        }catch (NoDataException e2){
+            Toast.makeText(ViewHabitActivity.this,"Error: Can't load data! code:5",Toast.LENGTH_LONG).show();
         }
         // Retrieve habit info
         habitTitleString = currentHabit.getTitle();
         habitCommentString = currentHabit.getReason();
         habitDateStartedString = currentHabit.getDate().toString();
         habitImage = currentHabit.getImage();
+        habitCalenderList = currentHabit.getCalendars();
+
 
         // Set up view components
         habitImageView = (ImageView) findViewById(R.id.ViewHabitImage);
         habitTitle = (TextView) findViewById(R.id.habit_title_TextView);
         habitComment = (TextView) findViewById(R.id.Comment_TextView);
         habitDateStarted = (TextView) findViewById(R.id.date_started_TextView);
+        weeklyTextView = (TextView)findViewById(R.id.repeat_schedule);
         habitTitle.setText(habitTitleString);
         habitComment.setText(habitCommentString);
         habitDateStarted.setText(habitDateStartedString);
         habitImageView.setImageBitmap(habitImage);
+        weeklyString = getWeekdayCalenderString(habitCalenderList);
+        weeklyTextView.setText(weeklyString);
 
 
         // Set up buttons
@@ -120,7 +140,7 @@ public class ViewHabitActivity extends AppCompatActivity {
         deleteHabit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                deleteHabit(currentHabit);
+                deleteHabit(habitArrayList, currentHabit);
             }
         });
 
@@ -130,8 +150,8 @@ public class ViewHabitActivity extends AppCompatActivity {
                 Intent intent = new Intent(v.getContext(), AddHabitEventActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("habit", currentHabit);
-                bundle.putSerializable("eventdatehandler",eventDataHanler);
-                bundle.putString("username",username);
+                bundle.putSerializable("dateHandler",eventDataHandler);
+                //bundle.putString("username",username);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,1);
             }});
@@ -154,17 +174,45 @@ public class ViewHabitActivity extends AppCompatActivity {
         Intent intent = new Intent(ViewHabitActivity.this,EditHabitActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable("habit", habit);
+        bundle.putSerializable("eventDataHandler",eventDataHandler);
         intent.putExtras(bundle);
         startActivityForResult(intent,2);
     }
 
     //TODO: delete current habit and return to previous activity
-    public void deleteHabit(Habit habit){
-        //
+    public void deleteHabit(ArrayList<NormalHabit> habitArrayList, NormalHabit currentHabit){
+        habitArrayList.remove(currentHabit);
+        eventDataHandler.saveData(habitArrayList);
+        Log.i("ViewHabitActivity", "Delete button pressed.");
+        finish();
     }
 
-    public String showWeekdayCalender(ArrayList<Calendar> calendarArrayList){
+    public String getWeekdayCalenderString(List<Calendar> calendarList){
 
+        final String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+        String weekdayString = "";
+        int hour = 100;
+        int minute = 100;
+
+        for (Calendar calendar:calendarList){
+            try {
+                int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+                String thisDay = days[dayOfWeek];
+                weekdayString = weekdayString + thisDay + ",";
+                hour = calendar.get(Calendar.HOUR);
+                minute = calendar.get(Calendar.MINUTE);
+            }catch (Exception e){
+                continue;
+            }
+        }
+        if (hour != 100){
+            if (minute != 100){
+                weekdayString  = weekdayString + "  " + Integer.toString(hour) + " : " + Integer.toString(minute);
+            }
+        }
+
+
+        return  weekdayString;
     }
 
 }

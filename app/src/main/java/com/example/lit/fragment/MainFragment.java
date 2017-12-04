@@ -16,7 +16,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,9 +25,6 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import com.example.lit.R;
 import com.example.lit.activity.AddHabitActivity;
 import com.example.lit.activity.ViewHabitActivity;
@@ -36,12 +32,10 @@ import com.example.lit.habit.Habit;
 import com.example.lit.habit.NormalHabit;
 import com.example.lit.habitevent.NormalHabitEvent;
 import com.example.lit.saving.DataHandler;
-import com.example.lit.saving.ElasticSearchHabitController;
 import com.example.lit.saving.NoDataException;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
-import java.util.prefs.NodeChangeEvent;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -57,7 +51,7 @@ public class MainFragment extends Fragment {
     ArrayAdapter<NormalHabit> habitAdapter;
     String username;
     DataHandler<ArrayList<NormalHabit>> dataHandler;
-    DataHandler<ArrayList<NormalHabitEvent>> eventdataHandler;
+    DataHandler<ArrayList<NormalHabitEvent>> eventDataHandler;
 
     FragmentActivity listener;
 
@@ -70,8 +64,6 @@ public class MainFragment extends Fragment {
             throw new ClassCastException(context.toString());
         }
     }
-
-
 
 
     @Override
@@ -97,7 +89,7 @@ public class MainFragment extends Fragment {
         habitAdapter.notifyDataSetChanged();
 
         dataHandler = new DataHandler<>(username,"habit",getActivity(), new TypeToken<ArrayList<NormalHabit>>(){}.getType());
-        eventdataHandler = new DataHandler<>(username,"habitevent",getActivity(),new TypeToken<ArrayList<NormalHabitEvent>>(){}.getType());
+        eventDataHandler = new DataHandler<>(username,"habitevent",getActivity(),new TypeToken<ArrayList<NormalHabitEvent>>(){}.getType());
         try {
             habitArrayList = dataHandler.loadData();
         }catch (NoDataException e){
@@ -106,6 +98,7 @@ public class MainFragment extends Fragment {
 
 
         // A dummy habit for testing
+        /*
         try {
             NormalHabit testHabit = new NormalHabit("test habit title");
             habitArrayList.add(testHabit);
@@ -113,7 +106,7 @@ public class MainFragment extends Fragment {
             dataHandler.saveData(habitArrayList);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
         addHabitButton = (ImageButton) view.findViewById(R.id.add_habit_button);
 
@@ -125,8 +118,9 @@ public class MainFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 Habit selectedHabit = habitArrayList.get(i);
                 bundle.putParcelable("habit", selectedHabit);
-                bundle.putSerializable("eventdataHandler",eventdataHandler);
-                bundle.putString("username",username);
+                bundle.putSerializable("dataHandler",dataHandler);
+                bundle.putInt("index",i);
+                //bundle.putString("username",username);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,2);
             }
@@ -164,15 +158,12 @@ public class MainFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent){
-        if (requestCode == 1){
-            try{
-                habitArrayList = dataHandler.loadData();
-                habitAdapter.notifyDataSetChanged();
-            }catch (NoDataException e){
-                Toast.makeText(getActivity(), "Error: Can't load data! code:1", Toast.LENGTH_SHORT).show();
-            }
+        try{
+            habitArrayList = dataHandler.loadData();
+            habitAdapter.notifyDataSetChanged();
+        }catch (NoDataException e){
+            Toast.makeText(getActivity(), "Error: Can't load data! code:1", Toast.LENGTH_SHORT).show();
         }
-
     }
 
 }

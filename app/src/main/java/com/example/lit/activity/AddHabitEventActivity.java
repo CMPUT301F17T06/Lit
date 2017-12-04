@@ -201,7 +201,7 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
             //newHabitEvent.setUser(username);
            // ElasticSearchHabitController.AddHabitEventTask addHabitEventTask = new ElasticSearchHabitController.AddHabitEventTask();
             //addHabitEventTask.execute(newHabitEvent);
-            bundle.putSerializable("eventdatahandler", eventdataHandler);
+            bundle.putSerializable("eventDataHandler", eventdataHandler);
             //set Fragmentclass Arguments
             HabitHistoryFragment fragment=new HabitHistoryFragment();
             fragment.setArguments(bundle);

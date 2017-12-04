@@ -155,7 +155,10 @@ public abstract class Habit implements Habitable , Parcelable, Saveable {
     }
 
     public void setImage(Bitmap image) throws BitmapTooLargeException {
-        if (image.getByteCount() > 65536){
+        if (image == null){
+            this.image = null;
+        }
+        else if (image.getByteCount() > 65536){
             throw new BitmapTooLargeException();
         }
         else {
