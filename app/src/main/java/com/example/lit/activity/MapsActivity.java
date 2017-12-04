@@ -118,10 +118,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     }
                 };
-                if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-                } else {
-                    manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+                try {
+                    if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                        Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        locationListener.onLocationChanged(location);
+
+                    } else {
+                        manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+                        Location location = manager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                        locationListener.onLocationChanged(location);
+                    }
+                }catch(NullPointerException N){
+                    Toast.makeText(MapsActivity.this, "GPS null functioning", Toast.LENGTH_LONG).show();
                 }
                 if (!(markers == null)) {
                     int size = markers.size();
