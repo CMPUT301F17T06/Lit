@@ -105,14 +105,15 @@ public class ActiveHabitsFragment extends Fragment {
             e.printStackTrace();
         }*/
 
-        /*DataHandler<ArrayList<NormalHabit>> dataHandler = new DataHandler(username,"habit",getActivity());
+        DataHandler<ArrayList<NormalHabit>> dataHandler = new DataHandler(username,"habit",getActivity());
 
         try{
             habitArrayList = dataHandler.loadData();
         }catch (NoDataException e){
             habitArrayList = new ArrayList<NormalHabit>();
+            habitAdapter.notifyDataSetChanged();
         }
-*/
+
         addHabitButton = (ImageButton) view.findViewById(R.id.add_habit_button);
 
         habitsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
