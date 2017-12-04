@@ -150,7 +150,7 @@ public class HomePageActivity extends AppCompatActivity {
                 Intent intent = new Intent(HomePageActivity.this,ViewHabitActivity.class);
                 Bundle bundle = new Bundle();
                 Habit selectedHabit = habitArrayList.get(i);
-                bundle.putSerializable("habit", selectedHabit);
+                bundle.putParcelable("habit", selectedHabit);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,2);
             }

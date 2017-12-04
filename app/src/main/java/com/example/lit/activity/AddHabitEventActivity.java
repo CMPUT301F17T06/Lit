@@ -40,11 +40,14 @@ import android.widget.Toast;
 import com.example.lit.R;
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.exception.LoadHabitException;
+import com.example.lit.fragment.HabitHistoryFragment;
 import com.example.lit.habit.Habit;
 import com.example.lit.habitevent.HabitEvent;
+import com.example.lit.habitevent.HabitHistory;
 import com.example.lit.habitevent.NormalHabitEvent;
 import com.example.lit.location.HabitLocation;
 import com.example.lit.location.PlaceAutocompleteAdapter;
+import com.example.lit.saving.DataHandler;
 import com.example.lit.saving.ElasticSearchHabitController;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -103,7 +106,7 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
     private GoogleApiClient mGoogleApiClient;
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
             new LatLng(-40, -168), new LatLng(71, 136));
-
+    DataHandler<ArrayList<NormalHabitEvent>> dataHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +116,7 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
 
         try{
             Bundle bundle = getIntent().getExtras();
-            currentHabit = (Habit)bundle.getSerializable("habit");
+            currentHabit = (Habit)bundle.getParcelable("habit");
             username = (String)bundle.getString("username");
             if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
         }catch (LoadHabitException e){
@@ -147,7 +150,12 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
             @Override
             public void onClick(View view) {
                 Log.i("AddHabitEventActivity", "Save Button pressed.");
-                returnNewHabitEvent(view);
+                setResult(RESULT_OK);
+                Intent intent = new Intent(view.getContext(),HabitHistoryFragment.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("dataHandler",dataHandler);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 finish();
             }
         });

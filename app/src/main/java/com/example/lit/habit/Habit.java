@@ -11,6 +11,8 @@
 package com.example.lit.habit;
 
 import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.example.lit.exception.BitmapTooLargeException;
 import com.example.lit.exception.HabitFormatException;
@@ -19,6 +21,7 @@ import com.example.lit.exception.HabitFormatException;
 import io.searchbox.annotations.JestId;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -27,7 +30,7 @@ import java.util.List;
  * This class is an abstract habit class
  * @author Steven Weikai Lu
  */
-public abstract class Habit implements Habitable , Serializable, Saveable {
+public abstract class Habit implements Habitable , Parcelable, Saveable {
 
     private String title;
     private Date date;
@@ -155,6 +158,38 @@ public abstract class Habit implements Habitable , Serializable, Saveable {
     public String toString() {
         return "Habit Name: " + this.getTitle() + '\n' +
                 "Started From: " + this.getDate();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.title);
+        dest.writeLong(this.date != null ? this.date.getTime() : -1);
+        dest.writeString(this.user);
+        dest.writeString(this.reason);
+        dest.writeInt(this.titleLength);
+        dest.writeInt(this.reasonLength);
+        dest.writeList(this.calendars);
+        dest.writeString(this.id);
+        dest.writeParcelable(this.image, flags);
+    }
+
+    protected Habit(Parcel in) {
+        this.title = in.readString();
+        long tmpDate = in.readLong();
+        this.date = tmpDate == -1 ? null : new Date(tmpDate);
+        this.user = in.readString();
+        this.reason = in.readString();
+        this.titleLength = in.readInt();
+        this.reasonLength = in.readInt();
+        this.calendars = new ArrayList<Calendar>();
+        in.readList(this.calendars, Calendar.class.getClassLoader());
+        this.id = in.readString();
+        this.image = in.readParcelable(Bitmap.class.getClassLoader());
     }
 
 }

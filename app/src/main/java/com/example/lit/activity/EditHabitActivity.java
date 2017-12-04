@@ -83,7 +83,7 @@ public class EditHabitActivity extends AppCompatActivity {
         try{
 
             Bundle bundle = getIntent().getExtras();
-            currentHabit = (Habit)bundle.getSerializable("habit");
+            currentHabit = (Habit)bundle.getParcelable("habit");
 
 
             if (!(currentHabit instanceof Habit)) throw new LoadHabitException();

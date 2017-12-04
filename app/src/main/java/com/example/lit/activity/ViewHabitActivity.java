@@ -74,7 +74,7 @@ public class ViewHabitActivity extends AppCompatActivity {
 
         try{
             Bundle bundle = getIntent().getExtras();
-            currentHabit = (Habit)bundle.getSerializable("habit");
+            currentHabit = (Habit)bundle.getParcelable("habit");
             username = (String)bundle.getString("username");
 
             if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
@@ -122,7 +122,7 @@ public class ViewHabitActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), AddHabitEventActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("habit", currentHabit);
+                bundle.putParcelable("habit", currentHabit);
                 bundle.putString("username",username);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,1);
@@ -145,7 +145,7 @@ public class ViewHabitActivity extends AppCompatActivity {
 
         Intent intent = new Intent(ViewHabitActivity.this,EditHabitActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putSerializable("habit", habit);
+        bundle.putParcelable("habit", habit);
         intent.putExtras(bundle);
         startActivityForResult(intent,2);
     }

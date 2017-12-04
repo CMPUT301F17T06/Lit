@@ -113,9 +113,9 @@ public class ActiveHabitsFragment extends Fragment {
 
                 Intent intent = new Intent(getActivity(),ViewHabitActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("habitList", habitArrayList);
-                bundle.putInt("index",i);
-                bundle.putSerializable("dataHandler",dataHandler);
+                Habit selectedHabit = habitArrayList.get(i);
+                bundle.putParcelable("habit", selectedHabit);
+                bundle.putString("username",username);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,2);
             }
