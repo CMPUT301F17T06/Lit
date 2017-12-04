@@ -16,6 +16,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,20 +75,21 @@ public class HabitHistoryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_habit_history, container, false);
+        eventArrayList = new ArrayList<>();
         try {
             eventdatahandler = (DataHandler) getArguments().getSerializable("eventdatahandler");
-        }catch (NullPointerException e){
-            eventdatahandler = null;
 
-        }
-        View view = inflater.inflate(R.layout.fragment_habit_history, container, false);
         username = getActivity().getIntent().getExtras().getString("username");
         //DataHandler dataHandler = new DataHandler("username", "HabitList", getActivity());
-        try {
+
             eventArrayList = eventdatahandler.loadData();
         }catch (NoDataException e) {
             eventArrayList = new ArrayList<>();
             Toast.makeText(getActivity(), "No data!", Toast.LENGTH_SHORT).show();
+        }
+        catch (NullPointerException n){
+            eventArrayList =new ArrayList<>();
         }
 
 
@@ -145,6 +147,8 @@ public class HabitHistoryFragment extends Fragment {
             eventArrayList = eventdatahandler.loadData();
         }catch (NoDataException e){
             Toast.makeText(getActivity(), "Error: Can't load data! code:3", Toast.LENGTH_SHORT).show();
+        }catch (NullPointerException n){
+            Toast.makeText(getActivity(),"No data",Toast.LENGTH_SHORT).show();
         }
 
         eventAdapter.notifyDataSetChanged();
