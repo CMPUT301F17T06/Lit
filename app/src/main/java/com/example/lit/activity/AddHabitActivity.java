@@ -343,20 +343,10 @@ public class AddHabitActivity extends AppCompatActivity  {
     }
 
     public Bitmap compressPicture(Bitmap bitmap){
-        final int maxSize = 665536 / (1024*1024);
-        int outWidth;
-        int outHeight;
-        int inWidth = bitmap.getWidth();
-        int inHeight = bitmap.getHeight();
-        if(inWidth > inHeight){
-            outWidth = maxSize;
-            outHeight = (inHeight * maxSize) / inWidth;
-        } else {
-            outHeight = maxSize;
-            outWidth = (inWidth * maxSize) / inHeight;
-        }
+        final int maxSize = 665536 / (1024*10);
 
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, outWidth, outHeight, false);
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap,maxSize,maxSize,true);
+
         return resizedBitmap;
     }
 
