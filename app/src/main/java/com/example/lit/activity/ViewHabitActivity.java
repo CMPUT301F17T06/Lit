@@ -244,7 +244,7 @@ public class ViewHabitActivity extends AppCompatActivity {
             if (calendarList.size() > 1){
                 for (Calendar calendar : calendarList) {
                     int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-                    selectedWeekdays.add(dayOfWeek-1);
+                    selectedWeekdays.add(dayOfWeek);
                 }
             }
             else {
@@ -263,7 +263,7 @@ public class ViewHabitActivity extends AppCompatActivity {
      */
     public String getWeekdayCalenderString(List<Integer> selectedWeekdays,int hour, int minute){
 
-        final String[] days = {"None","Sunday","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+        final String[] days = {"None","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday","Sunday"};
         String weekdayString = "";
 
         if (selectedWeekdays.size() > 0){

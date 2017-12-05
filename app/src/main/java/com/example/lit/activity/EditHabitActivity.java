@@ -161,8 +161,8 @@ public class EditHabitActivity extends AppCompatActivity {
         habitName.setText(habitTitleString);
         habitComment.setText(habitCommentString);
         habitImage.setImageBitmap(image);
-        hour_spinner.setSelection(hour);
-        minute_spinner.setSelection(minute);
+        hour_spinner.setSelection(hour+1);
+        minute_spinner.setSelection(minute+1);
         weekday_spinner.setSelection(selectedWeekdays);
 
         saveHabit.setOnClickListener(new View.OnClickListener() {
@@ -234,7 +234,7 @@ public class EditHabitActivity extends AppCompatActivity {
             if (calendarList.size() > 1){
                 for (Calendar calendar : calendarList) {
                     int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-                    selectedWeekdays.add(dayOfWeek-1);
+                    selectedWeekdays.add(dayOfWeek);
                 }
             }
             else {
@@ -294,7 +294,8 @@ public class EditHabitActivity extends AppCompatActivity {
                 try{
                     calendarList = buildCalender(weekdays,hour,minute);
                 }catch (ParseException e){
-                    Toast.makeText(this, "Error: Can't build calender!", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "Error: Can't build calender!", Toast.LENGTH_SHORT).show();
+                    calendarList = new ArrayList<>();
                 }
             }
         }
@@ -336,13 +337,13 @@ public class EditHabitActivity extends AppCompatActivity {
     private ArrayList<String> createWeekdayList(){
         ArrayList<String> weekdayList = new ArrayList<String>();
         weekdayList.add("None");
-        weekdayList.add("Sunday");
         weekdayList.add("Monday");
         weekdayList.add("Tuesday");
         weekdayList.add("Wednesday");
         weekdayList.add("Thursday");
         weekdayList.add("Friday");
         weekdayList.add("Saturday");
+        weekdayList.add("Sunday");
 
         return weekdayList;
     }

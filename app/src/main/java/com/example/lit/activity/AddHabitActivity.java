@@ -178,29 +178,40 @@ public class AddHabitActivity extends AppCompatActivity  {
         weekdays = weekday_spinner.getSelectedStrings();
         try {
             hour = Integer.parseInt(hour_spinner.getSelectedItem().toString());
+        }catch (NumberFormatException e){
+            hour = null;
+        }
+        try{
             minute = Integer.parseInt(minute_spinner.getSelectedItem().toString());
-            calendarList = buildCalender(weekdays, hour, minute);
-        }catch (Exception e) {
-            try{
-                calendarList = buildCalender(weekdays);
-            }catch (ParseException e2){
-                e2.printStackTrace();
+        }catch (NumberFormatException e){
+            minute = null;
+        }
+        weekdays = weekday_spinner.getSelectedStrings();
+
+        // Build a calender ArrayList
+        calendarList = new ArrayList<>();
+        if ((hour!=null) && (minute!=null)){
+            if (weekdays!=null){
+                try{
+                    calendarList = buildCalender(weekdays,hour,minute);
+                }catch (ParseException e){
+                    Toast.makeText(this, "Error: Can't build calender!", Toast.LENGTH_SHORT).show();
+                }
             }
         }
 
 
-        try {NormalHabit newHabit = new NormalHabit(habitNameString, habitStartDate,
-                commentString, calendarList,image);
+        try {
+            NormalHabit newHabit = new NormalHabit(habitNameString, habitStartDate, commentString, calendarList,image);
             habitArrayList.add(newHabit);
             dataHandler.saveData(habitArrayList);
             Log.i("AddHabitActivity", "Save button pressed. Habit saved successfully.");
             finish();
         } catch (HabitFormatException e){
             Toast.makeText(AddHabitActivity.this,"Error: Illegal Habit information!",Toast.LENGTH_LONG).show();
-        }catch (BitmapTooLargeException e2){
+        } catch (BitmapTooLargeException e2){
             Toast.makeText(AddHabitActivity.this,"Error: Image too large!",Toast.LENGTH_LONG).show();
-        }
-        catch (Exception e3){
+        } catch (Exception e3){
             e3.printStackTrace();
         }
     }
@@ -219,13 +230,13 @@ public class AddHabitActivity extends AppCompatActivity  {
     private ArrayList<String> createWeekdayList(){
         ArrayList<String> weekdayList = new ArrayList<String>();
         weekdayList.add("None");
-        weekdayList.add("Sunday");
         weekdayList.add("Monday");
         weekdayList.add("Tuesday");
         weekdayList.add("Wednesday");
         weekdayList.add("Thursday");
         weekdayList.add("Friday");
         weekdayList.add("Saturday");
+        weekdayList.add("Sunday");
 
         return weekdayList;
     }
@@ -319,7 +330,7 @@ public class AddHabitActivity extends AppCompatActivity  {
      */
     private ArrayList<String> createNumberList(int low, int high, int interval){
         ArrayList<String> numberList = new ArrayList<>();
-        numberList.add(" ");
+        numberList.add("None");
         for(int i = low; i <= high; i += interval){
             numberList.add(String.valueOf(i));
         }
