@@ -194,9 +194,9 @@ public class EditHabitActivity extends AppCompatActivity {
     }
 
     /**
-     *
+     * Function takes in a List of Calendars and gets the minutes 
      * @param calendarList
-     * @return
+     * @return minute
      */
     public int getMinute(List<Calendar> calendarList){
         int minute=0;

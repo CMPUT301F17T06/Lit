@@ -227,6 +227,11 @@ public class AddHabitActivity extends AppCompatActivity  {
         return true;
     }
 
+    /**
+     * Function creates an ArrayList of strings containing the weekdays and None
+     * and returns the ArrayList object
+     * @return weekdayList
+     */
     private ArrayList<String> createWeekdayList(){
         ArrayList<String> weekdayList = new ArrayList<String>();
         weekdayList.add("None");
@@ -241,11 +246,21 @@ public class AddHabitActivity extends AppCompatActivity  {
         return weekdayList;
     }
 
+    /**
+     * Function creates a list of strings from 0 to 23 with an interval of 1
+     * and returns list object
+     * @return hourList
+     */
     private List<String> createHourList(){
         List<String> hourList = createNumberList(0,23,1);
         return hourList;
     }
 
+    /**
+     * Function creates a List of strings from 0 to 59 with an interval of 1 and returns
+     * the list object
+     * @return hourList
+     */
     private List<String> createMinuteList(){
         List<String> hourList = createNumberList(0,59,1);
         return hourList;
@@ -279,7 +294,13 @@ public class AddHabitActivity extends AppCompatActivity  {
         return calendarList;
     }
 
-
+    /**
+     * Function takes in a list of strings containing weekdays and returns an array list of calendar
+     * objects
+     * @param weekdays
+     * @return calendarList
+     * @throws ParseException
+     */
     private List<Calendar> buildCalender(List<String> weekdays)throws ParseException{
         List<Calendar> calendarList = new ArrayList<Calendar>();
         for (String weekday:weekdays
@@ -347,6 +368,11 @@ public class AddHabitActivity extends AppCompatActivity  {
         startActivityForResult(cameraIntent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
     }
 
+    /**
+     * Function takes in a Bitmap objects ad resize it to maxSize
+     * @param bitmap
+     * @return resized bitmap
+     */
     public Bitmap compressPicture(Bitmap bitmap){
 
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap,maxSize,maxSize,true);
