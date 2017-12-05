@@ -24,8 +24,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.lit.R;
@@ -58,7 +62,12 @@ public class HabitHistoryFragment extends Fragment {
     NormalHabitEvent event;
     Button mapButton;
     String username;
+    Button searchButton;
+    RadioGroup typeToSearch;
+    EditText searchString;
     DataHandler<ArrayList<NormalHabitEvent>>  eventdatahandler;
+    String type;
+    ArrayList<NormalHabitEvent> totalList;
 
     FragmentActivity listener;
 
@@ -77,11 +86,12 @@ public class HabitHistoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_habit_history, container, false);
         username = getActivity().getIntent().getExtras().getString("username");
-        eventArrayList = new ArrayList<>();
+
 
         eventdatahandler = new DataHandler<>(username,"habitevent",getActivity(),new TypeToken<ArrayList<NormalHabitEvent>>(){}.getType());
 
         try{
+
             eventArrayList = eventdatahandler.loadData();
         }catch (NoDataException e) {
             eventArrayList = new ArrayList<>();
@@ -107,8 +117,27 @@ public class HabitHistoryFragment extends Fragment {
         eventListView.setAdapter(eventAdapter);
         eventAdapter.notifyDataSetChanged();
 
-        mapButton = (Button) view.findViewById(R.id.Mapbutton);
 
+        mapButton = (Button) view.findViewById(R.id.Mapbutton);
+        searchButton = (Button) view.findViewById(R.id.searchbutton);
+        typeToSearch = (RadioGroup) view.findViewById(R.id.radiogroup);
+        searchString = (EditText) view.findViewById(R.id.searchstring);
+
+        typeToSearch.clearCheck();
+
+        typeToSearch.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if(checkedId == R.id.searchtype){
+                    type = "Type";
+                }
+                else{
+                    if (checkedId == R.id.searchcomment){
+                        type = "Comment";
+                    }
+                }
+
+            }});
 
         eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -134,6 +163,46 @@ public class HabitHistoryFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().setResult(RESULT_OK);
+
+                eventArrayList.clear();
+                try{
+                    totalList=eventdatahandler.loadData();
+                }catch(NoDataException e){
+                    Toast.makeText(getActivity(),"No History to search",Toast.LENGTH_SHORT).show();
+            }
+                if(type ==null){
+                    Toast.makeText(getActivity(),"Choose the radio button and try again",Toast.LENGTH_SHORT).show();
+                }
+                else{
+
+                    if(type == "Type"){
+                        for(int i = 0; i< totalList.size();i++){
+                            NormalHabitEvent event = totalList.get(i);
+                            String name = event.getHabitEventName();
+                            if (name == searchString.getText().toString() ){
+                                eventArrayList.add(event);
+                            }
+                    }}
+                    else{
+                        for(int i = 0; i< totalList.size();i++){
+                            NormalHabitEvent event = totalList.get(i);
+                            String comment = event.getEventComment();
+                            if(comment == searchString.getText().toString()){
+                                eventArrayList.add(event);
+                            }
+                    }
+                }
+                    eventAdapter.notifyDataSetChanged();
+
+                    searchString.setText("");
+                    Toast.makeText(getActivity(),"Search finished",Toast.LENGTH_SHORT).show();
+
+            }
+            }});
 
         // Inflate the layout for this fragment
         return view;
