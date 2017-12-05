@@ -141,7 +141,7 @@ public class DataHandler<T> implements Serializable{
      * @throws NoDataException If no data was able to be loaded this exception is thrown.
      * @return Returns the save data for object type T.
      */
-    public T loadData(T element,Type typeOfObject) throws NoDataException {
+    public T loadData() throws NoDataException {
         T loadedElementOffline;
         T loadedElementOnline;
 
