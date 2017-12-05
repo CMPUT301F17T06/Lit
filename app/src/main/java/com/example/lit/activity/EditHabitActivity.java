@@ -194,7 +194,8 @@ public class EditHabitActivity extends AppCompatActivity {
     }
 
     /**
-     * Function takes in a List of Calendars and gets the minutes 
+     * Function takes in a List of Calendars, gets the minutes from the List
+     * and returns the minutes
      * @param calendarList
      * @return minute
      */
@@ -209,9 +210,10 @@ public class EditHabitActivity extends AppCompatActivity {
     }
 
     /**
-     *
+     * Function takes in a List of Calendars, gets the hours from the List
+     * and returns the hours
      * @param calendarList
-     * @return
+     * @return hour
      */
     public int getHour(List<Calendar> calendarList){
         int hour=0;
@@ -224,9 +226,10 @@ public class EditHabitActivity extends AppCompatActivity {
     }
 
     /**
-     *
+     * Function takes in a List of Calendars and returns an ArrayList of
+     * selected weekdays
      * @param calendarList
-     * @return
+     * @return selectedWeekdays
      */
     public ArrayList<Integer> getSelectedWeekdays(List<Calendar> calendarList){
         selectedWeekdays = new ArrayList<>();
@@ -267,6 +270,7 @@ public class EditHabitActivity extends AppCompatActivity {
     }
 
     /**
+     * Function takes in a view object and saves new habit with modified data
      * @param saveNewHabitButton the view currently in
      * */
     public void returnNewHabit(View saveNewHabitButton){
@@ -332,7 +336,9 @@ public class EditHabitActivity extends AppCompatActivity {
     }
 
     /**
-     *@return returns an array list of string from Monday to Sunday
+     * Function creates an ArrayList of strings and populates then with strings
+     * corresponding to weekdays and None then it returns the ArrayList
+     *@return weekdayList
      * */
     private ArrayList<String> createWeekdayList(){
         ArrayList<String> weekdayList = new ArrayList<String>();
@@ -349,18 +355,20 @@ public class EditHabitActivity extends AppCompatActivity {
     }
 
     /**
-     * @return  return an array list of number from 1 to 24 in string format
-     * */
+     * Function creates a list of strings from 0 to 23 with an interval of 1
+     * and returns list object
+     * @return hourList
+     */
     private List<String> createHourList(){
         List<String> hourList = createNumberList(0,23,1);
         return hourList;
     }
 
     /**
-     * Returns an array list of number from 1 to 60 in string format
-     *
-     * @return  An array list of number fom 1 to 60 in string format
-     * */
+     * Function creates a List of strings from 0 to 59 with an interval of 1 and returns
+     * the list object
+     * @return hourList
+     */
     private List<String> createMinuteList(){
         List<String> hourList = createNumberList(0,59,1);
         return hourList;
@@ -405,7 +413,11 @@ public class EditHabitActivity extends AppCompatActivity {
         return ret;
     }
 
-
+    /**
+     * Function takes in a Bitmap objects ad resize it to maxSize
+     * @param bitmap
+     * @return resized bitmap
+     */
     public Bitmap compressPicture(Bitmap bitmap){
 
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap,maxSize,maxSize,true);
@@ -414,6 +426,13 @@ public class EditHabitActivity extends AppCompatActivity {
         return resizedBitmap;
     }
 
+    /**
+     * Function takes in a list of strings containing weekdays and returns an array list of calendar
+     * objects
+     * @param weekdays
+     * @return calendarList
+     * @throws ParseException
+     */
     private List<Calendar> buildCalender(List<String> weekdays)throws ParseException{
         List<Calendar> calendarList = new ArrayList<Calendar>();
         for (String weekday:weekdays
