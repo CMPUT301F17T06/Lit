@@ -72,8 +72,6 @@ public class ActiveHabitsFragment extends Fragment {
     }
 
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -104,16 +102,6 @@ public class ActiveHabitsFragment extends Fragment {
             habitArrayList = new ArrayList<>();
         }
 
-
-        // A dummy habit for testing
-        try {
-            NormalHabit testHabit = new NormalHabit("test habit title");
-            habitArrayList.add(testHabit);
-            habitAdapter.notifyDataSetChanged();
-            dataHandler.saveData(habitArrayList);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         addHabitButton = (ImageButton) view.findViewById(R.id.add_habit_button);
 

@@ -98,7 +98,7 @@ public class AddHabitActivity extends AppCompatActivity  {
             Bundle bundle = getIntent().getExtras();
             dataHandler = (DataHandler) bundle.getSerializable("dataHandler");
         }catch (NullPointerException e){
-            Toast.makeText(AddHabitActivity.this,"Error: Can't load data! code:3",Toast.LENGTH_LONG).show();
+            //Toast.makeText(AddHabitActivity.this,"Error: Can't load data! code:3",Toast.LENGTH_LONG).show();
         }
         try {
             habitArrayList = (ArrayList<NormalHabit>) dataHandler.loadData();
