@@ -114,12 +114,12 @@ public class DataHandler<T> implements Serializable{
     public void saveData(T element){
         long currentTime = System.currentTimeMillis();
 
-        try{
+        /*try{
             saveToOnline(element,typeOfObject,currentTime);
             lastOnlineSave = currentTime;
         }catch (Exception e){
             Log.i("Server","Offline");
-        }
+        }*/
         try{
             saveToOffline(element, currentTime);
             lastOfflineSave = currentTime;

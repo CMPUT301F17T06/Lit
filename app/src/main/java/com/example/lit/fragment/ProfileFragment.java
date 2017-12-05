@@ -13,6 +13,7 @@ package com.example.lit.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -107,7 +108,7 @@ public class ProfileFragment extends Fragment {
             public void onClick(View view) {
                 Log.d("ProfileActivity", "Editing profile of user: " + currentUser.getName());
                 Intent editThisProfile = new Intent(getActivity(), ProfileEditActivity.class);
-                editThisProfile.putExtra(ProfileEditActivity.ACTIVITY_KEY, currentUser);
+                editThisProfile.putExtra(ProfileEditActivity.ACTIVITY_KEY, (Parcelable)currentUser);
                 startActivityForResult(editThisProfile, ProfileEditActivity.EDIT_USERPROFILE_CODE);
             }
         });
@@ -153,7 +154,7 @@ public class ProfileFragment extends Fragment {
      */
     private void initiateFollowActivity(String option){
         Intent listOfFollowingers = new Intent(getActivity(), ProfileFollowActivity.class);
-        listOfFollowingers.putExtra(ProfileFollowActivity.ACTIVITY_KEY, currentUser);
+        listOfFollowingers.putExtra(ProfileFollowActivity.ACTIVITY_KEY, (Parcelable)currentUser);
 
         //TODO: unnecessary if branch
         if(option.equals("following")){

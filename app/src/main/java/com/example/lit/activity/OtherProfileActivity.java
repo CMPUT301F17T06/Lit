@@ -13,6 +13,7 @@ package com.example.lit.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -157,7 +158,7 @@ public class OtherProfileActivity extends AppCompatActivity {
     //This is to be used if the follower and following textiews should support this functionality.
     private void initiateFollowActivity(String option){
         Intent listOfFollowingers = new Intent(OtherProfileActivity.this, ProfileFollowActivity.class);
-        listOfFollowingers.putExtra(ProfileFollowActivity.ACTIVITY_KEY, currentUser);
+        listOfFollowingers.putExtra(ProfileFollowActivity.ACTIVITY_KEY, (Parcelable)currentUser);
 
         if(option.equals("following")){
             listOfFollowingers.putExtra(ProfileFollowActivity.OPERATION_MODE, option);
@@ -204,14 +205,21 @@ public class OtherProfileActivity extends AppCompatActivity {
         String buttonState = followButton.getText().toString();
         if(buttonState.equals("Follow")){
             FollowManager.requestToFollowOther(currentUser, otherUser, currentDataHandler, otherDataHandler);
+            Log.d("OtherProfileActivity", "Requesting to follow");
+
         }else if(buttonState.equals("Requested")){
             FollowManager.cancelRequestToFollowOther(currentUser, otherUser, currentDataHandler, otherDataHandler);
+            Log.d("OtherProfileActivity", "cancel request to follow");
+
         }else if(buttonState.equals("Following")){
             FollowManager.unFollowUser(currentUser, otherUser, currentDataHandler, otherDataHandler);
+            Log.d("OtherProfileActivity", "unfollow");
+
         }else{
             Log.wtf("OtherProfileActivity", "Unknown button state.");
             throw new RuntimeException("Crash Me!"); //Crash ourselves since we shouldn't be here
         }
+        followButton.setText(setButtonText());
     }
 
 }
