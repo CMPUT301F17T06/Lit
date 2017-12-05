@@ -219,13 +219,13 @@ public class AddHabitActivity extends AppCompatActivity  {
     private ArrayList<String> createWeekdayList(){
         ArrayList<String> weekdayList = new ArrayList<String>();
         weekdayList.add("None");
+        weekdayList.add("Sunday");
         weekdayList.add("Monday");
         weekdayList.add("Tuesday");
         weekdayList.add("Wednesday");
         weekdayList.add("Thursday");
         weekdayList.add("Friday");
         weekdayList.add("Saturday");
-        weekdayList.add("Sunday");
 
         return weekdayList;
     }

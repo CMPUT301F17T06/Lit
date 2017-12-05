@@ -85,6 +85,7 @@ public class EditHabitActivity extends AppCompatActivity {
     DataHandler<ArrayList<NormalHabit>> dataHandler;
     ArrayList<NormalHabit> habitArrayList;
     int maxSize = 64;
+    int index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +94,9 @@ public class EditHabitActivity extends AppCompatActivity {
 
         try{
             Bundle bundle = getIntent().getExtras();
+            index = bundle.getInt("index");
             currentHabit = (Habit)bundle.getParcelable("habit");
+            if (currentHabit == null) throw new LoadHabitException();
             dataHandler = (DataHandler) bundle.getSerializable("DataHandler");
 
             try {
@@ -101,14 +104,13 @@ public class EditHabitActivity extends AppCompatActivity {
             }catch (NoDataException e){
                 Toast.makeText(EditHabitActivity.this,"Error loading data handler!",Toast.LENGTH_LONG).show();
                 habitArrayList = new ArrayList<>();
-            }catch (Exception e1){
+            }/*catch (Exception e1){
                 Toast.makeText(EditHabitActivity.this,"Error: Unexpected Exception!",Toast.LENGTH_LONG).show();
                 e1.printStackTrace();
                 habitArrayList = new ArrayList<>();
                 //finish();
-            }
+            }*/
 
-            if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
         }catch (LoadHabitException e){
             e.printStackTrace();
             Toast.makeText(this,"Error loading habit!",Toast.LENGTH_LONG).show();
@@ -268,38 +270,49 @@ public class EditHabitActivity extends AppCompatActivity {
      * @param saveNewHabitButton the view currently in
      * */
     public void returnNewHabit(View saveNewHabitButton){
+
+        // Collect Info
         habitNameString = habitName.getText().toString();
         commentString = habitComment.getText().toString();
         habitStartDate = Calendar.getInstance().getTime();
-        hour = Integer.parseInt(hour_spinner.getSelectedItem().toString());
-        minute = Integer.parseInt(minute_spinner.getSelectedItem().toString());
-        weekdays = weekday_spinner.getSelectedStrings();
-
         try {
             hour = Integer.parseInt(hour_spinner.getSelectedItem().toString());
+        }catch (NumberFormatException e){
+            hour = null;
+        }
+        try{
             minute = Integer.parseInt(minute_spinner.getSelectedItem().toString());
-            calendarList = buildCalender(weekdays, hour, minute);
-        }catch (Exception e) {
-            try{
-                calendarList = buildCalender(weekdays);
-            }catch (ParseException e2){
-                e2.printStackTrace();
+        }catch (NumberFormatException e){
+            minute = null;
+        }
+        weekdays = weekday_spinner.getSelectedStrings();
+
+        // Build a calender ArrayList
+        calendarList = new ArrayList<>();
+        if ((hour!=null) && (minute!=null)){
+            if (weekdays!=null){
+                try{
+                    calendarList = buildCalender(weekdays,hour,minute);
+                }catch (ParseException e){
+                    Toast.makeText(this, "Error: Can't build calender!", Toast.LENGTH_SHORT).show();
+                }
             }
         }
 
-
-        try {NormalHabit newHabit = new NormalHabit(habitNameString, habitStartDate,
-                commentString, calendarList,image);
-            habitArrayList.set(habitArrayList.indexOf(currentHabit),newHabit);
+        // Save edited habit
+        try {
+            NormalHabit newHabit = new NormalHabit(habitNameString, habitStartDate, commentString, calendarList,image);
+            habitArrayList.set(index,newHabit);
             dataHandler.saveData(habitArrayList);
+            Toast.makeText(this, "Habit saved successfully!", Toast.LENGTH_SHORT).show();
             Log.i("EditHabitActivity", "Save button pressed. Habit saved successfully.");
             finish();
-        } catch (HabitFormatException e){
+        }catch (HabitFormatException e){
             Toast.makeText(EditHabitActivity.this,"Error: Illegal Habit information!",Toast.LENGTH_LONG).show();
         }catch (BitmapTooLargeException e2){
             Toast.makeText(EditHabitActivity.this,"Error: Image too large!",Toast.LENGTH_LONG).show();
-        }
-        catch (Exception e3){
+        }catch (Exception e3){
+            Toast.makeText(this, "Error: Can't build habit.", Toast.LENGTH_SHORT).show();
             e3.printStackTrace();
         }
 
@@ -323,13 +336,13 @@ public class EditHabitActivity extends AppCompatActivity {
     private ArrayList<String> createWeekdayList(){
         ArrayList<String> weekdayList = new ArrayList<String>();
         weekdayList.add("None");
+        weekdayList.add("Sunday");
         weekdayList.add("Monday");
         weekdayList.add("Tuesday");
         weekdayList.add("Wednesday");
         weekdayList.add("Thursday");
         weekdayList.add("Friday");
         weekdayList.add("Saturday");
-        weekdayList.add("Sunday");
 
         return weekdayList;
     }
@@ -338,7 +351,7 @@ public class EditHabitActivity extends AppCompatActivity {
      * @return  return an array list of number from 1 to 24 in string format
      * */
     private List<String> createHourList(){
-        List<String> hourList = createNumberList(1,24,1);
+        List<String> hourList = createNumberList(0,23,1);
         return hourList;
     }
 
@@ -348,7 +361,7 @@ public class EditHabitActivity extends AppCompatActivity {
      * @return  An array list of number fom 1 to 60 in string format
      * */
     private List<String> createMinuteList(){
-        List<String> hourList = createNumberList(1,60,1);
+        List<String> hourList = createNumberList(0,59,1);
         return hourList;
     }
 

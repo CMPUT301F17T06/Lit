@@ -100,17 +100,9 @@ public class MainFragment extends Fragment {
             habitArrayList = new ArrayList<>();
         }
 
-
-        // A dummy habit for testing
-        /*
-        try {
-            NormalHabit testHabit = new NormalHabit("test habit title");
-            habitArrayList.add(testHabit);
-            habitAdapter.notifyDataSetChanged();
-            dataHandler.saveData(habitArrayList);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
+        // Clean up garbage habits
+        //habitArrayList = new ArrayList<>();
+        //dataHandler.saveData(habitArrayList);
 
         addHabitButton = (ImageButton) view.findViewById(R.id.add_habit_button);
 
@@ -133,7 +125,6 @@ public class MainFragment extends Fragment {
             }
         });
 
-
         // Set up add habit button
         addHabitButton.setOnClickListener(new View.OnClickListener() {
 
@@ -146,7 +137,6 @@ public class MainFragment extends Fragment {
                 startActivityForResult(intent,1);
             }});
         return view;
-        // Inflate the layout for this fragment
     }
     @Override
     public void onStart() {

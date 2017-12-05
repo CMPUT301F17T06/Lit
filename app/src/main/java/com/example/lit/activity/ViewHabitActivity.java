@@ -151,7 +151,7 @@ public class ViewHabitActivity extends AppCompatActivity {
         deleteHabit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                deleteHabit(habitArrayList, currentHabit);
+                deleteHabit(habitArrayList, index);
             }
         });
 
@@ -186,13 +186,14 @@ public class ViewHabitActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putParcelable("habit", habit);
         bundle.putSerializable("DataHandler",dataHandler);
+        bundle.putInt("index",index);
         intent.putExtras(bundle);
         startActivityForResult(intent,2);
     }
 
     //TODO: delete current habit and return to previous activity
-    public void deleteHabit(ArrayList<NormalHabit> habitArrayList, NormalHabit currentHabit){
-        habitArrayList.remove(currentHabit);
+    public void deleteHabit(ArrayList<NormalHabit> habitArrayList, int index){
+        habitArrayList.remove(index);
         dataHandler.saveData(habitArrayList);
         Log.i("ViewHabitActivity", "Delete button pressed.");
         finish();
@@ -240,7 +241,7 @@ public class ViewHabitActivity extends AppCompatActivity {
             if (calendarList.size() > 1){
                 for (Calendar calendar : calendarList) {
                     int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-                    selectedWeekdays.add(dayOfWeek);
+                    selectedWeekdays.add(dayOfWeek-1);
                 }
             }
             else {
@@ -259,7 +260,7 @@ public class ViewHabitActivity extends AppCompatActivity {
      */
     public String getWeekdayCalenderString(List<Integer> selectedWeekdays,int hour, int minute){
 
-        final String[] days = {"None","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday","Sunday"};
+        final String[] days = {"None","Sunday","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
         String weekdayString = "";
 
         if (selectedWeekdays.size() > 0){
