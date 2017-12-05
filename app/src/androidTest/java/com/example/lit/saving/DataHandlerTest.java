@@ -15,7 +15,10 @@ import android.test.ActivityInstrumentationTestCase2;
 import com.example.lit.activity.MainActivity;
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.habit.NormalHabit;
+import com.example.lit.habitevent.NormalHabitEvent;
+import com.example.lit.userprofile.FollowManager;
 import com.example.lit.userprofile.UserProfile;
+import com.google.gson.reflect.TypeToken;
 
 import org.junit.Before;
 
@@ -26,7 +29,7 @@ import java.util.Date;
  */
 
 public class DataHandlerTest extends ActivityInstrumentationTestCase2{
-    private UserProfile userProfile;
+    private UserProfile userProfile = new UserProfile("unitTest");
 
     public DataHandlerTest(){
         super(MainActivity.class);
@@ -35,14 +38,46 @@ public class DataHandlerTest extends ActivityInstrumentationTestCase2{
     public void testSaveHabit(){
         try {
             NormalHabit habit = new NormalHabit("Test title", new Date(1), "Test reason");
-            DataHandler<NormalHabit> dataHandler = null;
+            DataHandler<NormalHabit> dataHandler = new DataHandler<>(userProfile.getName(), "Habit",
+                                        getActivity(), new TypeToken<NormalHabit>(){}.getType());
+            dataHandler.saveData(habit);
+            NormalHabit loadedHabit = dataHandler.loadData();
+            assertEquals(habit, loadedHabit);
         } catch (HabitFormatException e) {
+            e.printStackTrace();
+        } catch (NoDataException e) {
             e.printStackTrace();
         }
     }
 
+    public void testSaveUserProfile(){
+        try {
+            DataHandler<UserProfile> dh = new DataHandler<>(userProfile.getName(), "UserProfile",
+                    getActivity(), new TypeToken<UserProfile>(){}.getType());
 
+            dh.saveData(userProfile);
+            UserProfile loadedProfile = dh.loadData();
+            assertEquals(userProfile, loadedProfile);
 
+        } catch (NoDataException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void testSaveHabitEvent(){
+        try {
+            NormalHabitEvent habitEvent = new NormalHabitEvent("Event name", "Habit comment");
+            DataHandler<NormalHabitEvent> dataHandler = new DataHandler<>(userProfile.getName(), "UserProfile",
+                    getActivity(), new TypeToken<NormalHabitEvent>() {}.getType());
+            dataHandler.saveData(habitEvent);
+            NormalHabitEvent loadedHabitEvent = dataHandler.loadData();
+            assertEquals(habitEvent, loadedHabitEvent);
+        } catch (HabitFormatException e) {
+            e.printStackTrace();
+        } catch (NoDataException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

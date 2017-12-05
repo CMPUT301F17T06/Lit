@@ -33,6 +33,10 @@ import com.example.lit.saving.NoDataException;
 import com.example.lit.userprofile.UserProfile;
 import com.google.gson.reflect.TypeToken;
 
+/**
+ * Similar code to ProfileActivity.java however to be used with our UI system.
+ *
+ */
 public class ProfileFragment extends Fragment {
 
 

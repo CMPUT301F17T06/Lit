@@ -10,12 +10,15 @@
 package com.example.lit.userprofile;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
+import android.util.Base64;
 import android.util.Log;
 
 import com.example.lit.saving.DataHandler;
 import com.example.lit.saving.Saveable;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -33,6 +36,8 @@ public class UserProfile implements Serializable, Saveable{
     private String name;
     private String profileDescription;
     private Bitmap profileImage;
+    private String encodedImage;
+
     private FollowManager followManager;
     //private DataHandler<UserProfile> dataHandler;
     private String jestID;
@@ -134,6 +139,12 @@ public class UserProfile implements Serializable, Saveable{
             image.reconfigure(maxSize, maxSize, Bitmap.Config.ARGB_8888);
         }
 
+        //Code provided by Ammar from Habit.java
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
+        byte[] byteArray = baos.toByteArray();
+        this.encodedImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
         this.profileImage = image;
     }
 
@@ -145,7 +156,10 @@ public class UserProfile implements Serializable, Saveable{
      * @see Bitmap
      */
     public Bitmap getProfileImage(){
-
+        if(encodedImage != null) {
+            byte[] decodedString = Base64.decode(this.encodedImage, Base64.DEFAULT);
+            this.profileImage = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        }
         return this.profileImage;
     }
 
@@ -157,102 +171,6 @@ public class UserProfile implements Serializable, Saveable{
     public FollowManager getFollowManager(){
         return this.followManager;
     }
-/*
-    public DataHandler<UserProfile> getDataHandler() {
-        return dataHandler;
-    }
-
-    public void setDataHandler(DataHandler<UserProfile> dataHandler) {
-        this.dataHandler = dataHandler;
-    }
-*/
-    /**
-     * Returns the UserProfile's name if the only thing desired is the name
-     *
-     * @param userPosition The position the followed UserProfile is in the list.
-     * @return The name of the user that is currently being followed.
-     *
-     * @see UserProfile#getFollowingUserProfile(int) if the UserProfile is desired instead.
-     */
-    public String getFollowingUser(int userPosition) throws IndexOutOfBoundsException{
-        return followManager.getFollowingUsers().get(userPosition);
-    }
-
-    /**
-     * Returns the UserProfile of an account that is currently followed by the user.
-     *
-     * @param userPosition The position the followed UserProfile is in the list.
-     * @return A UserProfile object that is the desired requested account
-     * @see UserProfile#getFollowingUser(int) if just the name is needed instead.
-     */
-    public UserProfile getFollowingUserProfile(int userPosition){
-        //TODO: Use ElasticSearch to obtain the details of the followed users account
-
-        return this; //TODO: Don't forget to change this.
-    }
-
-    /**
-     * Returns the UserProfile of an account that is currently followed by the user.
-     *
-     * @param username The name of the UserProfile we want to load.
-     * @return A UserProfile object that is the desired requested account
-     * @see UserProfile#getFollowingUser(int) if just the name is needed instead.
-     */
-    public UserProfile getFollowingUserProfile(String username){
-        //TODO: Use ElasticSearch to obtain the details of the followed users account
-
-        return this; //TODO: Don't forget to change this.
-    }
-
-    /**
-     * Approve a request for a user to follow the current user.
-     *
-     * @param name The user requesting following access.
-     * @return True is the user is added successfully. False otherwise.
-     */
-    public boolean requestToFollowUser(UserProfile requestingUser){
-        //this.followManager
-
-
-        return true;
-    }
-
-    public boolean cancelRequestToFollowUser(UserProfile cancellingUser){
-
-        return true;
-    }
-
-    /**
-     * Remove a user that is currently following the current user.
-     *
-     * @param name The user whos following access is to be revoked.
-     * @return True if the user has been revoked permissions successfully. False otherwise.
-     */
-    public boolean removeFollowingUser(String name){
-
-        return true;
-    }
-
-    /**
-     * Respond to whether a current request to follow the user.
-     *
-     * @param decision True if the user approves the follow request. False otherwise.
-     */
-    public void respondToFollowRequest(boolean decision){
-
-    }
-
-    /**
-     * Finds if a user is currently following another user given by their name.
-     *
-     * @param name The unique name used by the user that is followed
-     * @return -1 if not found. Otherwise their position in the ArrayList is returned.
-     */
-    public int findFollowingUser(String name){
-        return -1;
-    }
-
-
 
     public void setID(String ID){
         this.jestID = ID;
