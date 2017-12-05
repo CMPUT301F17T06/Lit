@@ -40,7 +40,10 @@ import io.searchbox.core.SearchResult;
 public class ElasticSearchHabitController {
      private static JestDroidClient client;
 
-    // Add Habit to elastic search
+    /**
+     * The type Add habits task.
+     */
+// Add Habit to elastic search
     public static class AddHabitsTask extends AsyncTask<NormalHabit, Void, Void> {
         @Override
         protected Void doInBackground(NormalHabit... habits) {
@@ -71,6 +74,11 @@ public class ElasticSearchHabitController {
         }
     }
 
+    /**
+     * The type Add habits task dh.
+     *
+     * @param <T> the type parameter
+     */
     public static class AddHabitsTaskDH<T> extends AsyncTask<DataHandler<T>, Void, Void> {
         @Override
         protected Void doInBackground(DataHandler<T>... habits) {
@@ -101,7 +109,10 @@ public class ElasticSearchHabitController {
         }
     }
 
-    // Gets all habits for the user specified
+    /**
+     * The type Get current habits task.
+     */
+// Gets all habits for the user specified
     public static class GetCurrentHabitsTask extends AsyncTask<String, Void, ArrayList<NormalHabit>> {
         @Override
         protected ArrayList<NormalHabit> doInBackground(String... search_parameters) {
@@ -140,6 +151,9 @@ public class ElasticSearchHabitController {
         }
     }
 
+    /**
+     * The type Get current habits task dh.
+     */
     public static class GetCurrentHabitsTaskDH extends AsyncTask<String, Void, ArrayList<DataHandler>> {
         @Override
         protected ArrayList<DataHandler> doInBackground(String... search_parameters) {
@@ -178,7 +192,10 @@ public class ElasticSearchHabitController {
         }
     }
 
-    // Add Habit to elastic search
+    /**
+     * The type Add habit event task.
+     */
+// Add Habit to elastic search
     public static class AddHabitEventTask extends AsyncTask<NormalHabitEvent, Void, Void> {
 
         @Override
@@ -210,6 +227,11 @@ public class ElasticSearchHabitController {
         }
     }
 
+    /**
+     * The type Add habit event task dh.
+     *
+     * @param <T> the type parameter
+     */
     public static class AddHabitEventTaskDH<T> extends AsyncTask<DataHandler<T>, Void, Void> {
 
         @Override
@@ -241,7 +263,10 @@ public class ElasticSearchHabitController {
         }
     }
 
-    // Gets all habits for the user specified
+    /**
+     * The type Get current events task.
+     */
+// Gets all habits for the user specified
     public static class GetCurrentEventsTask extends AsyncTask<String, Void, ArrayList<NormalHabitEvent>> {
         @Override
         protected ArrayList<NormalHabitEvent> doInBackground(String... search_parameters) {
@@ -281,6 +306,11 @@ public class ElasticSearchHabitController {
     }
 
     // Gets all habits for the user specified
+
+
+    /**
+     * The type Get today habits task.
+     */
     public static class GetTodayHabitsTask extends AsyncTask<String, Void, ArrayList<NormalHabit>> {
         @Override
         protected ArrayList<NormalHabit> doInBackground(String... search_parameters) {
@@ -319,7 +349,10 @@ public class ElasticSearchHabitController {
         }
     }
 
-    // Add new user to elastic search
+    /**
+     * The type Add user task.
+     */
+// Add new user to elastic search
     public static class AddUserTask extends AsyncTask<UserProfile, Void, Void> {
 
         @Override
@@ -351,6 +384,11 @@ public class ElasticSearchHabitController {
         }
     }
 
+    /**
+     * The type Add user task dh.
+     *
+     * @param <T> the type parameter
+     */
     public static class AddUserTaskDH<T> extends AsyncTask<DataHandler<T>, Void, Void> {
 
         @Override
@@ -382,7 +420,10 @@ public class ElasticSearchHabitController {
         }
     }
 
-    // Get user from elastic search
+    /**
+     * The type Get user task.
+     */
+// Get user from elastic search
     public static class GetUserTask extends AsyncTask<String, Void, UserProfile> {
         private UserProfile userProfile = null;
 
@@ -420,6 +461,11 @@ public class ElasticSearchHabitController {
         }
     }
 
+    /**
+     * The type Get user task dh.
+     *
+     * @param <T> the type parameter
+     */
     public static class GetUserTaskDH<T> extends AsyncTask<String, Void, DataHandler<T>> {
         private DataHandler<T> userProfile = null;
 
@@ -457,10 +503,21 @@ public class ElasticSearchHabitController {
         }
     }
 
-     static class AddTask<T> extends AsyncTask<ElasticSearchTimestampWrapper<T>, Void, Void> {
+    /**
+     * The type Add task.
+     *
+     * @param <T> the type parameter
+     */
+    static class AddTask<T> extends AsyncTask<ElasticSearchTimestampWrapper<T>, Void, Void> {
         private String username;
         private String typeOfObject;
 
+        /**
+         * Instantiates a new Add task.
+         *
+         * @param username     the username
+         * @param typeOfObject the type of object
+         */
         AddTask(String username, String typeOfObject){
             super();
             this.username = username;
@@ -494,10 +551,21 @@ public class ElasticSearchHabitController {
         }
     }
 
+    /**
+     * The type Get task.
+     *
+     * @param <T> the type parameter
+     */
     static class GetTask<T> extends AsyncTask<String, Void, ElasticSearchTimestampWrapper<T>> {
         private String username;
         private String typeOfObject;
 
+        /**
+         * Instantiates a new Get task.
+         *
+         * @param username     the username
+         * @param typeOfObject the type of object
+         */
         GetTask(String username, String typeOfObject){
             super();
             this.username = username;
@@ -528,6 +596,9 @@ public class ElasticSearchHabitController {
     }
 
 
+    /**
+     * Verify settings.
+     */
     public static void verifySettings() {
         if (client == null) {
             DroidClientConfig.Builder builder = new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");

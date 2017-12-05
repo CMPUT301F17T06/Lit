@@ -286,7 +286,7 @@ public class DataHandler<T> implements Serializable{
      */
     private T loadFromOnline(Type typeOfObject,T dataToLoad) throws NotOnlineException, NoDataException {
         ElasticSearchTimestampWrapper<T> loadedElement = null;
-        
+
         /*if (typeOfObject == UserProfile.class){
             try{
                 ElasticSearchHabitController.GetUserTaskDH getUserTaskDH = new ElasticSearchHabitController.GetUserTaskDH();
