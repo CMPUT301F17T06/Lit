@@ -42,7 +42,6 @@ public class ElasticSearchHabitController {
 
     // Add Habit to elastic search
     public static class AddHabitsTask extends AsyncTask<NormalHabit, Void, Void> {
-
         @Override
         protected Void doInBackground(NormalHabit... habits) {
             verifySettings();
@@ -60,11 +59,11 @@ public class ElasticSearchHabitController {
                     }
                     else
                     {
-                        Log.i("Error","Elasticsearch was not able to add the habit");
+                        Log.i("Error","Elasticsearch was not able to add the user");
                     }
                 }
                 catch (Exception e) {
-                    Log.i("Error", "The application failed to build and send the habits");
+                    Log.i("Error", "The application failed to build and send the user");
                 }
 
             }
@@ -196,7 +195,8 @@ public class ElasticSearchHabitController {
                     "    \"query\" : {\n" +
                     "       \"constant_score\" : {\n" +
                     "           \"filter\" : {\n" +
-                    "               \"term\" : {\"user\": \"" + search_parameters[0] + "\"}\n" +
+                    "               \"term\" : {\"user\": \"" + search_parameters[0] + "\",\n" +
+                    "                           \"date\": \"" + search_parameters[1] + "\"} \n"+
                     "             }\n" +
                     "         }\n" +
                     "    }\n" +
@@ -227,7 +227,6 @@ public class ElasticSearchHabitController {
         protected Void doInBackground(UserProfile... userProfiles) {
             verifySettings();
 
-            //TODO fix Mapping parse error document is full.
             for (UserProfile userProfile : userProfiles) {
                 Index index = new Index.Builder(userProfile).index("cmput301f17t06").type("user").build();
 
@@ -241,11 +240,11 @@ public class ElasticSearchHabitController {
                     }
                     else
                     {
-                        Log.i("Error","Elasticsearch was not able to add the habit");
+                        Log.i("Error","Elasticsearch was not able to add the user");
                     }
                 }
                 catch (Exception e) {
-                    Log.i("Error", "The application failed to build and send the habits");
+                    Log.i("Error", "The application failed to build and send the user");
                 }
 
             }

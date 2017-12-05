@@ -81,6 +81,9 @@ public class ViewHabitActivity extends AppCompatActivity {
     DataHandler dataHandler;
     Integer index;
     ArrayList<NormalHabit> habitArrayList;
+    List<Integer> selectedWeekdays;
+    int hour;
+    int minute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +114,9 @@ public class ViewHabitActivity extends AppCompatActivity {
         habitDateStartedString = currentHabit.getDate().toString();
         habitImage = currentHabit.getImage();
         habitCalenderList = currentHabit.getCalendars();
+        selectedWeekdays = getSelectedWeekdays(habitCalenderList);
+        hour = getHour(habitCalenderList);
+        minute = getMinute(habitCalenderList);
 
 
         // Set up view components
@@ -123,7 +129,7 @@ public class ViewHabitActivity extends AppCompatActivity {
         habitComment.setText(habitCommentString);
         habitDateStarted.setText(habitDateStartedString);
         habitImageView.setImageBitmap(habitImage);
-        weeklyString = getWeekdayCalenderString(habitCalenderList);
+        weeklyString = getWeekdayCalenderString(selectedWeekdays,hour,minute);
         weeklyTextView.setText(weeklyString);
 
 
@@ -189,37 +195,87 @@ public class ViewHabitActivity extends AppCompatActivity {
         finish();
     }
 
+
     /**
      *
      * @param calendarList
      * @return
      */
-    public String getWeekdayCalenderString(List<Calendar> calendarList){
+    public int getMinute(List<Calendar> calendarList){
+        int minute=0;
+        if (calendarList!=null) {
+            if (calendarList.size() > 1) {
+                minute = calendarList.get(0).getTime().getMinutes();
+            }
+        }
+        return minute;
+    }
 
-        final String[] days = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+    /**
+     *
+     * @param calendarList
+     * @return
+     */
+    public int getHour(List<Calendar> calendarList){
+        int hour=0;
+        if (calendarList!=null) {
+            if (calendarList.size() > 1) {
+                hour = calendarList.get(0).getTime().getHours();
+            }
+        }
+        return hour;
+    }
+
+    /**
+     *
+     * @param calendarList
+     * @return
+     */
+    public List<Integer> getSelectedWeekdays(List<Calendar> calendarList){
+        List<Integer> selectedWeekdays = new ArrayList<>();
+        if (calendarList!=null) {
+            if (calendarList.size() > 1){
+                for (Calendar calendar : calendarList) {
+                    int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+                    selectedWeekdays.add(dayOfWeek);
+                }
+            }
+            else {
+                selectedWeekdays.add(0);
+            }
+        }else{
+            selectedWeekdays.add(0);
+        }
+        return selectedWeekdays;
+    }
+
+    /**
+     *
+     * @param calendarList
+     * @return
+     */
+    public String getWeekdayCalenderString(List<Integer> selectedWeekdays,int hour, int minute){
+
+        final String[] days = {"None","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday","Sunday"};
         String weekdayString = "";
-        int hour = 100;
-        int minute = 100;
 
-        for (Calendar calendar:calendarList){
-            try {
-                int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-                String thisDay = days[dayOfWeek];
-                weekdayString = weekdayString + thisDay + ",";
-                hour = calendar.get(Calendar.HOUR);
-                minute = calendar.get(Calendar.MINUTE);
-            }catch (Exception e){
-                continue;
-            }
-        }
-        if (hour != 100){
-            if (minute != 100){
-                weekdayString  = weekdayString + "  " + Integer.toString(hour) + " : " + Integer.toString(minute);
+        if (selectedWeekdays.size() > 0){
+            for (int weekday:selectedWeekdays){
+                weekdayString = weekdayString + days[weekday] + ",";
             }
         }
 
+        weekdayString = weekdayString + "  " + Integer.toString(hour) + ":" + Integer.toString(minute);
 
         return  weekdayString;
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 2) {
+            finish();
+        }
     }
 
 }
