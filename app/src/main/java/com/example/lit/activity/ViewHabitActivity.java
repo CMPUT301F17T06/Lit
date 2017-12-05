@@ -36,6 +36,7 @@ import com.example.lit.saving.NoDataException;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import java.util.Calendar;
@@ -114,7 +115,8 @@ public class ViewHabitActivity extends AppCompatActivity {
         // Retrieve habit info
         habitTitleString = currentHabit.getTitle();
         habitCommentString = currentHabit.getReason();
-        habitDateStartedString = currentHabit.getDate().toString();
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+        habitDateStartedString = format.format(currentHabit.getDate());
         habitImage = currentHabit.getImage();
         habitCalenderList = currentHabit.getCalendars();
         selectedWeekdays = getSelectedWeekdays(habitCalenderList);
@@ -195,6 +197,7 @@ public class ViewHabitActivity extends AppCompatActivity {
     public void deleteHabit(ArrayList<NormalHabit> habitArrayList, int index){
         habitArrayList.remove(index);
         dataHandler.saveData(habitArrayList);
+
         Log.i("ViewHabitActivity", "Delete button pressed.");
         finish();
     }

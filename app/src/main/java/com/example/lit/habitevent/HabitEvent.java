@@ -146,8 +146,9 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Savea
 
     @Override
     public String toString() {
-        return "HabitEventName = "+ habitEventName + "\n" +
-                "date= " + date ;
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+        return "Habit name: "+ habitEventName + "\n" +
+                "Date Completed: " + format.format(this.getEventDate()) ;
 
     }
 
