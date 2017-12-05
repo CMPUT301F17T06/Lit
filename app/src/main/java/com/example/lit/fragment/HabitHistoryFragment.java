@@ -13,6 +13,7 @@ package com.example.lit.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -148,7 +149,10 @@ public class HabitHistoryFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), ViewHabitEventActivity.class);
                 Bundle bundle = new Bundle();
                 NormalHabitEvent selectedEvent = eventArrayList.get(i);
-                bundle.putParcelable("event", selectedEvent);
+                Bitmap testImage = selectedEvent.getImage();
+                bundle.putParcelable("habitEvent", selectedEvent);
+                bundle.putSerializable("eventDataHandler",eventdatahandler);
+                bundle.putInt("index",i);
                 intent.putExtras(bundle);
                 startActivityForResult(intent, 2);
             }
