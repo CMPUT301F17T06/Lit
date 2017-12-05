@@ -169,8 +169,10 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Savea
     }
 
     public Bitmap getImage() {
-        byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
-        this.image = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        if(encodedImage != null) {
+            byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+            this.image = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        }
         return this.image;
     }
 

@@ -204,9 +204,9 @@ public class ViewHabitActivity extends AppCompatActivity {
 
 
     /**
-     *
+     * Function takes in a List<Calendar> object and returns the minutes
      * @param calendarList
-     * @return
+     * @return minute
      */
     public int getMinute(List<Calendar> calendarList){
         int minute=0;
@@ -219,9 +219,9 @@ public class ViewHabitActivity extends AppCompatActivity {
     }
 
     /**
-     *
+     * Function takes in a List<Calendar> object and returns the hours
      * @param calendarList
-     * @return
+     * @return hour
      */
     public int getHour(List<Calendar> calendarList){
         int hour=0;
@@ -234,9 +234,10 @@ public class ViewHabitActivity extends AppCompatActivity {
     }
 
     /**
-     *
+     * Function takes in a List<Calendar> object an returns an List of integers
+     * corresponding to weekdays
      * @param calendarList
-     * @return
+     * @return selectedWeekdays
      */
     public List<Integer> getSelectedWeekdays(List<Calendar> calendarList){
         List<Integer> selectedWeekdays = new ArrayList<>();
@@ -257,9 +258,9 @@ public class ViewHabitActivity extends AppCompatActivity {
     }
 
     /**
-     *
+     * Function takes in List<Integer> object and returns an ArrayList of strings containing weekdays
      * @param calendarList
-     * @return
+     * @return weekdayString
      */
     public String getWeekdayCalenderString(List<Integer> selectedWeekdays,int hour, int minute){
 

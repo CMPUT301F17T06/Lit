@@ -125,6 +125,10 @@ public abstract class Habit implements Habitable , Parcelable, Saveable {
         return date;
     }
 
+    /**
+     * Function takes in a Date object and formats it to dd-MM-yyyy
+     * @param date
+     */
     public void setDate(Date date) {
         // Format the current time.
         SimpleDateFormat format = new SimpleDateFormat ("dd-MM-yyyy");
@@ -165,6 +169,11 @@ public abstract class Habit implements Habitable , Parcelable, Saveable {
         return this.image;
     }
 
+    /**
+     * Function takes in a Bitmap object and decodes it to a 64Base string
+     * @param image
+     * @throws BitmapTooLargeException
+     */
     public void setImage(Bitmap image) throws BitmapTooLargeException {
         if (image == null){
             this.image = null;

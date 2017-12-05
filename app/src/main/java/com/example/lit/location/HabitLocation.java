@@ -33,7 +33,7 @@ public  class HabitLocation implements Parcelable {
 
 
     private LatLng location;
-
+    
     public HabitLocation(LatLng location){
         this.location = location;
     }
