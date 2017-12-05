@@ -52,7 +52,8 @@
         <activity android:name=".activity.ViewHabitEventActivity" />
         <activity android:name=".activity.EditHabitEventActivity" />
         <activity android:name=".activity.HistoryActivity" />
-        <activity android:name=".activity.HomePageActivityNew" />
+        <activity android:name=".activity.HomePageActivityNew"
+            android:windowSoftInputMode="adjustPan"/>
     </application>
 
 </manifest>

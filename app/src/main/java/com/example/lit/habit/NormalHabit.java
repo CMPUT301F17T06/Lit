@@ -54,4 +54,29 @@ public class NormalHabit extends Habit{
     public String habitType(){return "Normal";}
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+    }
+
+    protected NormalHabit(Parcel in) {
+        super(in);
+    }
+
+    public static final Creator<NormalHabit> CREATOR = new Creator<NormalHabit>() {
+        @Override
+        public NormalHabit createFromParcel(Parcel source) {
+            return new NormalHabit(source);
+        }
+
+        @Override
+        public NormalHabit[] newArray(int size) {
+            return new NormalHabit[size];
+        }
+    };
 }

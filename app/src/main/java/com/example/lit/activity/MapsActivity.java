@@ -27,6 +27,9 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.lit.R;
+import com.example.lit.habitevent.HabitEvent;
+import com.example.lit.habitevent.NormalHabitEvent;
+import com.example.lit.location.HabitLocation;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -82,9 +85,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         nearby = (Button) findViewById(R.id.within5km);
 
 
-        //TODO : From habitevent list load the location
-        //Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(result));
-        //markers.add(marker);
+
 
         nearby.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -100,7 +101,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         double latitude = location.getLatitude();
                         double longitude = location.getLongitude();
                         current = new LatLng(latitude, longitude);
-
+                        Marker marker = mMap.addMarker(new MarkerOptions().position(current).title("currentlocation"));
                     }
 
                     @Override
@@ -118,10 +119,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     }
                 };
-                if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                    manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-                } else {
-                    manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+                try {
+                    if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                        Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        locationListener.onLocationChanged(location);
+
+                    } else {
+                        manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+                        Location location = manager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                        locationListener.onLocationChanged(location);
+                    }
+                }catch(NullPointerException N){
+                    Toast.makeText(MapsActivity.this, "GPS null functioning", Toast.LENGTH_LONG).show();
                 }
                 if (!(markers == null)) {
                     int size = markers.size();
@@ -161,7 +171,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        markers = new ArrayList<>();
         requestPermissions(LOCATION_PERMS, 1);
+        ArrayList<NormalHabitEvent> events=getIntent().getParcelableArrayListExtra("EventList");
+        for(int i = 0; i < events.size();i++){
+            HabitEvent event = events.get(i);
+            HabitLocation habitLocation=event.getHabitLocation();
+            Marker marker = mMap.addMarker(new MarkerOptions().position(habitLocation.getLocation()).title(event.getHabitEventName()));
+            markers.add(marker);
+        }
+
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {

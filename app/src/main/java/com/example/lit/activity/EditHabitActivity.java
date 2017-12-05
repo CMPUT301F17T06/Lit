@@ -27,14 +27,22 @@ import android.widget.Toast;
 
 import com.example.lit.R;
 import com.example.lit.Utilities.MultiSelectionSpinner;
+import com.example.lit.Utilities.SchduledTask;
 import com.example.lit.exception.*;
 import com.example.lit.habit.Habit;
+import com.example.lit.habit.NormalHabit;
+import com.example.lit.saving.DataHandler;
+import com.example.lit.saving.NoDataException;
 
 import java.lang.reflect.Array;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Timer;
 
 import static com.example.lit.activity.AddHabitActivity.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE;
 
@@ -65,15 +73,19 @@ public class EditHabitActivity extends AppCompatActivity {
     Date habitStartDate;
     String habitNameString;
     String commentString;
-    ArrayList<Integer> weekdays;
-    List<Integer> newWeekDays;
+    ArrayList<Integer> selectedWeekdays;
     Integer hour;
     Integer minute;
     String habitTitleString;
     String habitCommentString;
     Date habitDate;
     List<Calendar> calendarList;
-    private Bitmap image;
+    List<String> weekdays;
+    Bitmap image;
+    DataHandler<ArrayList<NormalHabit>> dataHandler;
+    ArrayList<NormalHabit> habitArrayList;
+    int maxSize = 64;
+    int index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,12 +93,24 @@ public class EditHabitActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_habit);
 
         try{
-
             Bundle bundle = getIntent().getExtras();
-            currentHabit = (Habit)bundle.getSerializable("habit");
+            index = bundle.getInt("index");
+            currentHabit = (Habit)bundle.getParcelable("habit");
+            if (currentHabit == null) throw new LoadHabitException();
+            dataHandler = (DataHandler) bundle.getSerializable("DataHandler");
 
+            try {
+                habitArrayList = (ArrayList<NormalHabit>) dataHandler.loadData();
+            }catch (NoDataException e){
+                Toast.makeText(EditHabitActivity.this,"Error loading data handler!",Toast.LENGTH_LONG).show();
+                habitArrayList = new ArrayList<>();
+            }/*catch (Exception e1){
+                Toast.makeText(EditHabitActivity.this,"Error: Unexpected Exception!",Toast.LENGTH_LONG).show();
+                e1.printStackTrace();
+                habitArrayList = new ArrayList<>();
+                //finish();
+            }*/
 
-            if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
         }catch (LoadHabitException e){
             e.printStackTrace();
             Toast.makeText(this,"Error loading habit!",Toast.LENGTH_LONG).show();
@@ -96,19 +120,10 @@ public class EditHabitActivity extends AppCompatActivity {
         habitCommentString = currentHabit.getReason();
         habitDate = currentHabit.getDate();
         calendarList = currentHabit.getCalendars();
-        if (calendarList!=null) {
-            hour = calendarList.get(0).getTime().getHours();
-            minute = calendarList.get(0).getTime().getHours();
-            weekdays = new ArrayList<>();
-            for (Calendar calendar : calendarList) {
-                int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-                weekdays.add(dayOfWeek - 1);
-            }
-        }else{
-            hour = 0;
-            minute = 0;
-            weekdays = new ArrayList<>();
-        }
+        image = currentHabit.getImage();
+        selectedWeekdays = getSelectedWeekdays(calendarList);
+        hour = getHour(calendarList);
+        minute = getMinute(calendarList);
 
         // Activity components
         habitName = (EditText) findViewById(R.id.Habit_EditText);
@@ -145,16 +160,16 @@ public class EditHabitActivity extends AppCompatActivity {
         // Set up components initial info
         habitName.setText(habitTitleString);
         habitComment.setText(habitCommentString);
-        weekday_spinner.setSelection(convertIntegers(weekdays));
-        hour_spinner.setSelection(hour);
-        minute_spinner.setSelection(minute);
-        newWeekDays = weekday_spinner.getSelectedIndicies();
+        habitImage.setImageBitmap(image);
+        hour_spinner.setSelection(hour+1);
+        minute_spinner.setSelection(minute+1);
+        weekday_spinner.setSelection(selectedWeekdays);
 
         saveHabit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i("EditHabitActivity", "Save Button pressed.");
-                //returnNewHabit(view);
+                returnNewHabit(view);
                 finish();
             }
         });
@@ -178,6 +193,60 @@ public class EditHabitActivity extends AppCompatActivity {
         startActivityForResult(cameraIntent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
     }
 
+    /**
+     *
+     * @param calendarList
+     * @return
+     */
+    public int getMinute(List<Calendar> calendarList){
+        int minute=0;
+        if (calendarList!=null) {
+            if (calendarList.size() > 1) {
+                minute = calendarList.get(0).getTime().getMinutes();
+            }
+        }
+        return minute;
+    }
+
+    /**
+     *
+     * @param calendarList
+     * @return
+     */
+    public int getHour(List<Calendar> calendarList){
+        int hour=0;
+        if (calendarList!=null) {
+            if (calendarList.size() > 1) {
+                hour = calendarList.get(0).getTime().getHours();
+            }
+        }
+        return hour;
+    }
+
+    /**
+     *
+     * @param calendarList
+     * @return
+     */
+    public ArrayList<Integer> getSelectedWeekdays(List<Calendar> calendarList){
+        selectedWeekdays = new ArrayList<>();
+        if (calendarList!=null) {
+            if (calendarList.size() > 1){
+                for (Calendar calendar : calendarList) {
+                    int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+                    selectedWeekdays.add(dayOfWeek);
+                }
+            }
+            else {
+
+                selectedWeekdays.add(0);
+            }
+        }else{
+            selectedWeekdays.add(0);
+        }
+        return selectedWeekdays;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -185,6 +254,7 @@ public class EditHabitActivity extends AppCompatActivity {
             if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
                 try {
                     image = (Bitmap) data.getExtras().get("data");
+                    image = compressPicture(image);
                     habitImage.setImageBitmap(image);
                 }catch (Exception e){
                     e.printStackTrace();
@@ -200,11 +270,52 @@ public class EditHabitActivity extends AppCompatActivity {
      * @param saveNewHabitButton the view currently in
      * */
     public void returnNewHabit(View saveNewHabitButton){
+
+        // Collect Info
         habitNameString = habitName.getText().toString();
         commentString = habitComment.getText().toString();
         habitStartDate = Calendar.getInstance().getTime();
-        hour = Integer.parseInt(hour_spinner.getSelectedItem().toString());
-        minute = Integer.parseInt(minute_spinner.getSelectedItem().toString());
+        try {
+            hour = Integer.parseInt(hour_spinner.getSelectedItem().toString());
+        }catch (NumberFormatException e){
+            hour = null;
+        }
+        try{
+            minute = Integer.parseInt(minute_spinner.getSelectedItem().toString());
+        }catch (NumberFormatException e){
+            minute = null;
+        }
+        weekdays = weekday_spinner.getSelectedStrings();
+
+        // Build a calender ArrayList
+        calendarList = new ArrayList<>();
+        if ((hour!=null) && (minute!=null)){
+            if (weekdays!=null){
+                try{
+                    calendarList = buildCalender(weekdays,hour,minute);
+                }catch (ParseException e){
+                    //Toast.makeText(this, "Error: Can't build calender!", Toast.LENGTH_SHORT).show();
+                    calendarList = new ArrayList<>();
+                }
+            }
+        }
+
+        // Save edited habit
+        try {
+            NormalHabit newHabit = new NormalHabit(habitNameString, habitStartDate, commentString, calendarList,image);
+            habitArrayList.set(index,newHabit);
+            dataHandler.saveData(habitArrayList);
+            Toast.makeText(this, "Habit saved successfully!", Toast.LENGTH_SHORT).show();
+            Log.i("EditHabitActivity", "Save button pressed. Habit saved successfully.");
+            finish();
+        }catch (HabitFormatException e){
+            Toast.makeText(EditHabitActivity.this,"Error: Illegal Habit information!",Toast.LENGTH_LONG).show();
+        }catch (BitmapTooLargeException e2){
+            Toast.makeText(EditHabitActivity.this,"Error: Image too large!",Toast.LENGTH_LONG).show();
+        }catch (Exception e3){
+            Toast.makeText(this, "Error: Can't build habit.", Toast.LENGTH_SHORT).show();
+            e3.printStackTrace();
+        }
 
     }
 
@@ -241,7 +352,7 @@ public class EditHabitActivity extends AppCompatActivity {
      * @return  return an array list of number from 1 to 24 in string format
      * */
     private List<String> createHourList(){
-        List<String> hourList = createNumberList(1,24,1);
+        List<String> hourList = createNumberList(0,23,1);
         return hourList;
     }
 
@@ -251,12 +362,10 @@ public class EditHabitActivity extends AppCompatActivity {
      * @return  An array list of number fom 1 to 60 in string format
      * */
     private List<String> createMinuteList(){
-        List<String> hourList = createNumberList(1,60,1);
+        List<String> hourList = createNumberList(0,59,1);
         return hourList;
     }
 
-    //TODO: should be able to set habit image
-    private void setHabitImage(ImageView habitImage){}
 
     /**
      * Returns an array list of numbers in a string format. This list is from low to high
@@ -294,5 +403,79 @@ public class EditHabitActivity extends AppCompatActivity {
             ret[i] = integers.get(i).intValue();
         }
         return ret;
+    }
+
+
+    public Bitmap compressPicture(Bitmap bitmap){
+
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap,maxSize,maxSize,true);
+        //resizedBitmap.reconfigure(maxSize,maxSize, Bitmap.Config.RGB_565);
+
+        return resizedBitmap;
+    }
+
+    private List<Calendar> buildCalender(List<String> weekdays)throws ParseException{
+        List<Calendar> calendarList = new ArrayList<Calendar>();
+        for (String weekday:weekdays
+                ) {
+            Calendar calendar = Calendar.getInstance();
+            int weekOfDay = parseDayOfWeek(weekday, Locale.CANADA);
+            calendar.set(Calendar.DAY_OF_WEEK,weekOfDay);
+            calendarList.add(calendar);
+
+            // Periodic Timer, only a prototype now
+            Timer timer = new Timer();
+            timer.schedule(new SchduledTask(), calendar.getTime());
+        }
+        return calendarList;
+    }
+
+    /**
+     * Return a calender list. The field in Calender set: weekdays, hour, minute.
+     *
+     * @param hour hour time
+     * @param minute minute time
+     * @param weekdays weekday
+     * @throws ParseException thrown when fail to parse weekday string
+     * @return A Calender list.
+     * @see Calendar
+     * */
+    private List<Calendar> buildCalender(List<String> weekdays, int hour, int minute)throws ParseException{
+        List<Calendar> calendarList = new ArrayList<Calendar>();
+        for (String weekday:weekdays
+                ) {
+            Calendar calendar = Calendar.getInstance();
+            int weekOfDay = parseDayOfWeek(weekday,Locale.CANADA);
+            calendar.set(Calendar.DAY_OF_WEEK,weekOfDay);
+            calendar.set(Calendar.HOUR_OF_DAY,hour);
+            calendar.set(Calendar.MINUTE,minute);
+            calendarList.add(calendar);
+
+            // Periodic Timer, only a prototype now
+            Timer timer = new Timer();
+            timer.schedule(new SchduledTask(), calendar.getTime());
+        }
+        return calendarList;
+    }
+
+    /**
+     * This function will parse a weekday string (e.g. "Monday") to corresponding integer.
+     *
+     * Taken https://stackoverflow.com/questions/18232340/convert-string-to-day-of-week-not-exact-date
+     *
+     * @param day weekday string.
+     * @param locale weekday string format
+     * @throws ParseException when day is not a weekday string
+     * @return dayOfWeek a integer representing day of week in Calender.
+     * @see Calendar
+     * */
+    private static int parseDayOfWeek(String day, Locale locale)
+            throws ParseException {
+        SimpleDateFormat dayFormat = new SimpleDateFormat("E", locale);
+        Date date = dayFormat.parse(day);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        return dayOfWeek;
     }
 }

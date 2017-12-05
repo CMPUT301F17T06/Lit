@@ -12,24 +12,21 @@ package com.example.lit.activity;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -40,25 +37,22 @@ import android.widget.Toast;
 import com.example.lit.R;
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.exception.LoadHabitException;
+import com.example.lit.fragment.HabitHistoryFragment;
 import com.example.lit.habit.Habit;
-import com.example.lit.habitevent.HabitEvent;
 import com.example.lit.habitevent.NormalHabitEvent;
 import com.example.lit.location.HabitLocation;
 import com.example.lit.location.PlaceAutocompleteAdapter;
+import com.example.lit.saving.DataHandler;
 import com.example.lit.saving.ElasticSearchHabitController;
+import com.example.lit.saving.NoDataException;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import static com.example.lit.activity.AddHabitActivity.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE;
@@ -82,6 +76,7 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
     final int maxSize = 665536 / (1024*10);
 
     Habit currentHabit;
+    ArrayList<NormalHabitEvent> eventArrayList;
     String habitTitleString;
     private TextView habitEventName;
     private EditText habitEventComment;
@@ -103,7 +98,7 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
     private GoogleApiClient mGoogleApiClient;
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
             new LatLng(-40, -168), new LatLng(71, 136));
-
+    DataHandler<ArrayList<NormalHabitEvent>> eventDataHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,10 +106,12 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
         setContentView(R.layout.activity_add_habit_event);
         setTitle("Adding A New Habit Event");
 
+
         try{
             Bundle bundle = getIntent().getExtras();
-            currentHabit = (Habit)bundle.getSerializable("habit");
-            username = (String)bundle.getString("username");
+            currentHabit = (Habit)bundle.getParcelable("habit");
+            eventDataHandler = (DataHandler)bundle.getSerializable("eventDataHandler");
+            //username = (String)bundle.getString("username");
             if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
         }catch (LoadHabitException e){
             //TODO: handle LoadHabitException
@@ -134,7 +131,7 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
         SearchText = (AutoCompleteTextView) findViewById(R.id.searchlocation);
         habitImage = (ImageView) findViewById(R.id.HabitEventImage);
         editImage = (Button)findViewById(R.id.eventImageButton);
-
+        eventArrayList = new ArrayList<>();
         editImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -147,8 +144,8 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
             @Override
             public void onClick(View view) {
                 Log.i("AddHabitEventActivity", "Save Button pressed.");
+                setResult(RESULT_OK);
                 returnNewHabitEvent(view);
-                finish();
             }
         });
 
@@ -183,7 +180,7 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
     public void returnNewHabitEvent(View saveNewHabitButton) {
         habitNameString = habitEventName.getText().toString();
         commentString = habitEventComment.getText().toString();
-        Intent newHabitEventIntent = new Intent(AddHabitEventActivity.this, HistoryActivity.class);
+        Intent newHabitEventIntent = new Intent();
         Bundle bundle = new Bundle();
 
         LatLng latLng = buildLocation(locationCheck);
@@ -191,11 +188,28 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
 
         try {
             NormalHabitEvent newHabitEvent = new NormalHabitEvent(habitNameString, commentString,eventLocation);
-            bundle.putParcelable("event", newHabitEvent);
-            newHabitEventIntent.putExtras(bundle);
-            newHabitEvent.setUser(username);
-            ElasticSearchHabitController.AddHabitEventTask addHabitEventTask = new ElasticSearchHabitController.AddHabitEventTask();
-            addHabitEventTask.execute(newHabitEvent);
+            try {
+                eventArrayList = eventDataHandler.loadData();
+            }catch (NoDataException e){
+                eventArrayList = new ArrayList<>();
+            }
+            ArrayList<NormalHabitEvent> newArrayList  = new ArrayList<>();
+            newArrayList.add(newHabitEvent);
+            for(int i=0; i < eventArrayList.size();i++){
+                newArrayList.add((eventArrayList.get(i)));
+            }
+
+            try {
+                eventDataHandler.saveData(newArrayList);
+            }catch (NullPointerException e){
+                Toast.makeText(AddHabitEventActivity.this, "Error: DataHanlder problem!", Toast.LENGTH_LONG).show();
+            }
+            //newHabitEvent.setUser(username);
+           // ElasticSearchHabitController.AddHabitEventTask addHabitEventTask = new ElasticSearchHabitController.AddHabitEventTask();
+            //addHabitEventTask.execute(newHabitEvent);
+
+            //set Fragmentclass Arguments
+
 
             finish();
         } catch (HabitFormatException e) {
@@ -203,8 +217,6 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
         }
     }
 
-    //TODO: should be able to set habit image
-    private void setHabitImage(ImageView habitImage){}
     /**
      * This function will return a Location object containing Latitude and Longitude attribute.
      *
@@ -253,10 +265,19 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
 
                 }
             };
-            if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-            } else {
-                manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+            try {
+                if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                    Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    locationListener.onLocationChanged(location);
+
+                } else {
+                    manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+                    Location location = manager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    locationListener.onLocationChanged(location);
+                }
+            }catch(NullPointerException N){
+                Toast.makeText(AddHabitEventActivity.this, "GPS null functioning", Toast.LENGTH_LONG).show();
             }
         }
         else{

@@ -17,26 +17,31 @@ import com.example.lit.exception.HabitFormatException;
 import com.example.lit.habit.NormalHabit;
 import com.example.lit.userprofile.UserProfile;
 
+import org.junit.Before;
+
 import java.util.Date;
 
 /**
  * Created by Riley Dixon on 04/12/2017.
  */
 
-public class DataHandlerTest<T> extends ActivityInstrumentationTestCase2{
+public class DataHandlerTest extends ActivityInstrumentationTestCase2{
+    private UserProfile userProfile;
 
-    public DataHandler(){
+    public DataHandlerTest(){
         super(MainActivity.class);
     }
 
     public void testSaveHabit(){
         try {
             NormalHabit habit = new NormalHabit("Test title", new Date(1), "Test reason");
-
+            DataHandler<NormalHabit>
         } catch (HabitFormatException e) {
             e.printStackTrace();
         }
     }
+
+
 
 
 

@@ -26,17 +26,22 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import com.example.lit.R;
 import com.example.lit.activity.AddHabitActivity;
 import com.example.lit.activity.ViewHabitActivity;
 import com.example.lit.habit.Habit;
 import com.example.lit.habit.NormalHabit;
+import com.example.lit.habitevent.NormalHabitEvent;
 import com.example.lit.saving.DataHandler;
 import com.example.lit.saving.ElasticSearchHabitController;
 import com.example.lit.saving.NoDataException;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.prefs.NodeChangeEvent;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -51,10 +56,11 @@ public class ActiveHabitsFragment extends Fragment {
     ArrayList<NormalHabit> habitArrayList;
     ArrayAdapter<NormalHabit> habitAdapter;
     String username;
-    FragmentActivity listener;
     DataHandler<ArrayList<NormalHabit>> dataHandler;
+    DataHandler<ArrayList<NormalHabitEvent>> eventdataHandler;
 
-    /*
+    FragmentActivity listener;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -64,53 +70,50 @@ public class ActiveHabitsFragment extends Fragment {
             throw new ClassCastException(context.toString());
         }
     }
-    */
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        username = getActivity().getIntent().getExtras().getString("username");
-        habitArrayList = new ArrayList<>();
-        /*ElasticSearchHabitController.GetCurrentHabitsTask getCurrentHabitsTask = new ElasticSearchHabitController.GetCurrentHabitsTask();
-        getCurrentHabitsTask.execute(username);
 
-        try {
-            habitArrayList = getCurrentHabitsTask.get();
-        } catch (Exception e) {
-            Log.i("Error", "Failed to get the habits from the asyc object");
-        }*/
 
-        habitAdapter = new ArrayAdapter<NormalHabit>(getActivity(), R.layout.list_item, habitArrayList);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        return inflater.inflate(R.layout.fragment_main, container, false);
-    }
+        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        username = getActivity().getIntent().getExtras().getString("username");
 
-    @Override
-    public void onViewCreated(final View view, Bundle savedInstanceState) {
+        habitArrayList = new ArrayList<>();
+                /*ElasticSearchHabitController.GetTodayHabitsTask getTodayHabitsTask = new ElasticSearchHabitController.GetTodayHabitsTask();
+        getTodayHabitsTask.execute(username,date);
+
+
+        try {
+            habitArrayList = getTodayHabitsTask.get();
+        } catch (Exception e) {
+            Log.i("Error", "Failed to get the habits from the asyc object");
+        }*/
+        habitAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item, habitArrayList);
         habitsListView = (ListView) view.findViewById(R.id.habit_list_view);
         habitsListView.setAdapter(habitAdapter);
         habitAdapter.notifyDataSetChanged();
 
         dataHandler = new DataHandler<>(username,"habit",getActivity(), new TypeToken<ArrayList<NormalHabit>>(){}.getType());
+        eventdataHandler = new DataHandler<>(username,"habitevent",getActivity(),new TypeToken<ArrayList<NormalHabitEvent>>(){}.getType());
         try {
             habitArrayList = dataHandler.loadData();
         }catch (NoDataException e){
             habitArrayList = new ArrayList<>();
         }
 
+
         // A dummy habit for testing
-        /*try {
-            Habit testHabit = new NormalHabit("test habit title");
+        try {
+            NormalHabit testHabit = new NormalHabit("test habit title");
             habitArrayList.add(testHabit);
             habitAdapter.notifyDataSetChanged();
+            dataHandler.saveData(habitArrayList);
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
 
         addHabitButton = (ImageButton) view.findViewById(R.id.add_habit_button);
 
@@ -120,9 +123,10 @@ public class ActiveHabitsFragment extends Fragment {
 
                 Intent intent = new Intent(getActivity(),ViewHabitActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("habitList", habitArrayList);
-                bundle.putInt("index",i);
-                bundle.putSerializable("dataHandler",dataHandler);
+                Habit selectedHabit = habitArrayList.get(i);
+                bundle.putParcelable("habit", selectedHabit);
+                bundle.putSerializable("eventdataHandler",eventdataHandler);
+                bundle.putString("username",username);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,2);
             }
@@ -140,8 +144,22 @@ public class ActiveHabitsFragment extends Fragment {
                 intent.putExtras(bundle);
                 startActivityForResult(intent,1);
             }});
-
+        return view;
         // Inflate the layout for this fragment
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        habitAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item, habitArrayList);
+        habitsListView.setAdapter(habitAdapter);
+        try {
+            habitArrayList = dataHandler.loadData();
+        }catch (NoDataException e){
+            Toast.makeText(getActivity(), "Error: Can't load data! code:3", Toast.LENGTH_SHORT).show();
+        }
+
+        habitAdapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -151,9 +169,10 @@ public class ActiveHabitsFragment extends Fragment {
                 habitArrayList = dataHandler.loadData();
                 habitAdapter.notifyDataSetChanged();
             }catch (NoDataException e){
-                Toast.makeText(getActivity(), "Error: Can't load data! code:4", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Error: Can't load data! code:1", Toast.LENGTH_SHORT).show();
             }
         }
+
     }
 
 }
