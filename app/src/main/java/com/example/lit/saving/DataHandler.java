@@ -145,12 +145,12 @@ public class DataHandler<T> implements Serializable{
         T loadedElementOffline;
         T loadedElementOnline;
 
-        try{
+      /*  try{
             loadedElementOnline = loadFromOnline(typeOfObject,element);
         }catch (Exception e){
             this.lastOnlineSave = 0;
             loadedElementOnline = null;
-        }
+        }*/
 
         try {
             loadedElementOffline = loadFromOffline();
@@ -178,7 +178,7 @@ public class DataHandler<T> implements Serializable{
             //if online fails or wanting to test offline features.
             return loadedElementOffline;
         }else{
-            return loadedElementOnline;
+            return loadedElementOffline;//loadedElementOnline;
         }
     }
 
