@@ -37,8 +37,8 @@ import java.io.IOException;
 public class ProfileEditActivity extends AppCompatActivity {
 
     public final static String ACTIVITY_KEY = "com.example.lit.activity.ProfileEditActivity";
-    public final static int EDIT_USERPROFILE_CODE = 2983472; //a "random" number
-    public final static int GET_FROM_GALLERY = 598739; //Our requestCode
+    public final static int EDIT_USERPROFILE_CODE = 43; //a "random" number
+    public final static int GET_FROM_GALLERY = 82; //Our requestCode
 
     private Button discardButton;
     private Button saveButton;
@@ -58,13 +58,15 @@ public class ProfileEditActivity extends AppCompatActivity {
         usernameView = (TextView) findViewById(R.id.usernameView);
         profileDescriptionView = (EditText) findViewById(R.id.profileDescriptionView);
         profileImageView = (ImageView) findViewById(R.id.profileImageView);
-        editProfileImageButton = (Button) findViewById(R.id.editProfileButton);
+        editProfileImageButton = (Button) findViewById(R.id.editImageButton);
 
         Intent editUserProfileIntent = getIntent();
-        editingUser = (UserProfile) editUserProfileIntent.getSerializableExtra(ProfileActivity.ACTIVITY_KEY);
+        editingUser = (UserProfile) editUserProfileIntent.getSerializableExtra(ACTIVITY_KEY);
         usernameView.setText(editingUser.getName());
         profileDescriptionView.setText(editingUser.getProfileDescription());
-        profileImageView.setImageBitmap(editingUser.getProfileImage());
+        if(editingUser.getProfileImage() != null) {
+            profileImageView.setImageBitmap(editingUser.getProfileImage());
+        }
 
         setTitle("Editing " + editingUser.getName() +"'s Profile");
 
@@ -83,8 +85,9 @@ public class ProfileEditActivity extends AppCompatActivity {
                 Log.d("ProfileEditActivity", "User saving changes.");
 
                 Intent sendModifiedUserProfile = new Intent();
-                sendModifiedUserProfile.putExtra(ACTIVITY_KEY, editingUser);
-                setResult(Activity.RESULT_OK);
+                editingUser.setProfileDescription(profileDescriptionView.getText().toString());
+                sendModifiedUserProfile.putExtra(ProfileActivity.ACTIVITY_KEY, editingUser);
+                setResult(Activity.RESULT_OK, sendModifiedUserProfile);
                 finish();
             }
         });
@@ -125,6 +128,8 @@ public class ProfileEditActivity extends AppCompatActivity {
                 Bitmap changeImage;
                 try {
                     changeImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImagePath);
+                    editingUser.setProfileImage(changeImage);
+                    profileImageView.setImageBitmap(editingUser.getProfileImage());
                 } catch (IOException e) {
                     e.printStackTrace();
                     Log.e("ProfileEditActivity", "Image failed to load.");
@@ -141,12 +146,5 @@ public class ProfileEditActivity extends AppCompatActivity {
         }
     }
 
-    private void saveButtonPressed(){
-        Intent editProfileIntent = new Intent();
-        editingUser.setProfileDescription(profileDescriptionView.getText().toString());
-        editProfileIntent.putExtra(ACTIVITY_KEY, editingUser);
-        setResult(Activity.RESULT_OK, editProfileIntent);
-        finish();
-    }
 
 }

@@ -25,6 +25,11 @@ import com.example.lit.userprofile.UserProfile;
  */
 
 public class OtherProfileActivity extends AppCompatActivity {
+    public final static String ACTIVITY_KEY = "com.example.lit.activity.OtherProfileActivity";
+    public final static String OTHER_USER = ACTIVITY_KEY + "OTHERUSER";
+    public final static String CURRENT_USER = ACTIVITY_KEY + "CURRENTUSER";
+    public final static int OTHER_REQUEST_CODE = 39;
+
     private ImageView profileImageView;
     private TextView usernameView;
     private TextView profileDescriptionView;

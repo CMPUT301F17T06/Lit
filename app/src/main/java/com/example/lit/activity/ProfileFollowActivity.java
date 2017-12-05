@@ -10,17 +10,25 @@
 
 package com.example.lit.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.lit.R;
 import com.example.lit.saving.DataHandler;
+import com.example.lit.saving.NoDataException;
+import com.example.lit.userprofile.FollowManager;
+import com.example.lit.userprofile.OtherUserProfile;
 import com.example.lit.userprofile.UserProfile;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 
@@ -29,10 +37,13 @@ import java.util.ArrayList;
  */
 
 public class ProfileFollowActivity extends AppCompatActivity {
+    public final static int FOLLOW_REQUEST_CODE = 65; //random number
+    public final static String ACTIVITY_KEY = "com.example.lit.activity.ProfileFollowActivity";
+    public final static String OPERATION_MODE = ACTIVITY_KEY + ".FOLLOW";
+
     private ListView followListView;
 
     private DataHandler<UserProfile> ourDataHandler;
-    private DataHandler<UserProfile> theirDataHandler;
     private UserProfile currentUser;
     private ArrayAdapter<String> followAdapter;
     private ArrayList<String> followArray;
@@ -42,7 +53,12 @@ public class ProfileFollowActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedBundleInstance){
         super.onCreate(savedBundleInstance);
-        setContentView(R.layout.temp_other_user_profile_layout);
+        setContentView(R.layout.temp_user_following_follower_layout);
+
+        //get currentUser intent
+        Intent ourUserIntent = getIntent();
+        currentUser = (UserProfile)ourUserIntent.getSerializableExtra(ACTIVITY_KEY);
+        option = ourUserIntent.getStringExtra(OPERATION_MODE);
 
         followListView = (ListView)findViewById(R.id.followListView);
         followArray = getFollowArray();
@@ -50,10 +66,19 @@ public class ProfileFollowActivity extends AppCompatActivity {
         followListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                String selectedUser =
+                String selectedUser = followArray.get(position);
+                DataHandler<UserProfile> theirDataHandler = new DataHandler<>(selectedUser, "UserProfile", getApplicationContext(), new TypeToken<UserProfile>(){}.getType());
+                try {
+                    UserProfile selectedUserProfile = theirDataHandler.loadData();
+                    Intent viewOtherUserProfile = new Intent(getApplicationContext(), OtherProfileActivity.class);
+                    viewOtherUserProfile.putExtra(OtherProfileActivity.CURRENT_USER, currentUser);
+                    viewOtherUserProfile.putExtra(OtherProfileActivity.OTHER_USER, selectedUserProfile);
+                    startActivityForResult(viewOtherUserProfile, OtherProfileActivity.OTHER_REQUEST_CODE);
+                } catch (NoDataException e) {
+                    Toast.makeText(getApplicationContext(),"New User created.",Toast.LENGTH_LONG).show();
+                }
             }
         });
-
     }
 
     @Override
@@ -63,10 +88,23 @@ public class ProfileFollowActivity extends AppCompatActivity {
         followListView.setAdapter(followAdapter);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem selection){
+        switch(selection.getItemId()){
+            case android.R.id.home: //Up button pressed
+                Log.d("ProfileFollowActivity", "Up Button Pressed. Return to profile");
+                setResult(Activity.RESULT_OK);
+                finish();
+        }
+        return true;
+    }
+
     private ArrayList<String> getFollowArray(){
         if(option.equals("following")){
+            setTitle("Following"); //Not necessary for getFollowArray but a convenient place
             return currentUser.getFollowManager().getFollowingUsers();
         }else if(option.equals("follower")){
+            setTitle("Followed by"); //Not necessary for getFollowArray but a convenient place
             return currentUser.getFollowManager().getFollowedUsers();
         }else{
             Log.wtf("ProfileFollowActivity", "What did Riley do??");
@@ -76,8 +114,6 @@ public class ProfileFollowActivity extends AppCompatActivity {
             //once however. We shouldn't be here unless Riley messed up.
         }
     }
-
-
 
 
 }

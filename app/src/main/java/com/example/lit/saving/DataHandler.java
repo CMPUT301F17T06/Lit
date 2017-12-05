@@ -65,11 +65,11 @@ public class DataHandler<T> implements Serializable{
      *
      * @param username What the username of the current logged in user is.
      *                 This is required to give a cleaner file hierarchy.
-     * @param typeOfObject What object is currently being accessed? This designates the file name
-     *                     to be read from and written to.
+     * @param nameOfObject The name of object. This is used for the save file.
      * @param context The context of the activity. In most cases when constructing
      *                the object this parameter is "this". This is used for accessing
      *                the file system for offline/local storage.
+     * @param typeOfObject What is the type of the object? Used to load from an offline file.
      *
      * @see Gson
      */
@@ -88,7 +88,7 @@ public class DataHandler<T> implements Serializable{
             filePath.mkdirs();
         }
 
-        FILENAME += File.separator + typeOfObject + ".sav";
+        FILENAME += File.separator + nameOfObject + ".sav";
     }
 
     /**

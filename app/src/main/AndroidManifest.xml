@@ -45,6 +45,9 @@
         <activity android:name=".activity.ViewFriendActivity" />
         <activity android:name=".activity.AddFriendActivity" />
         <activity android:name=".activity.ProfileActivity" />
+        <activity android:name=".activity.ProfileEditActivity"/>
+        <activity android:name=".activity.ProfileFollowActivity"/>
+        <activity android:name=".activity.OtherProfileActivity"/>
         <activity android:name=".activity.AddHabitEventActivity" />
         <activity android:name=".activity.ViewHabitEventActivity" />
         <activity android:name=".activity.EditHabitEventActivity" />

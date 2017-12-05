@@ -25,6 +25,11 @@ public class FollowManager implements Serializable{
     private ArrayList<String> requestToFollow;
     private ArrayList<String> requestedToFollow;
 
+    /**
+     * Creates a FollowManager object for new users.
+     *
+     * @param userProfile
+     */
     FollowManager(UserProfile userProfile){
         currentUsersName = userProfile.getName();
         followedUsers = new ArrayList<String>();
@@ -33,6 +38,15 @@ public class FollowManager implements Serializable{
         requestedToFollow = new ArrayList<String>();
     }
 
+    /**
+     * Creates a FollowManager object for existing users.
+     *
+     * @param userProfile
+     * @param followingUsers
+     * @param followedUsers
+     * @param requestToFollow
+     * @param requestedToFollow
+     */
     FollowManager(UserProfile userProfile, ArrayList<String> followingUsers,
                   ArrayList<String> followedUsers, ArrayList<String> requestToFollow,
                   ArrayList<String> requestedToFollow){

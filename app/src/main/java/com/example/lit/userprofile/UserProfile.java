@@ -10,6 +10,7 @@
 package com.example.lit.userprofile;
 
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.example.lit.saving.DataHandler;
@@ -54,8 +55,11 @@ public class UserProfile implements Serializable, Saveable{
      * @param name The user account's name.
      */
     public UserProfile(String name){ //New Account
-        this.name = name;
-        this.followManager = new FollowManager(this);
+        setName(name);
+        setProfileDescription("");
+        //setProfileImage(Bitmap.createBitmap(0,0, Bitmap.Config.RGB_565));
+        profileImage = null;
+        setFollowManager(new FollowManager(this));
     }
 
     /**
@@ -121,13 +125,13 @@ public class UserProfile implements Serializable, Saveable{
      *
      * @see Bitmap
      */
-    public void setProfileImage(Bitmap image){
-        int maxSize = 181; //For simplicity we are scaling to a square
+    public void setProfileImage(@NonNull Bitmap image){
+        int maxSize = 90; //For simplicity we are scaling to a square
         if(image.getByteCount() >= 65536){ //ensures the space requirement
             Log.e("UserProfile",
                     "Bitmap size to large, resizing.");
             image = Bitmap.createScaledBitmap(image, maxSize, maxSize, true);
-            image.reconfigure(maxSize, maxSize, Bitmap.Config.RGB_565);
+            image.reconfigure(maxSize, maxSize, Bitmap.Config.ARGB_8888);
         }
 
         this.profileImage = image;

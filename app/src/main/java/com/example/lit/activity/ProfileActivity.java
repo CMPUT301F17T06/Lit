@@ -26,7 +26,9 @@ import android.widget.TextView;
 
 import com.example.lit.R;
 import com.example.lit.saving.DataHandler;
+import com.example.lit.saving.NoDataException;
 import com.example.lit.userprofile.BitmapTooLargeException;
+import com.example.lit.userprofile.FollowManager;
 import com.example.lit.userprofile.UserProfile;
 import com.google.gson.reflect.TypeToken;
 
@@ -52,6 +54,10 @@ public class ProfileActivity extends AppCompatActivity{
         setContentView(R.layout.temp_user_profile_layout);
 
         //TODO: Get the intent to initialize currentUser!
+        Intent getUserIntent = getIntent();
+        String username = getUserIntent.getStringExtra("username");
+
+
 
         profileImageView = (ImageView) findViewById(R.id.profileImageView);
         usernameView = (TextView) findViewById(R.id.usernameView);
@@ -62,13 +68,43 @@ public class ProfileActivity extends AppCompatActivity{
         editProfileView = (Button) findViewById(R.id.editProfileButton);
         followersView = (TextView) findViewById(R.id.followersView);
         followingView = (TextView) findViewById(R.id.followingView);
-        dataHandler = new DataHandler<>(currentUser.getName(), "UserProfile", this, new TypeToken<UserProfile>(){}.getType());
+        //dataHandler = new DataHandler<>(currentUser.getName(), "UserProfile", this, new TypeToken<UserProfile>(){}.getType());
+        dataHandler = new DataHandler<>(username, "UserProfile", this, new TypeToken<UserProfile>(){}.getType());
+        setTitle(username + "'s Profile");
+
+        try {
+            currentUser = dataHandler.loadData();
+        } catch (NoDataException e) {
+            Log.d("ProfileActivity", "No user, creating new user.");
+            currentUser = new UserProfile(username);
+            dataHandler.saveData(currentUser);
+        }
+/*
+        FollowManager fm = currentUser.getFollowManager();
+        fm.getFollowingUsers().add("max");
+        fm.getFollowingUsers().add("ammar");
+        fm.getFollowedUsers().add("steven");
+        fm.getFollowedUsers().add("damon");
+        fm.getFollowedUsers().add("riley");
+*/
+        currentUser.getFollowManager().getFollowingUsers().add("lswlrjnh");
+
+
+        usernameView.setText(currentUser.getName());
+        userDescriptionView.setText(currentUser.getProfileDescription());
+        numFollowingView.setText(String.valueOf(currentUser.getFollowManager().getFollowingUsers().size()));
+        numFollowersView.setText(String.valueOf(currentUser.getFollowManager().getFollowedUsers().size()));
+
+        if(currentUser.getProfileImage() != null){
+            profileImageView.setImageBitmap(currentUser.getProfileImage());
+        }
 
         editProfileView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d("ProfileActivity", "Editing profile of user: " + currentUser.getName());
                 Intent editThisProfile = new Intent(ProfileActivity.this, ProfileEditActivity.class);
+                editThisProfile.putExtra(ProfileEditActivity.ACTIVITY_KEY, currentUser);
                 startActivityForResult(editThisProfile, ProfileEditActivity.EDIT_USERPROFILE_CODE);
             }
         });
@@ -113,16 +149,16 @@ public class ProfileActivity extends AppCompatActivity{
 
     private void initiateFollowActivity(String option){
         Intent listOfFollowingers = new Intent(ProfileActivity.this, ProfileFollowActivity.class);
-        listOfFollowingers.putExtra(ProfileActivity.ACTIVITY_KEY, currentUser);
+        listOfFollowingers.putExtra(ProfileFollowActivity.ACTIVITY_KEY, currentUser);
 
         if(option.equals("following")){
-            listOfFollowingers.putExtra("OPERATION_MODE", "Followers");
+            listOfFollowingers.putExtra(ProfileFollowActivity.OPERATION_MODE, option);
             Log.d("ProfileActivity", "Viewing followers of user: " + currentUser.getName());
-            startActivity(listOfFollowingers);
+            startActivityForResult(listOfFollowingers, ProfileFollowActivity.FOLLOW_REQUEST_CODE);
         }else if(option.equals("follower")){
-            listOfFollowingers.putExtra("OPERATION_MODE", "Following");
+            listOfFollowingers.putExtra(ProfileFollowActivity.OPERATION_MODE, option);
             Log.d("ProfileActivity", "Viewing following of user: " + currentUser.getName());
-            startActivity(listOfFollowingers);
+            startActivityForResult(listOfFollowingers, ProfileFollowActivity.FOLLOW_REQUEST_CODE);
         }else{
             Log.wtf("ProfileActivity", "initiateFollowDivided by zero. What did Riley do?");
             throw new RuntimeException("Crash Me!");
@@ -135,15 +171,25 @@ public class ProfileActivity extends AppCompatActivity{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent modifiedUserProfile){
         if(requestCode == ProfileEditActivity.EDIT_USERPROFILE_CODE){
-            if(resultCode == Activity.RESULT_OK){
-                UserProfile returnProfile = (UserProfile)modifiedUserProfile
-                                            .getSerializableExtra(ProfileEditActivity.ACTIVITY_KEY);
+            if(resultCode == Activity.RESULT_OK) {
+                UserProfile returnProfile = (UserProfile) modifiedUserProfile
+                        .getSerializableExtra(ACTIVITY_KEY);
                 currentUser.setProfileDescription(returnProfile.getProfileDescription());
-                currentUser.setProfileImage(returnProfile.getProfileImage());
+                userDescriptionView.setText(currentUser.getProfileDescription());
+                if (returnProfile.getProfileImage() != null){
+                    currentUser.setProfileImage(returnProfile.getProfileImage());
+                    profileImageView.setImageBitmap(currentUser.getProfileImage());
+                }
                 dataHandler.saveData(currentUser);
 
             }else if(resultCode == Activity.RESULT_CANCELED){
                 Log.d("ProfileActivity", "Cancelled edit complete.");
+            }
+        }else if(requestCode == ProfileFollowActivity.FOLLOW_REQUEST_CODE){
+            if(resultCode == Activity.RESULT_OK){
+                dataHandler.saveData(currentUser);
+            }else if(resultCode == Activity.RESULT_CANCELED){
+                dataHandler.saveData(currentUser);
             }
         }else{
             Log.wtf("ProfileActivity", "Invalid requestCode received.");

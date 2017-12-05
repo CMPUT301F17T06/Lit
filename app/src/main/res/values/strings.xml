@@ -32,6 +32,7 @@
     <string name="follow">Follow User</string>
     <string name="requested_follow">Requested</string>
     <string name="following_user">Following</string>
+    <string name="username_prompt">Username</string>
 
     <string-array name="navigation_drawer_items_array">
         <item>Home</item>
