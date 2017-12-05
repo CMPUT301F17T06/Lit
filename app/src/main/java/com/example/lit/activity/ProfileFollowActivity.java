@@ -75,7 +75,7 @@ public class ProfileFollowActivity extends AppCompatActivity {
                     viewOtherUserProfile.putExtra(OtherProfileActivity.OTHER_USER, selectedUserProfile);
                     startActivityForResult(viewOtherUserProfile, OtherProfileActivity.OTHER_REQUEST_CODE);
                 } catch (NoDataException e) {
-                    Toast.makeText(getApplicationContext(),"New User created.",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"User Doesn't exist.",Toast.LENGTH_LONG).show();
                 }
             }
         });

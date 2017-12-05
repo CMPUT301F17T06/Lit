@@ -87,7 +87,7 @@ public class ProfileActivity extends AppCompatActivity{
         fm.getFollowedUsers().add("damon");
         fm.getFollowedUsers().add("riley");
 */
-        currentUser.getFollowManager().getFollowingUsers().add("lswlrjnh");
+        //currentUser.getFollowManager().getFollowingUsers().add("lswlrjnh");
 
 
         usernameView.setText(currentUser.getName());
