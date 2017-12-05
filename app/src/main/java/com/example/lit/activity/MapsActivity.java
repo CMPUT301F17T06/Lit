@@ -27,6 +27,9 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.lit.R;
+import com.example.lit.habitevent.HabitEvent;
+import com.example.lit.habitevent.NormalHabitEvent;
+import com.example.lit.location.HabitLocation;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -168,12 +171,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        requestPermissions(LOCATION_PERMS, 1);
-        //TODO : From habitevent list load the location
-        LatLng latLng = new LatLng(53.5444,-113.52);
-        Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title("1"));
         markers = new ArrayList<>();
-        markers.add(marker);
+        requestPermissions(LOCATION_PERMS, 1);
+        ArrayList<NormalHabitEvent> events=getIntent().getParcelableArrayListExtra("EventList");
+        for(int i = 0; i < events.size();i++){
+            HabitEvent event = events.get(i);
+            HabitLocation habitLocation=event.getHabitLocation();
+            Marker marker = mMap.addMarker(new MarkerOptions().position(habitLocation.getLocation()).title(event.getHabitEventName()));
+            markers.add(marker);
+        }
+
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {

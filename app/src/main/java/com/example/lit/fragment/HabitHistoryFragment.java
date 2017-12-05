@@ -129,6 +129,7 @@ public class HabitHistoryFragment extends Fragment {
                 getActivity().setResult(RESULT_OK);
                 Intent intent = new Intent(view.getContext(), MapsActivity.class);
                 Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("EventList",eventArrayList);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
