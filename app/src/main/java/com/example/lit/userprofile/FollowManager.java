@@ -22,11 +22,11 @@ public class FollowManager implements Serializable{
     private String currentUsersName;
     private ArrayList<String> followingUsers;
     private ArrayList<String> followedUsers;
-    private ArrayList<String> requestToFollow;
-    private ArrayList<String> requestedToFollow;
+    private ArrayList<String> requestToFollowOther;
+    private ArrayList<String> requestToFollowUser;
 
     /**
-     * Creates a FollowManager object for new users.
+     * Creates a FollowManager object for new users
      *
      * @param userProfile
      */
@@ -34,28 +34,28 @@ public class FollowManager implements Serializable{
         currentUsersName = userProfile.getName();
         followedUsers = new ArrayList<String>();
         followingUsers = new ArrayList<String>();
-        requestToFollow = new ArrayList<String>();
-        requestedToFollow = new ArrayList<String>();
+        requestToFollowOther = new ArrayList<String>();
+        requestToFollowUser = new ArrayList<String>();
     }
 
     /**
-     * Creates a FollowManager object for existing users.
+     * Creates a Follow
      *
      * @param userProfile
      * @param followingUsers
      * @param followedUsers
-     * @param requestToFollow
-     * @param requestedToFollow
+     * @param requestToFollowOther
+     * @param requestToFollowUser
      */
     FollowManager(UserProfile userProfile, ArrayList<String> followingUsers,
-                  ArrayList<String> followedUsers, ArrayList<String> requestToFollow,
-                  ArrayList<String> requestedToFollow){
+                  ArrayList<String> followedUsers, ArrayList<String> requestToFollowOther,
+                  ArrayList<String> requestToFollowUser){
 
         currentUsersName = userProfile.getName();
         this.followingUsers = followingUsers;
         this.followedUsers = followedUsers;
-        this.requestToFollow = requestToFollow;
-        this.requestedToFollow = requestedToFollow;
+        this.requestToFollowOther = requestToFollowOther;
+        this.requestToFollowUser = requestToFollowUser;
     }
 
     public ArrayList<String> getFollowingUsers() {
@@ -74,39 +74,43 @@ public class FollowManager implements Serializable{
         this.followedUsers = followedUsers;
     }
 
-    public ArrayList<String> getRequestToFollow() {
-        return requestToFollow;
+    public ArrayList<String> getRequestToFollowOther() {
+        return requestToFollowOther;
     }
 
-    public void setRequestToFollow(ArrayList<String> requestToFollow) {
-        this.requestToFollow = requestToFollow;
+    public void setRequestToFollowOther(ArrayList<String> requestToFollowOther) {
+        this.requestToFollowOther = requestToFollowOther;
     }
 
-    public ArrayList<String> getRequestedToFollow() {
-        return requestedToFollow;
+    public ArrayList<String> getRequestedToFollowUser() {
+        return requestToFollowUser;
     }
 
-    public void setRequestedToFollow(ArrayList<String> requestedToFollow) {
-        this.requestedToFollow = requestedToFollow;
+    public void setRequestedToFollowUser(ArrayList<String> requestToFollowUser) {
+        this.requestToFollowUser = requestToFollowUser;
     }
 
 
 
 
 
-    public void requestToFollowUser(String requestingToFollowThisUser){
-        requestToFollow.add(requestingToFollowThisUser);
+    public void requestToFollowOther(String requestingToFollowThisUser){
+        requestToFollowUser.add(requestingToFollowThisUser);
         //TODO: Get the requestingToFollowUser's requestedToFollowArrayList and add requestingUser
         //TODO: Save the modified requestToFollow and requestedToFollow
     }
 
-    public void cancelRequestToFollow(String requestingToFollowThisUser){
+    public void cancelRequestToFollowOther(String requestingToFollowThisUser){
         requestToFollow.remove(requestingToFollowThisUser);
         //TODO: Get the requestingToFollowUser's requestedToFollowArrayList and remove requestingUser
         //TODO: Save the modified requestToFollow and requestedToFollow
     }
 
-    public void approveFollowRequest(String requestedUser){
+    public void approveRequestToFollowUser(String requestingUser){
+
+    }
+
+    public void denyRequestToFollowUser(String requestingUser){
 
     }
 
