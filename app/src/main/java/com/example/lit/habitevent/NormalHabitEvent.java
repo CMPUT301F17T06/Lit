@@ -11,6 +11,7 @@
 package com.example.lit.habitevent;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.example.lit.exception.HabitFormatException;
@@ -31,7 +32,7 @@ import com.example.lit.location.HabitLocation;
  * you may find a copy of the license in the project. Otherwise please contact jiaxiong@ualberta.ca
  */
 
-public class NormalHabitEvent extends HabitEvent{
+public class NormalHabitEvent extends HabitEvent implements Parcelable{
     public NormalHabitEvent(String name){super(name);}
     public NormalHabitEvent(String name, String comment)throws HabitFormatException {super(name, comment);}
     public NormalHabitEvent(String name, String comment, HabitLocation location)throws HabitFormatException {super(name, comment,location);}
