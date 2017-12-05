@@ -33,6 +33,7 @@
     <string name="requested_follow">Requested</string>
     <string name="following_user">Following</string>
     <string name="username_prompt">Username</string>
+    <string name="slogan_1">Quality is not an act, it is a</string>
 
     <string-array name="navigation_drawer_items_array">
         <item>Home</item>
@@ -47,5 +48,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="main_habit">Main habit</string>
     <string name="complete">Complete</string>
+    <string name="slogan_2">Habit...</string>
 
 </resources>

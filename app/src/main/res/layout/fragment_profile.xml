@@ -10,14 +10,115 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.lit.fragment.ProfileFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Profile fragment" />
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/profileImageView"
+            android:layout_width="108dp"
+            android:layout_height="126dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:clickable="false"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/profile" />
 
+        <TextView
+            android:id="@+id/usernameView"
+            android:layout_width="190dp"
+            android:layout_height="55dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:clickable="false"
+            android:gravity="center_vertical"
+            android:text="@string/username_prompt"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/profileImageView"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/followingView"
+            android:layout_width="122dp"
+            android:layout_height="31dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="32dp"
+            android:gravity="center"
+            android:text="@string/following_text"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profileImageView" />
+
+        <TextView
+            android:id="@+id/followersView"
+            android:layout_width="122dp"
+            android:layout_height="31dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="center"
+            android:text="@string/followers_text"
+            app:layout_constraintBaseline_toBaselineOf="@+id/followingView"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/numFollowingView"
+            android:layout_width="122dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="16dp"
+            android:gravity="center"
+            android:text="Number"
+            app:layout_constraintEnd_toEndOf="@+id/followingView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/followingView" />
+
+        <TextView
+            android:id="@+id/numFollowersView"
+            android:layout_width="122dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="center"
+            android:text="Number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/followersView"
+            app:layout_constraintTop_toBottomOf="@+id/followersView" />
+
+        <TextView
+            android:id="@+id/profileDescriptionView"
+            android:layout_width="190dp"
+            android:layout_height="55dp"
+            android:clickable="false"
+            android:hint="@string/user_description_hint"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@+id/usernameView"
+            app:layout_constraintStart_toStartOf="@+id/usernameView"
+            app:layout_constraintTop_toBottomOf="@+id/usernameView" />
+
+        <ListView
+            android:id="@+id/listHabitView"
+            android:layout_width="368dp"
+            android:layout_height="213dp"
+            android:layout_marginBottom="52dp"
+            android:clickable="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/editProfileButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="EDIT PROFILE"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </android.support.constraint.ConstraintLayout>
 </FrameLayout>

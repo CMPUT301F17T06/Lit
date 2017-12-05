@@ -35,7 +35,7 @@ public class DataHandlerTest extends ActivityInstrumentationTestCase2{
     public void testSaveHabit(){
         try {
             NormalHabit habit = new NormalHabit("Test title", new Date(1), "Test reason");
-            DataHandler<NormalHabit>
+            DataHandler<NormalHabit> dataHandler = null;
         } catch (HabitFormatException e) {
             e.printStackTrace();
         }
