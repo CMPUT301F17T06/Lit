@@ -45,7 +45,7 @@ public class FollowManager implements Serializable{
      * @param userProfile Used to get the current users name. Even though we only require a name
      *                    it should ensure that only a really user is constructing this class.
      */
-    FollowManager(UserProfile userProfile){
+    public FollowManager(UserProfile userProfile){
         currentUsersName = userProfile.getName();
         followedUsers = new ArrayList<String>();
         followingUsers = new ArrayList<String>();
@@ -63,7 +63,7 @@ public class FollowManager implements Serializable{
      * @param requestToFollowOther Who the user has requested to follow.
      * @param requestToFollowUser Who has requested to follow the user,
      */
-    FollowManager(UserProfile userProfile, ArrayList<String> followingUsers,
+    public FollowManager(UserProfile userProfile, ArrayList<String> followingUsers,
                   ArrayList<String> followedUsers, ArrayList<String> requestToFollowOther,
                   ArrayList<String> requestToFollowUser){
 
