@@ -11,8 +11,10 @@
 package com.example.lit.habit;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Base64;
 
 import com.example.lit.exception.BitmapTooLargeException;
 import com.example.lit.exception.HabitFormatException;
@@ -20,6 +22,7 @@ import com.example.lit.saving.Saveable;
 import com.example.lit.exception.HabitFormatException;
 import io.searchbox.annotations.JestId;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -45,7 +48,8 @@ public abstract class Habit implements Habitable , Parcelable, Saveable {
     private List<Calendar> calendars;
     @JestId
     private String id;
-    private Bitmap image;
+    private String encodedImage;
+    private Bitmap image = null;
 
     public String getID(){ return id ;}
 
@@ -151,7 +155,12 @@ public abstract class Habit implements Habitable , Parcelable, Saveable {
 
 
     public Bitmap getImage() {
-        return image;
+        if(this.image == null){
+            byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+            this.image = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            return this.image;
+        }
+        return this.image;
     }
 
     public void setImage(Bitmap image) throws BitmapTooLargeException {
@@ -163,6 +172,10 @@ public abstract class Habit implements Habitable , Parcelable, Saveable {
         }
         else {
             this.image = image;
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            image.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
+            byte[] byteArray = baos.toByteArray();
+            this.encodedImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
         }
     }
 

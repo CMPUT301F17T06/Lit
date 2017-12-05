@@ -11,14 +11,17 @@
 package com.example.lit.habitevent;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Base64;
 
 import com.example.lit.exception.BitmapTooLargeException;
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.location.HabitLocation;
 import com.example.lit.saving.Saveable;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -47,6 +50,7 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Savea
     private int commentLength = 20;
     private String jestID;
     private Bitmap image;
+    private String encodedImage;
 
 
     public HabitEvent(String habitEventName) {
@@ -193,15 +197,26 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Savea
 
 
     public Bitmap getImage() {
-        return image;
+        if(this.image == null){
+            byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+            this.image = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        }
+        return this.image;
     }
 
     public void setImage(Bitmap image) throws BitmapTooLargeException {
-        if (image.getByteCount() > 65536){
+        if (image == null){
+            this.image = null;
+        }
+        else if (image.getByteCount() > 65536){
             throw new BitmapTooLargeException();
         }
         else {
             this.image = image;
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            image.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
+            byte[] byteArray = baos.toByteArray();
+            this.encodedImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
         }
     }
 }
