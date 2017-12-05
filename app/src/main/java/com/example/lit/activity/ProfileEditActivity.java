@@ -34,11 +34,16 @@ import java.io.IOException;
  * Created by Riley Dixon on 02/12/2017.
  */
 
+/**
+ * This activity allows the user to update their profile description and/or profile image.
+ * The user cannot update their username as that is assumed to be immutable.
+ *
+ */
 public class ProfileEditActivity extends AppCompatActivity {
 
     public final static String ACTIVITY_KEY = "com.example.lit.activity.ProfileEditActivity";
-    public final static int EDIT_USERPROFILE_CODE = 2983472; //a "random" number
-    public final static int GET_FROM_GALLERY = 598739; //Our requestCode
+    public final static int EDIT_USERPROFILE_CODE = 43; //a "random" number
+    public final static int GET_FROM_GALLERY = 82; //Our requestCode
 
     private Button discardButton;
     private Button saveButton;
@@ -53,21 +58,25 @@ public class ProfileEditActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.temp_edit_user_profile_layout);
+        //Setup the views
         discardButton = (Button) findViewById(R.id.discardButton);
         saveButton = (Button) findViewById(R.id.saveButton);
         usernameView = (TextView) findViewById(R.id.usernameView);
         profileDescriptionView = (EditText) findViewById(R.id.profileDescriptionView);
         profileImageView = (ImageView) findViewById(R.id.profileImageView);
-        editProfileImageButton = (Button) findViewById(R.id.editProfileButton);
+        editProfileImageButton = (Button) findViewById(R.id.editImageButton);
 
+        //get our working data
         Intent editUserProfileIntent = getIntent();
-        editingUser = (UserProfile) editUserProfileIntent.getSerializableExtra(ProfileActivity.ACTIVITY_KEY);
+        editingUser = (UserProfile) editUserProfileIntent.getSerializableExtra(ACTIVITY_KEY);
         usernameView.setText(editingUser.getName());
         profileDescriptionView.setText(editingUser.getProfileDescription());
-        profileImageView.setImageBitmap(editingUser.getProfileImage());
-
+        if(editingUser.getProfileImage() != null) {
+            profileImageView.setImageBitmap(editingUser.getProfileImage());
+        }
         setTitle("Editing " + editingUser.getName() +"'s Profile");
 
+        //Discard any changes
         discardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,18 +86,21 @@ public class ProfileEditActivity extends AppCompatActivity {
             }
         });
 
+        //Save all changes made
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d("ProfileEditActivity", "User saving changes.");
 
                 Intent sendModifiedUserProfile = new Intent();
-                sendModifiedUserProfile.putExtra(ACTIVITY_KEY, editingUser);
-                setResult(Activity.RESULT_OK);
+                editingUser.setProfileDescription(profileDescriptionView.getText().toString());
+                sendModifiedUserProfile.putExtra(ProfileActivity.ACTIVITY_KEY, editingUser);
+                setResult(Activity.RESULT_OK, sendModifiedUserProfile);
                 finish();
             }
         });
 
+        //Go to the image gallery and pick a photo to change
         editProfileImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -101,8 +113,12 @@ public class ProfileEditActivity extends AppCompatActivity {
             }
         });
 
+        //TODO: Add a button that allows a user to take a picture instead of
+        // exclusively from their gallery.
+
     }
 
+    //Up button pressed, considered equivalent to discarding the changes.
     @Override
     public boolean onOptionsItemSelected(MenuItem selection){
         switch(selection.getItemId()){
@@ -114,6 +130,14 @@ public class ProfileEditActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * When returning from selecting an image, determine whether an image was returned or if the
+     * selection was cancelled.
+     *
+     * @param requestCode What activity was called
+     * @param resultCode What is the result from the activity we just came from
+     * @param selectedImage The data (if applicable) that is returned.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent selectedImage){
         if(requestCode == GET_FROM_GALLERY){
@@ -125,32 +149,25 @@ public class ProfileEditActivity extends AppCompatActivity {
                 Bitmap changeImage;
                 try {
                     changeImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImagePath);
+                    editingUser.setProfileImage(changeImage);
+                    profileImageView.setImageBitmap(editingUser.getProfileImage());
                 } catch (IOException e) {
                     e.printStackTrace();
                     Log.e("ProfileEditActivity", "Image failed to load.");
                 }
             }else if(resultCode == Activity.RESULT_CANCELED){
-
+                //Do nothing
             }else{
+                //Invalid result code
                 Log.wtf("ProfileEditActivity", "Unknown resultCode received.");
                 throw new RuntimeException("Crash Me!");
             }
         }else{
-            Log.wtf("ProfileEditActivity", "Came from an unknown activity.");
+            //We came from an unknown activity.
+            Log.wtf("ProfileEditActivity", "Invalid requestCode.");
             throw new RuntimeException("Crash Me!");
         }
     }
 
-    private void saveButtonPressed(){
-        Intent editProfileIntent = new Intent();
-        editingUser.setProfileDescription(profileDescriptionView.getText().toString());
-        editProfileIntent.putExtra(ACTIVITY_KEY, editingUser);
-        setResult(Activity.RESULT_OK, editProfileIntent);
-        finish();
-    }
-
-    private void changeProfileImage(){
-
-    }
 
 }

@@ -17,6 +17,7 @@
     android:layout_height="match_parent">
 
     <ListView
+        android:id="@+id/followListView"
         android:layout_width="368dp"
         android:layout_height="495dp"
         app:layout_constraintBottom_toBottomOf="parent"
