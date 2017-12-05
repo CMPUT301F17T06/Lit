@@ -43,6 +43,7 @@ public abstract class Habit implements Habitable , Parcelable, Saveable {
     private int titleLength = 20;
     private int reasonLength = 30;
     private List<Calendar> calendars;
+    private List<Date> dates;
     @JestId
     private String id;
     private Bitmap image;

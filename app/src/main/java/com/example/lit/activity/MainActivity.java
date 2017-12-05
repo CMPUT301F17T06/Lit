@@ -19,6 +19,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.lit.R;
+import com.example.lit.habit.NormalHabit;
+import com.example.lit.habitevent.NormalHabitEvent;
 import com.example.lit.saving.ElasticSearchHabitController;
 import com.example.lit.userprofile.UserProfile;
 
@@ -50,6 +52,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         usernameEditText = (EditText) findViewById(R.id.username);
         loginButton = (Button) findViewById(R.id.Login);
+        // For testing
+        /*try {
+            NormalHabitEvent dummyHabitEvent = new NormalHabitEvent("dummyHabitEvent");
+            dummyHabitEvent.setUser("dummy");
+            ElasticSearchHabitController.AddHabitEventTask addHabitEventTask = new ElasticSearchHabitController.AddHabitEventTask();
+            addHabitEventTask.execute(dummyHabitEvent);
+
+        }catch (Exception e){
+        }*/
         loginButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
