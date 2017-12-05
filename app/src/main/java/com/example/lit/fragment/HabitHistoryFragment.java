@@ -100,7 +100,7 @@ public class HabitHistoryFragment extends Fragment {
             eventArrayList = eventdatahandler.loadData();
         }catch (NoDataException e) {
             eventArrayList = new ArrayList<>();
-            Toast.makeText(getActivity(), "No data!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "No data!", Toast.LENGTH_SHORT).show();
         }
         catch (NullPointerException n){
             eventArrayList =new ArrayList<>();
@@ -224,9 +224,9 @@ public class HabitHistoryFragment extends Fragment {
         try {
             eventArrayList = eventdatahandler.loadData();
         }catch (NoDataException e){
-            Toast.makeText(getActivity(), "Error: Can't load data! code:3", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "Error: Can't load data! code:3", Toast.LENGTH_SHORT).show();
         }catch (NullPointerException n){
-            Toast.makeText(getActivity(),"No data",Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(),"No data",Toast.LENGTH_SHORT).show();
         }
         eventAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item, eventArrayList);
         eventListView.setAdapter(eventAdapter);

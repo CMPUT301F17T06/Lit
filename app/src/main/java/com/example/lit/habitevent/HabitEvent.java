@@ -54,25 +54,25 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Savea
 
 
     public HabitEvent(String habitEventName) {
-        setHabitEventName(habitEventName);
-        setEventDate(new Date());
+        this.setHabitEventName(habitEventName);
+        this.setEventDate(new Date());
     }
 
     public HabitEvent(String habitEventName, Date date) {
-        setHabitEventName(habitEventName);
-        setEventDate(date);
+        this.setHabitEventName(habitEventName);
+        this.setEventDate(date);
     }
 
     public HabitEvent(String habitEventName, String habitEventComment) throws HabitFormatException{
-        setHabitEventName(habitEventName);
-        setEventDate(new Date());
-        setEventComment(habitEventComment);
+        this.setHabitEventName(habitEventName);
+        this.setEventDate(new Date());
+        this.setEventComment(habitEventComment);
     }
 
     public HabitEvent(String habitEventName, String habitEventComment, Date date) throws HabitFormatException{
-        setHabitEventName(habitEventName);
-        setEventDate(date);
-        setEventComment(habitEventComment);
+        this.setHabitEventName(habitEventName);
+        this.setEventDate(date);
+        this.setEventComment(habitEventComment);
     }
 
     /**
@@ -85,17 +85,25 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Savea
      * @throws HabitFormatException thrown when title longer than 20 char or reason longer than 30 char
      * */
     public HabitEvent(String habitEventName, String habitEventComment, Date date, HabitLocation location) throws HabitFormatException{
-        setHabitEventName(habitEventName);
-        setLocation(location);
-        setEventDate(date);
-        setEventComment(habitEventComment);
+        this.setHabitEventName(habitEventName);
+        this.setLocation(location);
+        this.setEventDate(date);
+        this.setEventComment(habitEventComment);
     }
 
     public HabitEvent(String habitEventName, String habitEventComment,HabitLocation location) throws HabitFormatException{
-        setHabitEventName(habitEventName);
-        setLocation(location);
-        setEventDate(new Date());
-        setEventComment(habitEventComment);
+        this.setHabitEventName(habitEventName);
+        this.setLocation(location);
+        this.setEventDate(new Date());
+        this.setEventComment(habitEventComment);
+    }
+
+    public HabitEvent(String habitEventName, String habitEventComment,HabitLocation location, Bitmap image) throws HabitFormatException, BitmapTooLargeException{
+        this.setHabitEventName(habitEventName);
+        this.setLocation(location);
+        this.setEventDate(new Date());
+        this.setEventComment(habitEventComment);
+        this.setImage(image);
     }
 
     public int compareTo(HabitEvent habitEvent){
@@ -223,4 +231,5 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Savea
         this.image = in.readParcelable(Bitmap.class.getClassLoader());
         this.encodedImage = in.readString();
     }
+
 }

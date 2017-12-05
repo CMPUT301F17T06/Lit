@@ -13,6 +13,7 @@ package com.example.lit.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Parcelable;
 import android.provider.ContactsContract;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -85,6 +86,7 @@ public class ProfileActivity extends AppCompatActivity{
             dataHandler.saveData(currentUser);
         }
 
+
         //Update the view
         usernameView.setText(currentUser.getName());
         userDescriptionView.setText(currentUser.getProfileDescription());
@@ -101,7 +103,7 @@ public class ProfileActivity extends AppCompatActivity{
             public void onClick(View view) {
                 Log.d("ProfileActivity", "Editing profile of user: " + currentUser.getName());
                 Intent editThisProfile = new Intent(ProfileActivity.this, ProfileEditActivity.class);
-                editThisProfile.putExtra(ProfileEditActivity.ACTIVITY_KEY, currentUser);
+                editThisProfile.putExtra(ProfileEditActivity.ACTIVITY_KEY, (Parcelable)currentUser);
                 startActivityForResult(editThisProfile, ProfileEditActivity.EDIT_USERPROFILE_CODE);
             }
         });
@@ -153,7 +155,7 @@ public class ProfileActivity extends AppCompatActivity{
      */
     private void initiateFollowActivity(String option){
         Intent listOfFollowingers = new Intent(ProfileActivity.this, ProfileFollowActivity.class);
-        listOfFollowingers.putExtra(ProfileFollowActivity.ACTIVITY_KEY, currentUser);
+        listOfFollowingers.putExtra(ProfileFollowActivity.ACTIVITY_KEY, (Parcelable)currentUser);
 
         //TODO: unnecessary if branch
         if(option.equals("following")){

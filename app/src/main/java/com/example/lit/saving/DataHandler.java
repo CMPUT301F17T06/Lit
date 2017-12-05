@@ -112,14 +112,16 @@ public class DataHandler<T> implements Serializable{
      * @param element The element or object that we want to save
      */
     public void saveData(T element){
-        long currentTime = System.currentTimeMillis();
 
+        long currentTime = System.currentTimeMillis();
+        /*
         try{
             saveToOnline(element,typeOfObject,currentTime);
             lastOnlineSave = currentTime;
         }catch (Exception e){
             Log.i("Server","Offline");
         }
+        */
         try{
             saveToOffline(element, currentTime);
             lastOfflineSave = currentTime;

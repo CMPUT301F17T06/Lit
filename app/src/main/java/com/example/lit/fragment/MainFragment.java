@@ -146,7 +146,7 @@ public class MainFragment extends Fragment {
         try {
             habitArrayList = dataHandler.loadData();
         }catch (NoDataException e){
-            Toast.makeText(getActivity(), "Error: Can't load data! code:3", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "Error: Can't load data! code:3", Toast.LENGTH_SHORT).show();
         }
         habitAdapter.notifyDataSetChanged();
 

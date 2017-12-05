@@ -10,10 +10,12 @@
 
 package com.example.lit.habitevent;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
+import com.example.lit.exception.BitmapTooLargeException;
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.location.HabitLocation;
 
@@ -36,6 +38,7 @@ public class NormalHabitEvent extends HabitEvent implements Parcelable{
     public NormalHabitEvent(String name){super(name);}
     public NormalHabitEvent(String name, String comment)throws HabitFormatException {super(name, comment);}
     public NormalHabitEvent(String name, String comment, HabitLocation location)throws HabitFormatException {super(name, comment,location);}
+    public NormalHabitEvent(String name, String comment, HabitLocation location, Bitmap image)throws HabitFormatException, BitmapTooLargeException {super(name, comment,location, image);}
 
     @Override
     public int compareTo(@NonNull Object o) {

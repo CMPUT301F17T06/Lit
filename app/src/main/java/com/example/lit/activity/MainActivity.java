@@ -80,10 +80,10 @@ public class MainActivity extends AppCompatActivity {
                             user = new UserProfile(username);
                             //ElasticSearchHabitController.AddUserTask addUserTask = new ElasticSearchHabitController.AddUserTask();
                             //addUserTask.execute(user);
-                            Toast.makeText(getApplicationContext(),"New User created.",Toast.LENGTH_LONG).show();
-                        }else{
-                            Toast.makeText(getApplicationContext(),"User exists.",Toast.LENGTH_LONG).show();
-                        }
+                            //Toast.makeText(getApplicationContext(),"New User created.",Toast.LENGTH_LONG).show();
+                        }//else{
+                            //Toast.makeText(getApplicationContext(),"User exists.",Toast.LENGTH_LONG).show();
+                        //}
                     }catch(Exception e){
                     }
                 }

@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -94,7 +95,7 @@ public class ProfileEditActivity extends AppCompatActivity {
 
                 Intent sendModifiedUserProfile = new Intent();
                 editingUser.setProfileDescription(profileDescriptionView.getText().toString());
-                sendModifiedUserProfile.putExtra(ProfileActivity.ACTIVITY_KEY, editingUser);
+                sendModifiedUserProfile.putExtra(ProfileActivity.ACTIVITY_KEY, (Parcelable)editingUser);
                 setResult(Activity.RESULT_OK, sendModifiedUserProfile);
                 finish();
             }

@@ -35,6 +35,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.lit.R;
+import com.example.lit.exception.BitmapTooLargeException;
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.exception.LoadHabitException;
 import com.example.lit.fragment.HabitHistoryFragment;
@@ -187,7 +188,7 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
         eventLocation = new HabitLocation(latLng);
 
         try {
-            NormalHabitEvent newHabitEvent = new NormalHabitEvent(habitNameString, commentString,eventLocation);
+            NormalHabitEvent newHabitEvent = new NormalHabitEvent(habitNameString, commentString,eventLocation, image);
             try {
                 eventArrayList = eventDataHandler.loadData();
             }catch (NoDataException e){
@@ -214,6 +215,8 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
             finish();
         } catch (HabitFormatException e) {
             Toast.makeText(AddHabitEventActivity.this, "Error: Illegal Habit Event information!", Toast.LENGTH_LONG).show();
+        } catch (BitmapTooLargeException e) {
+            e.printStackTrace();
         }
     }
 
