@@ -11,8 +11,6 @@ package com.example.lit.userprofile;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.Base64;
 import android.util.Log;
@@ -28,7 +26,7 @@ import java.util.ArrayList;
  * Created by Riley Dixon on 21/10/2017.
  */
 
-public class UserProfile implements Serializable, Saveable, Parcelable{
+public class UserProfile implements Serializable, Saveable{
 
     public final static String CLASS_TYPE = "UserProfile";
 
@@ -182,40 +180,4 @@ public class UserProfile implements Serializable, Saveable, Parcelable{
         return this.jestID;
     }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.name);
-        dest.writeString(this.profileDescription);
-        dest.writeParcelable(this.profileImage, flags);
-        dest.writeString(this.encodedImage);
-        dest.writeSerializable(this.followManager);
-        dest.writeString(this.jestID);
-    }
-
-    protected UserProfile(Parcel in) {
-        this.name = in.readString();
-        this.profileDescription = in.readString();
-        this.profileImage = in.readParcelable(Bitmap.class.getClassLoader());
-        this.encodedImage = in.readString();
-        this.followManager = (FollowManager) in.readSerializable();
-        this.jestID = in.readString();
-    }
-
-    public static final Creator<UserProfile> CREATOR = new Creator<UserProfile>() {
-        @Override
-        public UserProfile createFromParcel(Parcel source) {
-            return new UserProfile(source);
-        }
-
-        @Override
-        public UserProfile[] newArray(int size) {
-            return new UserProfile[size];
-        }
-    };
 }

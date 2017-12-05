@@ -13,7 +13,6 @@ package com.example.lit.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -31,7 +30,6 @@ import com.example.lit.activity.ProfileEditActivity;
 import com.example.lit.activity.ProfileFollowActivity;
 import com.example.lit.saving.DataHandler;
 import com.example.lit.saving.NoDataException;
-import com.example.lit.userprofile.FollowManager;
 import com.example.lit.userprofile.UserProfile;
 import com.google.gson.reflect.TypeToken;
 
@@ -93,12 +91,6 @@ public class ProfileFragment extends Fragment {
             dataHandler.saveData(currentUser);
         }
 
-        //FollowManager fm = currentUser.getFollowManager();
-        //fm.getFollowedUsers().add("riley");
-        //fm.getFollowedUsers().add("max");
-        //fm.getFollowingUsers().add("Playboy");
-        //fm.getFollowingUsers().add("ammar");
-
         //Update the view
         usernameView.setText(currentUser.getName());
         userDescriptionView.setText(currentUser.getProfileDescription());
@@ -115,7 +107,7 @@ public class ProfileFragment extends Fragment {
             public void onClick(View view) {
                 Log.d("ProfileActivity", "Editing profile of user: " + currentUser.getName());
                 Intent editThisProfile = new Intent(getActivity(), ProfileEditActivity.class);
-                editThisProfile.putExtra(ProfileEditActivity.ACTIVITY_KEY, (Parcelable)currentUser);
+                editThisProfile.putExtra(ProfileEditActivity.ACTIVITY_KEY, currentUser);
                 startActivityForResult(editThisProfile, ProfileEditActivity.EDIT_USERPROFILE_CODE);
             }
         });
@@ -161,7 +153,7 @@ public class ProfileFragment extends Fragment {
      */
     private void initiateFollowActivity(String option){
         Intent listOfFollowingers = new Intent(getActivity(), ProfileFollowActivity.class);
-        listOfFollowingers.putExtra(ProfileFollowActivity.ACTIVITY_KEY, (Parcelable)currentUser);
+        listOfFollowingers.putExtra(ProfileFollowActivity.ACTIVITY_KEY, currentUser);
 
         //TODO: unnecessary if branch
         if(option.equals("following")){

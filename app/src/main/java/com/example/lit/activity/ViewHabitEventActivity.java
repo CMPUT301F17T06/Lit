@@ -61,18 +61,22 @@ import static org.apache.commons.lang3.BooleanUtils.and;
  */
 public class ViewHabitEventActivity extends AppCompatActivity {
 
-    private static final String CLASS_KEY = "com.example.lit.activity.ViewHabitEventActivity";
+    private static final String CLASS_KEY = "com.example.lit.activity.ViewHabitActivity";
 
     NormalHabitEvent currentEvent;
     String habitTitleString;
     String habitCommentString;
     String habitDateStartedString;
+    List<Calendar> habitCalenderList;
+    String weeklyString;
+    TextView weeklyTextView;
     TextView habitTitle;
     TextView habitComment;
     TextView habitDateStarted;
     Button editHabit;
     Button deleteHabit;
     Button mainMenu;
+    Button addHabitEventButton;
     //String username;
     ImageView habitImageView;
     Bitmap habitImage;
@@ -81,6 +85,9 @@ public class ViewHabitEventActivity extends AppCompatActivity {
     DataHandler dataHandler;
     Integer index;
     ArrayList<NormalHabitEvent> habitArrayList;
+    List<Integer> selectedWeekdays;
+    int hour;
+    int minute;
 
 
     @Override

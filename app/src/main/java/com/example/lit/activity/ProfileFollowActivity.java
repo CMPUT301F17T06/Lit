@@ -13,7 +13,6 @@ package com.example.lit.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
@@ -60,18 +59,16 @@ public class ProfileFollowActivity extends AppCompatActivity {
         super.onCreate(savedBundleInstance);
         setContentView(R.layout.temp_user_following_follower_layout);
 
-        //get working data
-        Intent ourUserIntent = getIntent();
-        currentUser = (UserProfile)ourUserIntent.getSerializableExtra(ACTIVITY_KEY);
-        option = ourUserIntent.getStringExtra(OPERATION_MODE);
-
         //Setup the view
         followListView = (ListView)findViewById(R.id.followListView);
         followArray = getFollowArray();
         followAdapter = new ArrayAdapter<String>(this, R.layout.list_item, followArray);
         followListView.setAdapter(followAdapter);
 
-
+        //get working data
+        Intent ourUserIntent = getIntent();
+        currentUser = (UserProfile)ourUserIntent.getSerializableExtra(ACTIVITY_KEY);
+        option = ourUserIntent.getStringExtra(OPERATION_MODE);
 
         //A user from the list was selected. This validates if the user exists or not.
         //If user does not exist, removes them from the list when selected.
@@ -83,8 +80,8 @@ public class ProfileFollowActivity extends AppCompatActivity {
                 try {
                     UserProfile selectedUserProfile = theirDataHandler.loadData();
                     Intent viewOtherUserProfile = new Intent(getApplicationContext(), OtherProfileActivity.class);
-                    viewOtherUserProfile.putExtra(OtherProfileActivity.CURRENT_USER, (Parcelable)currentUser);
-                    viewOtherUserProfile.putExtra(OtherProfileActivity.OTHER_USER, (Parcelable)selectedUserProfile);
+                    viewOtherUserProfile.putExtra(OtherProfileActivity.CURRENT_USER, currentUser);
+                    viewOtherUserProfile.putExtra(OtherProfileActivity.OTHER_USER, selectedUserProfile);
                     startActivityForResult(viewOtherUserProfile, OtherProfileActivity.OTHER_REQUEST_CODE);
                 } catch (NoDataException e) {
                     Toast.makeText(getApplicationContext(),"User Doesn't exist.",Toast.LENGTH_LONG).show();
