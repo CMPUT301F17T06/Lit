@@ -158,8 +158,10 @@ public abstract class Habit implements Habitable , Parcelable, Saveable {
 
 
     public Bitmap getImage() {
-        byte[] decodedString = Base64.decode(this.encodedImage, Base64.DEFAULT);
-        this.image = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        if(encodedImage != null) {
+            byte[] decodedString = Base64.decode(this.encodedImage, Base64.DEFAULT);
+            this.image = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        }
         return this.image;
     }
 

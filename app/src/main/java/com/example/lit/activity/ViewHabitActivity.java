@@ -196,6 +196,7 @@ public class ViewHabitActivity extends AppCompatActivity {
     public void deleteHabit(ArrayList<NormalHabit> habitArrayList, NormalHabit currentHabit){
         habitArrayList.remove(currentHabit);
         dataHandler.saveData(habitArrayList);
+
         Log.i("ViewHabitActivity", "Delete button pressed.");
         finish();
     }
