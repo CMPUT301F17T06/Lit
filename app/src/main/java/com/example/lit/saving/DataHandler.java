@@ -12,6 +12,9 @@ package com.example.lit.saving;
 
 import android.content.Context;
 
+import com.example.lit.habit.NormalHabit;
+import com.example.lit.habitevent.NormalHabitEvent;
+import com.example.lit.userprofile.UserProfile;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
@@ -30,6 +33,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
+
+import io.searchbox.annotations.JestId;
 
 
 //TODO: BONUS, upgrade to java.nio.files.Files and introduce file locking
@@ -58,6 +63,15 @@ public class DataHandler<T> implements Serializable{
     private String nameOfObject;
     private String FILENAME;
     private Type typeOfObject;
+    private String jestID;
+
+    public String getJestID() {
+        return jestID;
+    }
+
+    public void setJestID(String jestID) {
+        this.jestID = jestID;
+    }
 
     /**
      * Builds a handler that is used to save data to both local storage for offline use as
@@ -188,13 +202,32 @@ public class DataHandler<T> implements Serializable{
      *                    started, not necessarily when the data was written.
      * @throws NotOnlineException If we cannot connect to the server
      */
-    private void saveToOnline(T dataToSave, long currentTime) throws NotOnlineException{
-        //ElasticSearchHabitController.AddTask<T> esSaver
-        //        = new ElasticSearchHabitController.AddTask<T>(username, typeOfObject);
-        //ElasticSearchTimestampWrapper<T> ESTWdata
-        //        = new ElasticSearchTimestampWrapper<T>(dataToSave, currentTime);
+    private void saveToOnline(T dataToSave,Type typeOfObject, long currentTime) throws NotOnlineException{
+        if (typeOfObject == UserProfile.class){
+            try{
+                ElasticSearchHabitController.AddUserTaskDH addUserTaskDH = new ElasticSearchHabitController.AddUserTaskDH();
+                addUserTaskDH.execute(dataToSave);
+            }catch (Exception e){
+            }
+        }
 
-        //esSaver.execute(ESTWdata);
+        if (typeOfObject == NormalHabit.class){
+            try{
+                ElasticSearchHabitController.AddHabitsTaskDH addHabitsTaskDH = new ElasticSearchHabitController.AddHabitsTaskDH();
+                addHabitsTaskDH.execute(dataToSave);
+            }catch (Exception e){
+            }
+        }
+
+        if (typeOfObject == NormalHabitEvent.class){
+            try{
+                ElasticSearchHabitController.AddHabitEventTaskDH addHabitEventTaskDH = new ElasticSearchHabitController.AddHabitEventTaskDH();
+                addHabitEventTaskDH.execute(dataToSave);
+            }catch (Exception e){
+            }
+
+
+        }
     }
 
     /**

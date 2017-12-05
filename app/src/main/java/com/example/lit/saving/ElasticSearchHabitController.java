@@ -71,6 +71,36 @@ public class ElasticSearchHabitController {
         }
     }
 
+    public static class AddHabitsTaskDH<T> extends AsyncTask<DataHandler<T>, Void, Void> {
+        @Override
+        protected Void doInBackground(DataHandler<T>... habits) {
+            verifySettings();
+
+            for (DataHandler<T> habit : habits) {
+                Index index = new Index.Builder(habit).index("cmput301f17t06").type("habit").build();
+
+                try {
+
+                    DocumentResult result = client.execute(index);
+
+                    if(result.isSucceeded())
+                    {
+                        habit.setJestID(result.getId());
+                    }
+                    else
+                    {
+                        Log.i("Error","Elasticsearch was not able to add the user");
+                    }
+                }
+                catch (Exception e) {
+                    Log.i("Error", "The application failed to build and send the user");
+                }
+
+            }
+            return null;
+        }
+    }
+
     // Gets all habits for the user specified
     public static class GetCurrentHabitsTask extends AsyncTask<String, Void, ArrayList<NormalHabit>> {
         @Override
@@ -127,6 +157,37 @@ public class ElasticSearchHabitController {
                     if(result.isSucceeded())
                     {
                         habitEvent.setID(result.getId());
+                    }
+                    else
+                    {
+                        Log.i("Error","Elasticsearch was not able to add the habit event");
+                    }
+                }
+                catch (Exception e) {
+                    Log.i("Error", "The application failed to build and send the habit events");
+                }
+
+            }
+            return null;
+        }
+    }
+
+    public static class AddHabitEventTaskDH<T> extends AsyncTask<DataHandler<T>, Void, Void> {
+
+        @Override
+        protected Void doInBackground(DataHandler<T>... habitEvents) {
+            verifySettings();
+
+            for (DataHandler<T> habitEvent : habitEvents) {
+                Index index = new Index.Builder(habitEvent).index("cmput301f17t06").type("habitEvent").build();
+
+                try {
+
+                    DocumentResult result = client.execute(index);
+
+                    if(result.isSucceeded())
+                    {
+                        habitEvent.setJestID(result.getId());
                     }
                     else
                     {
@@ -237,6 +298,37 @@ public class ElasticSearchHabitController {
                     if(result.isSucceeded())
                     {
                         userProfile.setID(result.getId());
+                    }
+                    else
+                    {
+                        Log.i("Error","Elasticsearch was not able to add the user");
+                    }
+                }
+                catch (Exception e) {
+                    Log.i("Error", "The application failed to build and send the user");
+                }
+
+            }
+            return null;
+        }
+    }
+
+    public static class AddUserTaskDH<T> extends AsyncTask<DataHandler<T>, Void, Void> {
+
+        @Override
+        protected Void doInBackground(DataHandler<T>... userProfiles) {
+            verifySettings();
+
+            for (DataHandler<T> userProfile : userProfiles) {
+                Index index = new Index.Builder(userProfile).index("cmput301f17t06").type("user").build();
+
+                try {
+
+                    DocumentResult result = client.execute(index);
+
+                    if(result.isSucceeded())
+                    {
+                        userProfile.setJestID(result.getId());
                     }
                     else
                     {
