@@ -50,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // background taken from: https://thechive.files.wordpress.com/2015/01/i-think-its-time-for-a-new-phone-background-50-photos-4.jpg?quality=85&strip=info&w=600
+
         usernameEditText = (EditText) findViewById(R.id.username);
         loginButton = (Button) findViewById(R.id.Login);
         // For testing

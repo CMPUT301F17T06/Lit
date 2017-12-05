@@ -61,7 +61,7 @@ public class AddHabitActivity extends AppCompatActivity  {
 
     private static final String CLASS_KEY = "com.example.lit.activity.AddHabitActivity";
     protected static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 0;
-    final int maxSize = 64;
+    final int maxSize = 90;
 
     private EditText habitName;
     private EditText habitComment;
@@ -339,7 +339,7 @@ public class AddHabitActivity extends AppCompatActivity  {
     public Bitmap compressPicture(Bitmap bitmap){
 
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap,maxSize,maxSize,true);
-        //resizedBitmap.reconfigure(maxSize,maxSize, Bitmap.Config.RGB_565);
+        resizedBitmap.reconfigure(maxSize,maxSize, Bitmap.Config.ARGB_8888);
 
         return resizedBitmap;
     }
