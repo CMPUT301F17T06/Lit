@@ -76,13 +76,12 @@ public class HabitHistoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_habit_history, container, false);
-        eventArrayList = new ArrayList<>();
-        try {
-            eventdatahandler = (DataHandler) getArguments().getSerializable("eventdatahandler");
-
         username = getActivity().getIntent().getExtras().getString("username");
-        //DataHandler dataHandler = new DataHandler("username", "HabitList", getActivity());
+        eventArrayList = new ArrayList<>();
 
+        eventdatahandler = new DataHandler<>(username,"habitevent",getActivity(),new TypeToken<ArrayList<NormalHabitEvent>>(){}.getType());
+
+        try{
             eventArrayList = eventdatahandler.loadData();
         }catch (NoDataException e) {
             eventArrayList = new ArrayList<>();
@@ -143,6 +142,7 @@ public class HabitHistoryFragment extends Fragment {
         super.onStart();
         eventAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item, eventArrayList);
         eventListView.setAdapter(eventAdapter);
+        eventdatahandler = new DataHandler<>(username,"habitevent",getActivity(),new TypeToken<ArrayList<NormalHabitEvent>>(){}.getType());
         try {
             eventArrayList = eventdatahandler.loadData();
         }catch (NoDataException e){

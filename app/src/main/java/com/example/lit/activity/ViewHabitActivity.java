@@ -35,6 +35,8 @@ import com.example.lit.saving.NoDataException;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+
 /**
  * viewHabitActivity
  * Version 1.0
@@ -67,7 +69,7 @@ public class ViewHabitActivity extends AppCompatActivity {
     String username;
     ImageView habitImageView;
     Bitmap habitImage;
-    DataHandler eventDataHanler;
+    DataHandler<ArrayList<NormalHabitEvent>> eventDataHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +80,7 @@ public class ViewHabitActivity extends AppCompatActivity {
         try{
             Bundle bundle = getIntent().getExtras();
             currentHabit = (Habit)bundle.getParcelable("habit");
-            eventDataHanler = (DataHandler)bundle.getSerializable("eventdatahandler");
+            eventDataHandler = (DataHandler)bundle.getSerializable("eventdatahandler");
             username = (String)bundle.getString("username");
 
             if (!(currentHabit instanceof Habit)) throw new LoadHabitException();
@@ -127,7 +129,7 @@ public class ViewHabitActivity extends AppCompatActivity {
                 Intent intent = new Intent(v.getContext(), AddHabitEventActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("habit", currentHabit);
-                bundle.putSerializable("eventdatehandler",eventDataHanler);
+                bundle.putSerializable("eventdatahandler",eventDataHandler);
                 bundle.putString("username",username);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,1);

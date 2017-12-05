@@ -82,9 +82,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         nearby = (Button) findViewById(R.id.within5km);
 
 
-        //TODO : From habitevent list load the location
-        //Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(result));
-        //markers.add(marker);
+
 
         nearby.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -171,6 +169,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         requestPermissions(LOCATION_PERMS, 1);
+        //TODO : From habitevent list load the location
+        LatLng latLng = new LatLng(53.5444,-113.52);
+        Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title("1"));
+        markers = new ArrayList<>();
+        markers.add(marker);
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {

@@ -16,6 +16,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,7 @@ import com.example.lit.activity.AddHabitActivity;
 import com.example.lit.activity.ViewHabitActivity;
 import com.example.lit.habit.Habit;
 import com.example.lit.habit.NormalHabit;
+import com.example.lit.habitevent.HabitHistory;
 import com.example.lit.habitevent.NormalHabitEvent;
 import com.example.lit.saving.DataHandler;
 import com.example.lit.saving.ElasticSearchHabitController;
@@ -98,6 +100,8 @@ public class MainFragment extends Fragment {
 
         dataHandler = new DataHandler<>(username,"habit",getActivity(), new TypeToken<ArrayList<NormalHabit>>(){}.getType());
         eventdataHandler = new DataHandler<>(username,"habitevent",getActivity(),new TypeToken<ArrayList<NormalHabitEvent>>(){}.getType());
+
+
         try {
             habitArrayList = dataHandler.loadData();
         }catch (NoDataException e){
@@ -125,7 +129,8 @@ public class MainFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 Habit selectedHabit = habitArrayList.get(i);
                 bundle.putParcelable("habit", selectedHabit);
-                bundle.putSerializable("eventdataHandler",eventdataHandler);
+
+                bundle.putSerializable("eventdatahandler",eventdataHandler);
                 bundle.putString("username",username);
                 intent.putExtras(bundle);
                 startActivityForResult(intent,2);

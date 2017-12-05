@@ -26,6 +26,7 @@ import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -49,6 +50,7 @@ import com.example.lit.location.HabitLocation;
 import com.example.lit.location.PlaceAutocompleteAdapter;
 import com.example.lit.saving.DataHandler;
 import com.example.lit.saving.ElasticSearchHabitController;
+import com.example.lit.saving.NoDataException;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
@@ -107,13 +109,14 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
     private GoogleApiClient mGoogleApiClient;
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
             new LatLng(-40, -168), new LatLng(71, 136));
-    DataHandler eventdataHandler;
+    DataHandler<ArrayList<NormalHabitEvent>> eventdataHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_habit_event);
         setTitle("Adding A New Habit Event");
+
 
         try{
             Bundle bundle = getIntent().getExtras();
@@ -196,15 +199,28 @@ public class AddHabitEventActivity extends AppCompatActivity implements GoogleAp
 
         try {
             NormalHabitEvent newHabitEvent = new NormalHabitEvent(habitNameString, commentString,eventLocation);
-            eventArrayList.add(newHabitEvent);
-            eventdataHandler.saveData(eventArrayList);
+            try {
+                eventArrayList = eventdataHandler.loadData();
+            }catch (NoDataException e){
+                eventArrayList = new ArrayList<>();
+            }
+            ArrayList<NormalHabitEvent> newArrayList  = new ArrayList<>();
+            newArrayList.add(newHabitEvent);
+            for(int i=0; i < eventArrayList.size();i++){
+                newArrayList.add((eventArrayList.get(i)));
+            }
+
+            try {
+                eventdataHandler.saveData(newArrayList);
+            }catch (NullPointerException e){
+                Toast.makeText(AddHabitEventActivity.this, "Error: DataHanlder problem!", Toast.LENGTH_LONG).show();
+            }
             //newHabitEvent.setUser(username);
            // ElasticSearchHabitController.AddHabitEventTask addHabitEventTask = new ElasticSearchHabitController.AddHabitEventTask();
             //addHabitEventTask.execute(newHabitEvent);
-            bundle.putSerializable("eventdatahandler", eventdataHandler);
             //set Fragmentclass Arguments
-            HabitHistoryFragment fragment=new HabitHistoryFragment();
-            fragment.setArguments(bundle);
+
+
             finish();
         } catch (HabitFormatException e) {
             Toast.makeText(AddHabitEventActivity.this, "Error: Illegal Habit Event information!", Toast.LENGTH_LONG).show();

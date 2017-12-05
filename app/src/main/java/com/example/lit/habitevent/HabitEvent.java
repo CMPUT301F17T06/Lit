@@ -114,11 +114,8 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Savea
 
     @Override
     public String toString() {
-        return "Habit Event{" +
-                "habitEventName='" + habitEventName + '\'' +
-                ", date=" + date + '\'' +
-                ", comment=" + eventComment +
-                '}';
+        return "HabitEventName = "+ habitEventName + "\n" +
+                "date= " + date ;
     }
 
     public String getUser() {
