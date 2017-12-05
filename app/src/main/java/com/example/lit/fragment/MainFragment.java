@@ -152,6 +152,13 @@ public class MainFragment extends Fragment {
 
     }
 
+    /**
+     * geting the result from the activity started.
+     * @param requestCode
+     * @param resultCode
+     * @param intent
+     */
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent){
         try{

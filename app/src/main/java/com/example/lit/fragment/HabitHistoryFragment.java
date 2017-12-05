@@ -86,6 +86,10 @@ public class HabitHistoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_habit_history, container, false);
         username = getActivity().getIntent().getExtras().getString("username");
+        eventArrayList = new ArrayList<>();
+        eventListView = (ListView) view.findViewById(R.id.eventhistory);
+        eventAdapter = new ArrayAdapter<NormalHabitEvent>(getActivity(), R.layout.list_item, eventArrayList);
+        eventListView.setAdapter(eventAdapter);
 
 
         eventdatahandler = new DataHandler<>(username,"habitevent",getActivity(),new TypeToken<ArrayList<NormalHabitEvent>>(){}.getType());
@@ -101,7 +105,7 @@ public class HabitHistoryFragment extends Fragment {
             eventArrayList =new ArrayList<>();
         }
 
-
+        eventAdapter.notifyDataSetChanged();
        /* ElasticSearchHabitController.GetCurrentEventsTask getCurrentEventsTask = new ElasticSearchHabitController.GetCurrentEventsTask();
         getCurrentEventsTask.execute(username);
 
@@ -112,10 +116,8 @@ public class HabitHistoryFragment extends Fragment {
             Log.i("Error", "Failed to get the habits from the asyc object");
         }*/
 
-        eventAdapter = new ArrayAdapter<NormalHabitEvent>(getActivity(), R.layout.list_item, eventArrayList);
-        eventListView = (ListView) view.findViewById(R.id.eventhistory);
-        eventListView.setAdapter(eventAdapter);
-        eventAdapter.notifyDataSetChanged();
+
+
 
 
         mapButton = (Button) view.findViewById(R.id.Mapbutton);
@@ -124,6 +126,7 @@ public class HabitHistoryFragment extends Fragment {
         searchString = (EditText) view.findViewById(R.id.searchstring);
 
         typeToSearch.clearCheck();
+
 
         typeToSearch.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -138,7 +141,6 @@ public class HabitHistoryFragment extends Fragment {
                 }
 
             }});
-
         eventListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -183,7 +185,7 @@ public class HabitHistoryFragment extends Fragment {
                         for(int i = 0; i< totalList.size();i++){
                             NormalHabitEvent event = totalList.get(i);
                             String name = event.getHabitEventName();
-                            if (name == searchString.getText().toString() ){
+                            if (name.equals(searchString.getText().toString() )){
                                 eventArrayList.add(event);
                             }
                     }}
@@ -191,7 +193,7 @@ public class HabitHistoryFragment extends Fragment {
                         for(int i = 0; i< totalList.size();i++){
                             NormalHabitEvent event = totalList.get(i);
                             String comment = event.getEventComment();
-                            if(comment == searchString.getText().toString()){
+                            if(comment.equals(searchString.getText().toString())){
                                 eventArrayList.add(event);
                             }
                     }
@@ -206,12 +208,13 @@ public class HabitHistoryFragment extends Fragment {
 
         // Inflate the layout for this fragment
         return view;
+
     }
     @Override
     public void onStart() {
         super.onStart();
-        eventAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item, eventArrayList);
-        eventListView.setAdapter(eventAdapter);
+
+
         eventdatahandler = new DataHandler<>(username,"habitevent",getActivity(),new TypeToken<ArrayList<NormalHabitEvent>>(){}.getType());
 
         try {
@@ -221,7 +224,8 @@ public class HabitHistoryFragment extends Fragment {
         }catch (NullPointerException n){
             Toast.makeText(getActivity(),"No data",Toast.LENGTH_SHORT).show();
         }
-
+        eventAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item, eventArrayList);
+        eventListView.setAdapter(eventAdapter);
         eventAdapter.notifyDataSetChanged();
 
     }

@@ -101,8 +101,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         double latitude = location.getLatitude();
                         double longitude = location.getLongitude();
                         current = new LatLng(latitude, longitude);
-                        Marker marker = mMap.addMarker(new MarkerOptions().position(current).title("currentlocation"));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 12));
                     }
 
                     @Override
@@ -136,17 +135,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 if (!(markers == null)) {
                     int size = markers.size();
-
-
-
-                for (int index = 0; index < size; index++) {
-                    Marker marker = markers.get(index);
-                    LatLng pos = marker.getPosition();
-                    double distance = CalculationByDistance(current, pos);
-
-                    if (distance <= 5) {
-                        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                    }
+                    double distance = 10;
+                    for (int index = 0; index < size; index++) {
+                        Marker marker = markers.get(index);
+                        LatLng pos = marker.getPosition();
+                        try {
+                            distance = CalculationByDistance(current, pos);
+                        }catch (NullPointerException e){
+                            Toast.makeText(MapsActivity.this, "Current location no ready(try send the gps signal)", Toast.LENGTH_LONG).show();
+                        }
+                        if (distance <= 5) {
+                            marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                        }
 
                 }}
                 else{
@@ -172,6 +172,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.clear();
         markers = new ArrayList<>();
         requestPermissions(LOCATION_PERMS, 1);
         ArrayList<NormalHabitEvent> events=getIntent().getParcelableArrayListExtra("EventList");
@@ -202,6 +203,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     }
+
+    /**
+     * Calculation the distance between to postion
+     * used to highlight the marker that are within 5km
+     * @param StartP
+     * @param EndP
+     * @return location
+     */
 
     public double CalculationByDistance(LatLng StartP, LatLng EndP) {
         int Radius = 6371;// radius of earth in Km
