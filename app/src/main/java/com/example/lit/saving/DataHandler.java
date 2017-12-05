@@ -11,6 +11,7 @@
 package com.example.lit.saving;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.lit.habit.NormalHabit;
 import com.example.lit.habitevent.NormalHabitEvent;
@@ -114,6 +115,12 @@ public class DataHandler<T> implements Serializable{
         long currentTime = System.currentTimeMillis();
 
         try{
+            saveToOnline(element,typeOfObject,currentTime);
+            lastOnlineSave = currentTime;
+        }catch (Exception e){
+            Log.i("Server","Offline");
+        }
+        try{
             saveToOffline(element, currentTime);
             lastOfflineSave = currentTime;
         }catch (IOException e){
@@ -134,9 +141,16 @@ public class DataHandler<T> implements Serializable{
      * @throws NoDataException If no data was able to be loaded this exception is thrown.
      * @return Returns the save data for object type T.
      */
-    public T loadData() throws NoDataException {
+    public T loadData(T element,Type typeOfObject) throws NoDataException {
         T loadedElementOffline;
         T loadedElementOnline;
+
+        try{
+            loadedElementOnline = loadFromOnline(typeOfObject,element);
+        }catch (Exception e){
+            this.lastOnlineSave = 0;
+            loadedElementOnline = null;
+        }
 
         try {
             loadedElementOffline = loadFromOffline();
@@ -164,7 +178,7 @@ public class DataHandler<T> implements Serializable{
             //if online fails or wanting to test offline features.
             return loadedElementOffline;
         }else{
-            return loadedElementOffline;//loadedElementOnline;
+            return loadedElementOnline;
         }
     }
 
@@ -225,8 +239,6 @@ public class DataHandler<T> implements Serializable{
                 addHabitEventTaskDH.execute(dataToSave);
             }catch (Exception e){
             }
-
-
         }
     }
 
@@ -272,18 +284,32 @@ public class DataHandler<T> implements Serializable{
      * @throws NotOnlineException If ES cannot connect to the internet throw this
      * @throws NoDataException If ES pulls no data from the requested query throw this
      */
-    private T loadFromOnline() throws NotOnlineException, NoDataException {
+    private T loadFromOnline(Type typeOfObject,T dataToLoad) throws NotOnlineException, NoDataException {
         ElasticSearchTimestampWrapper<T> loadedElement = null;
+        
+        /*if (typeOfObject == UserProfile.class){
+            try{
+                ElasticSearchHabitController.GetUserTaskDH getUserTaskDH = new ElasticSearchHabitController.GetUserTaskDH();
+                getUserTaskDH.execute(dataToLoad.toString());
+                return getUserTaskDH.get();
+            }catch (Exception e){
+            }
+        }
 
-        /*ElasticSearchHabitController.GetTask<T> esLoader
-               = new ElasticSearchHabitController.GetTask<>(username, typeOfObject);
+        if (typeOfObject == NormalHabit.class){
+            try{
+                ElasticSearchHabitController.GetCurrentHabitsTaskDH getCurrentHabitsTaskDH = new ElasticSearchHabitController.GetCurrentHabitsTaskDH();
+                getCurrentHabitsTaskDH.execute(dataToLoad.toString());
 
-        try {
-            loadedElement = esLoader.execute("").get(); //null search parameters
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
+            }catch (Exception e){
+            }
+        }
+
+        if (typeOfObject == NormalHabitEvent.class){
+            try{
+
+            }catch (Exception e){
+            }
         }*/
 
         //NOTE: Im not sure what ES returns on fail, however this at least prevents
