@@ -10,6 +10,8 @@
 
 package com.example.lit.userprofile;
 
+import com.example.lit.saving.DataHandler;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -82,11 +84,11 @@ public class FollowManager implements Serializable{
         this.requestToFollowOther = requestToFollowOther;
     }
 
-    public ArrayList<String> getRequestedToFollowUser() {
+    public ArrayList<String> getRequestToFollowUser() {
         return requestToFollowUser;
     }
 
-    public void setRequestedToFollowUser(ArrayList<String> requestToFollowUser) {
+    public void setRequestToFollowUser(ArrayList<String> requestToFollowUser) {
         this.requestToFollowUser = requestToFollowUser;
     }
 
@@ -94,14 +96,16 @@ public class FollowManager implements Serializable{
 
 
 
-    public void requestToFollowOther(String requestingToFollowThisUser){
+    public void requestToFollowOther(String otherUser, DataHandler<UserProfile> currentDataHandler,
+                                     DataHandler<UserProfile> otherDataHandler){
         requestToFollowUser.add(requestingToFollowThisUser);
         //TODO: Get the requestingToFollowUser's requestedToFollowArrayList and add requestingUser
         //TODO: Save the modified requestToFollow and requestedToFollow
     }
 
-    public void cancelRequestToFollowOther(String requestingToFollowThisUser){
-        requestToFollow.remove(requestingToFollowThisUser);
+    public void cancelRequestToFollowOther(String otherUser, DataHandler<UserProfile> currentDataHandler,
+                                           DataHandler<UserProfile> otherDataHandler){
+        requestToFollowUser.remove(requestingToFollowThisUser);
         //TODO: Get the requestingToFollowUser's requestedToFollowArrayList and remove requestingUser
         //TODO: Save the modified requestToFollow and requestedToFollow
     }

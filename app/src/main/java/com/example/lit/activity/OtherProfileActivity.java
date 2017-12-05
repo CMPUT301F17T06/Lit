@@ -76,21 +76,21 @@ public class OtherProfileActivity extends AppCompatActivity {
 
         setTitle(otherUser.getName() + "'s Profile");
 
-        usernameView.setText(currentUser.getName());
-        profileDescriptionView.setText(currentUser.getProfileDescription());
-        numFollowingView.setText(String.valueOf(currentUser.getFollowManager().getFollowingUsers().size()));
-        numFollowersView.setText(String.valueOf(currentUser.getFollowManager().getFollowedUsers().size()));
+        usernameView.setText(otherUser.getName());
+        profileDescriptionView.setText(otherUser.getProfileDescription());
+        numFollowingView.setText(String.valueOf(otherUser.getFollowManager().getFollowingUsers().size()));
+        numFollowersView.setText(String.valueOf(otherUser.getFollowManager().getFollowedUsers().size()));
 
         if(currentUser.getProfileImage() != null){
             profileImageView.setImageBitmap(currentUser.getProfileImage());
         }
 
-        followButton.setText();
+        followButton.setText(setButtonText());
 
         followButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                workOnFollowStatus();
             }
         });
 
@@ -131,7 +131,11 @@ public class OtherProfileActivity extends AppCompatActivity {
         String buttonText;
         if(currentUser.getFollowManager().getFollowingUsers().contains(otherUser.getName())){
             buttonText = "Following";
-        }else if(currentUser.getFollowManager())
+        }else if(currentUser.getFollowManager().getRequestToFollowOther().contains(otherUser.getName())){
+            buttonText = "Requested";
+        }else{
+            buttonText = "Follow";
+        }
 
 
         return buttonText;
@@ -176,6 +180,21 @@ public class OtherProfileActivity extends AppCompatActivity {
             asdBuilder.setMessage("The edit failed to save and the edited information is lost." +
                     " We are unsure as to why this happened.");
             asdBuilder.show();
+        }
+    }
+
+    private void workOnFollowStatus(){
+        String buttonState = followButton.getText().toString();
+
+        if(buttonState.equals("Follow")){
+
+        }else if(buttonState.equals("Requested")){
+
+        }else if(buttonState.equals("Following")){
+
+        }else{
+            Log.wtf("OtherProfileActivity", "Unknown button state.");
+            throw new RuntimeException("Crash Me!"); //Crash ourselves since we shouldn't be here
         }
     }
 

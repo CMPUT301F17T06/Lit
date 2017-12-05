@@ -53,11 +53,8 @@ public class ProfileActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.temp_user_profile_layout);
 
-        //TODO: Get the intent to initialize currentUser!
         Intent getUserIntent = getIntent();
         String username = getUserIntent.getStringExtra("username");
-
-
 
         profileImageView = (ImageView) findViewById(R.id.profileImageView);
         usernameView = (TextView) findViewById(R.id.usernameView);
@@ -87,7 +84,7 @@ public class ProfileActivity extends AppCompatActivity{
         fm.getFollowedUsers().add("damon");
         fm.getFollowedUsers().add("riley");
 */
-        //currentUser.getFollowManager().getFollowingUsers().add("lswlrjnh");
+        //currentUser.getFollowManager().getFollowingUsers().add("r");
 
 
         usernameView.setText(currentUser.getName());
