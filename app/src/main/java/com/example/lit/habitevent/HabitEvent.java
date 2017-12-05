@@ -170,37 +170,9 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Savea
         return this.jestID;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.habitEventName);
-        dest.writeParcelable(this.habitLocation, flags);
-        dest.writeLong(this.date != null ? this.date.getTime() : -1);
-        dest.writeString(this.eventComment);
-        dest.writeInt(this.commentLength);
-        dest.writeString(this.jestID);
-    }
-
-    protected HabitEvent(Parcel in) {
-        this.habitEventName = in.readString();
-        this.habitLocation = in.readParcelable(HabitLocation.class.getClassLoader());
-        long tmpDate = in.readLong();
-        this.date = tmpDate == -1 ? null : new Date(tmpDate);
-        this.eventComment = in.readString();
-        this.commentLength = in.readInt();
-        this.jestID = in.readString();
-    }
-
-
     public Bitmap getImage() {
-        if(this.image == null){
-            byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
-            this.image = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        }
+        byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+        this.image = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         return this.image;
     }
 
@@ -218,5 +190,37 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Savea
             byte[] byteArray = baos.toByteArray();
             this.encodedImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
         }
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.habitEventName);
+        dest.writeParcelable(this.habitLocation, flags);
+        dest.writeLong(this.date != null ? this.date.getTime() : -1);
+        dest.writeString(this.eventComment);
+        dest.writeString(this.user);
+        dest.writeInt(this.commentLength);
+        dest.writeString(this.jestID);
+        dest.writeParcelable(this.image, flags);
+        dest.writeString(this.encodedImage);
+    }
+
+    protected HabitEvent(Parcel in) {
+        this.habitEventName = in.readString();
+        this.habitLocation = in.readParcelable(HabitLocation.class.getClassLoader());
+        long tmpDate = in.readLong();
+        this.date = tmpDate == -1 ? null : new Date(tmpDate);
+        this.eventComment = in.readString();
+        this.user = in.readString();
+        this.commentLength = in.readInt();
+        this.jestID = in.readString();
+        this.image = in.readParcelable(Bitmap.class.getClassLoader());
+        this.encodedImage = in.readString();
     }
 }

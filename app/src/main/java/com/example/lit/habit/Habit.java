@@ -15,6 +15,7 @@ import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Base64;
+import android.util.Log;
 
 import com.example.lit.exception.BitmapTooLargeException;
 import com.example.lit.exception.HabitFormatException;
@@ -47,10 +48,11 @@ public abstract class Habit implements Habitable , Parcelable, Saveable {
     private int reasonLength = 30;
     private List<Calendar> calendars;
     private List<Date> dates;
+    private String encodedImage;
+
     @JestId
     private String id;
-    private String encodedImage;
-    private Bitmap image = null;
+    private Bitmap image;
 
     public String getID(){ return id ;}
 
@@ -156,11 +158,8 @@ public abstract class Habit implements Habitable , Parcelable, Saveable {
 
 
     public Bitmap getImage() {
-        if(this.image == null){
-            byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
-            this.image = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            return this.image;
-        }
+        byte[] decodedString = Base64.decode(this.encodedImage, Base64.DEFAULT);
+        this.image = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         return this.image;
     }
 
@@ -177,6 +176,7 @@ public abstract class Habit implements Habitable , Parcelable, Saveable {
             image.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
             byte[] byteArray = baos.toByteArray();
             this.encodedImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
+            //Log.i("encoded",this.encodedImage);
         }
     }
 
@@ -187,6 +187,7 @@ public abstract class Habit implements Habitable , Parcelable, Saveable {
                 "Started From: " + format.format(this.getDate());
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -195,18 +196,22 @@ public abstract class Habit implements Habitable , Parcelable, Saveable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.title);
+        dest.writeSerializable(this.format);
         dest.writeLong(this.date != null ? this.date.getTime() : -1);
         dest.writeString(this.user);
         dest.writeString(this.reason);
         dest.writeInt(this.titleLength);
         dest.writeInt(this.reasonLength);
         dest.writeList(this.calendars);
+        dest.writeList(this.dates);
+        dest.writeString(this.encodedImage);
         dest.writeString(this.id);
         dest.writeParcelable(this.image, flags);
     }
 
     protected Habit(Parcel in) {
         this.title = in.readString();
+        this.format = (SimpleDateFormat) in.readSerializable();
         long tmpDate = in.readLong();
         this.date = tmpDate == -1 ? null : new Date(tmpDate);
         this.user = in.readString();
@@ -215,6 +220,9 @@ public abstract class Habit implements Habitable , Parcelable, Saveable {
         this.reasonLength = in.readInt();
         this.calendars = new ArrayList<Calendar>();
         in.readList(this.calendars, Calendar.class.getClassLoader());
+        this.dates = new ArrayList<Date>();
+        in.readList(this.dates, Date.class.getClassLoader());
+        this.encodedImage = in.readString();
         this.id = in.readString();
         this.image = in.readParcelable(Bitmap.class.getClassLoader());
     }
