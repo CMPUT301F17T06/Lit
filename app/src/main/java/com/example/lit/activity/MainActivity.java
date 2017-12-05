@@ -19,6 +19,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.lit.R;
+import com.example.lit.habit.NormalHabit;
+import com.example.lit.habitevent.NormalHabitEvent;
 import com.example.lit.saving.ElasticSearchHabitController;
 import com.example.lit.userprofile.UserProfile;
 
@@ -48,8 +50,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // background taken from: https://thechive.files.wordpress.com/2015/01/i-think-its-time-for-a-new-phone-background-50-photos-4.jpg?quality=85&strip=info&w=600
+
         usernameEditText = (EditText) findViewById(R.id.username);
         loginButton = (Button) findViewById(R.id.Login);
+        // For testing
+        /*try {
+            NormalHabitEvent dummyHabitEvent = new NormalHabitEvent("dummyHabitEvent");
+            dummyHabitEvent.setUser("dummy");
+            ElasticSearchHabitController.AddHabitEventTask addHabitEventTask = new ElasticSearchHabitController.AddHabitEventTask();
+            addHabitEventTask.execute(dummyHabitEvent);
+
+        }catch (Exception e){
+        }*/
         loginButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {

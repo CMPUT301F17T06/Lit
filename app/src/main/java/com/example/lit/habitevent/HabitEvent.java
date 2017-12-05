@@ -11,15 +11,20 @@
 package com.example.lit.habitevent;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Base64;
 
 import com.example.lit.exception.BitmapTooLargeException;
 import com.example.lit.exception.HabitFormatException;
 import com.example.lit.location.HabitLocation;
 import com.example.lit.saving.Saveable;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -39,24 +44,37 @@ import java.util.Date;
 public abstract class HabitEvent implements HabitEventAddable, Comparable, Saveable, Parcelable {
     private String habitEventName;
     private HabitLocation habitLocation;
-    private Date date = new Date();
+    private Date date;
     private String eventComment;
     private String user;
     private int commentLength = 20;
     private String jestID;
     private Bitmap image;
+    private String encodedImage;
 
 
     public HabitEvent(String habitEventName) {
-        this.habitEventName = habitEventName;
-        this.date = new Date();
+        setHabitEventName(habitEventName);
+        setEventDate(new Date());
+    }
+
+    public HabitEvent(String habitEventName, Date date) {
+        setHabitEventName(habitEventName);
+        setEventDate(date);
     }
 
     public HabitEvent(String habitEventName, String habitEventComment) throws HabitFormatException{
-        this.habitEventName = habitEventName;
-        this.date = new Date();
-        this.eventComment= habitEventComment;
+        setHabitEventName(habitEventName);
+        setEventDate(new Date());
+        setEventComment(habitEventComment);
     }
+
+    public HabitEvent(String habitEventName, String habitEventComment, Date date) throws HabitFormatException{
+        setHabitEventName(habitEventName);
+        setEventDate(date);
+        setEventComment(habitEventComment);
+    }
+
     /**
      * This is the main constructor we are using in AddHabitActivity
      *
@@ -66,12 +84,20 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Savea
      * @param location if user chose to attach location will get the current location
      * @throws HabitFormatException thrown when title longer than 20 char or reason longer than 30 char
      * */
-    public HabitEvent(String habitEventName, String habitEventComment,HabitLocation location) throws HabitFormatException{
-        this.habitEventName = habitEventName;
-        this.habitLocation = location;
-        this.date = new Date();
-        this.eventComment= habitEventComment;
+    public HabitEvent(String habitEventName, String habitEventComment, Date date, HabitLocation location) throws HabitFormatException{
+        setHabitEventName(habitEventName);
+        setLocation(location);
+        setEventDate(date);
+        setEventComment(habitEventComment);
     }
+
+    public HabitEvent(String habitEventName, String habitEventComment,HabitLocation location) throws HabitFormatException{
+        setHabitEventName(habitEventName);
+        setLocation(location);
+        setEventDate(new Date());
+        setEventComment(habitEventComment);
+    }
+
     public int compareTo(HabitEvent habitEvent){
         return this.date.compareTo(habitEvent.date);
     }
@@ -88,8 +114,14 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Savea
         return date;
     }
 
-    public void setEventDate(Date date) {
-        this.date = date;
+    public void setEventDate(Date date){
+        // Format the current time.
+        SimpleDateFormat format = new SimpleDateFormat ("dd-MM-yyyy");
+        String dateString = format.format(date);
+
+        // Parse the previous string back into a Date.
+        ParsePosition pos = new ParsePosition(0);
+        this.date = format.parse(dateString, pos);
     }
 
     public String getEventComment() {
@@ -116,6 +148,7 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Savea
     public String toString() {
         return "HabitEventName = "+ habitEventName + "\n" +
                 "date= " + date ;
+
     }
 
     public String getUser() {
@@ -134,6 +167,29 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Savea
         return this.jestID;
     }
 
+    public Bitmap getImage() {
+        byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+        this.image = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        return this.image;
+    }
+
+    public void setImage(Bitmap image) throws BitmapTooLargeException {
+        if (image == null){
+            this.image = null;
+        }
+        else if (image.getByteCount() > 65536){
+            throw new BitmapTooLargeException();
+        }
+        else {
+            this.image = image;
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            image.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
+            byte[] byteArray = baos.toByteArray();
+            this.encodedImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
+        }
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -145,8 +201,11 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Savea
         dest.writeParcelable(this.habitLocation, flags);
         dest.writeLong(this.date != null ? this.date.getTime() : -1);
         dest.writeString(this.eventComment);
+        dest.writeString(this.user);
         dest.writeInt(this.commentLength);
         dest.writeString(this.jestID);
+        dest.writeParcelable(this.image, flags);
+        dest.writeString(this.encodedImage);
     }
 
     protected HabitEvent(Parcel in) {
@@ -155,21 +214,10 @@ public abstract class HabitEvent implements HabitEventAddable, Comparable, Savea
         long tmpDate = in.readLong();
         this.date = tmpDate == -1 ? null : new Date(tmpDate);
         this.eventComment = in.readString();
+        this.user = in.readString();
         this.commentLength = in.readInt();
         this.jestID = in.readString();
-    }
-
-
-    public Bitmap getImage() {
-        return image;
-    }
-
-    public void setImage(Bitmap image) throws BitmapTooLargeException {
-        if (image.getByteCount() > 65536){
-            throw new BitmapTooLargeException();
-        }
-        else {
-            this.image = image;
-        }
+        this.image = in.readParcelable(Bitmap.class.getClassLoader());
+        this.encodedImage = in.readString();
     }
 }

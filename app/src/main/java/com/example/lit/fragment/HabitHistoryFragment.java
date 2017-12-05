@@ -143,6 +143,7 @@ public class HabitHistoryFragment extends Fragment {
         eventAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item, eventArrayList);
         eventListView.setAdapter(eventAdapter);
         eventdatahandler = new DataHandler<>(username,"habitevent",getActivity(),new TypeToken<ArrayList<NormalHabitEvent>>(){}.getType());
+
         try {
             eventArrayList = eventdatahandler.loadData();
         }catch (NoDataException e){

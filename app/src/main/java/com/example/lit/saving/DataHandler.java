@@ -11,7 +11,11 @@
 package com.example.lit.saving;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.example.lit.habit.NormalHabit;
+import com.example.lit.habitevent.NormalHabitEvent;
+import com.example.lit.userprofile.UserProfile;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
@@ -30,6 +34,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
+
+import io.searchbox.annotations.JestId;
 
 
 //TODO: BONUS, upgrade to java.nio.files.Files and introduce file locking
@@ -58,6 +64,15 @@ public class DataHandler<T> implements Serializable{
     private String nameOfObject;
     private String FILENAME;
     private Type typeOfObject;
+    private String jestID;
+
+    public String getJestID() {
+        return jestID;
+    }
+
+    public void setJestID(String jestID) {
+        this.jestID = jestID;
+    }
 
     /**
      * Builds a handler that is used to save data to both local storage for offline use as
@@ -100,6 +115,12 @@ public class DataHandler<T> implements Serializable{
         long currentTime = System.currentTimeMillis();
 
         try{
+            saveToOnline(element,typeOfObject,currentTime);
+            lastOnlineSave = currentTime;
+        }catch (Exception e){
+            Log.i("Server","Offline");
+        }
+        try{
             saveToOffline(element, currentTime);
             lastOfflineSave = currentTime;
         }catch (IOException e){
@@ -123,6 +144,13 @@ public class DataHandler<T> implements Serializable{
     public T loadData() throws NoDataException {
         T loadedElementOffline;
         T loadedElementOnline;
+
+      /*  try{
+            loadedElementOnline = loadFromOnline(typeOfObject,element);
+        }catch (Exception e){
+            this.lastOnlineSave = 0;
+            loadedElementOnline = null;
+        }*/
 
         try {
             loadedElementOffline = loadFromOffline();
@@ -188,13 +216,30 @@ public class DataHandler<T> implements Serializable{
      *                    started, not necessarily when the data was written.
      * @throws NotOnlineException If we cannot connect to the server
      */
-    private void saveToOnline(T dataToSave, long currentTime) throws NotOnlineException{
-        //ElasticSearchHabitController.AddTask<T> esSaver
-        //        = new ElasticSearchHabitController.AddTask<T>(username, typeOfObject);
-        //ElasticSearchTimestampWrapper<T> ESTWdata
-        //        = new ElasticSearchTimestampWrapper<T>(dataToSave, currentTime);
+    private void saveToOnline(T dataToSave,Type typeOfObject, long currentTime) throws NotOnlineException{
+        if (typeOfObject == UserProfile.class){
+            try{
+                ElasticSearchHabitController.AddUserTaskDH addUserTaskDH = new ElasticSearchHabitController.AddUserTaskDH();
+                addUserTaskDH.execute(dataToSave);
+            }catch (Exception e){
+            }
+        }
 
-        //esSaver.execute(ESTWdata);
+        if (typeOfObject == NormalHabit.class){
+            try{
+                ElasticSearchHabitController.AddHabitsTaskDH addHabitsTaskDH = new ElasticSearchHabitController.AddHabitsTaskDH();
+                addHabitsTaskDH.execute(dataToSave);
+            }catch (Exception e){
+            }
+        }
+
+        if (typeOfObject == NormalHabitEvent.class){
+            try{
+                ElasticSearchHabitController.AddHabitEventTaskDH addHabitEventTaskDH = new ElasticSearchHabitController.AddHabitEventTaskDH();
+                addHabitEventTaskDH.execute(dataToSave);
+            }catch (Exception e){
+            }
+        }
     }
 
     /**
@@ -239,18 +284,32 @@ public class DataHandler<T> implements Serializable{
      * @throws NotOnlineException If ES cannot connect to the internet throw this
      * @throws NoDataException If ES pulls no data from the requested query throw this
      */
-    private T loadFromOnline() throws NotOnlineException, NoDataException {
+    private T loadFromOnline(Type typeOfObject,T dataToLoad) throws NotOnlineException, NoDataException {
         ElasticSearchTimestampWrapper<T> loadedElement = null;
 
-        /*ElasticSearchHabitController.GetTask<T> esLoader
-               = new ElasticSearchHabitController.GetTask<>(username, typeOfObject);
+        /*if (typeOfObject == UserProfile.class){
+            try{
+                ElasticSearchHabitController.GetUserTaskDH getUserTaskDH = new ElasticSearchHabitController.GetUserTaskDH();
+                getUserTaskDH.execute(dataToLoad.toString());
+                return getUserTaskDH.get();
+            }catch (Exception e){
+            }
+        }
 
-        try {
-            loadedElement = esLoader.execute("").get(); //null search parameters
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
+        if (typeOfObject == NormalHabit.class){
+            try{
+                ElasticSearchHabitController.GetCurrentHabitsTaskDH getCurrentHabitsTaskDH = new ElasticSearchHabitController.GetCurrentHabitsTaskDH();
+                getCurrentHabitsTaskDH.execute(dataToLoad.toString());
+
+            }catch (Exception e){
+            }
+        }
+
+        if (typeOfObject == NormalHabitEvent.class){
+            try{
+
+            }catch (Exception e){
+            }
         }*/
 
         //NOTE: Im not sure what ES returns on fail, however this at least prevents

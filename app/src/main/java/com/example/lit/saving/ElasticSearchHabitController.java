@@ -40,9 +40,11 @@ import io.searchbox.core.SearchResult;
 public class ElasticSearchHabitController {
      private static JestDroidClient client;
 
-    // Add Habit to elastic search
+    /**
+     * The type Add habits task.
+     */
+// Add Habit to elastic search
     public static class AddHabitsTask extends AsyncTask<NormalHabit, Void, Void> {
-
         @Override
         protected Void doInBackground(NormalHabit... habits) {
             verifySettings();
@@ -60,11 +62,11 @@ public class ElasticSearchHabitController {
                     }
                     else
                     {
-                        Log.i("Error","Elasticsearch was not able to add the habit");
+                        Log.i("Error","Elasticsearch was not able to add the user");
                     }
                 }
                 catch (Exception e) {
-                    Log.i("Error", "The application failed to build and send the habits");
+                    Log.i("Error", "The application failed to build and send the user");
                 }
 
             }
@@ -72,7 +74,45 @@ public class ElasticSearchHabitController {
         }
     }
 
-    // Gets all habits for the user specified
+    /**
+     * The type Add habits task dh.
+     *
+     * @param <T> the type parameter
+     */
+    public static class AddHabitsTaskDH<T> extends AsyncTask<DataHandler<T>, Void, Void> {
+        @Override
+        protected Void doInBackground(DataHandler<T>... habits) {
+            verifySettings();
+
+            for (DataHandler<T> habit : habits) {
+                Index index = new Index.Builder(habit).index("cmput301f17t06").type("habit").build();
+
+                try {
+
+                    DocumentResult result = client.execute(index);
+
+                    if(result.isSucceeded())
+                    {
+                        habit.setJestID(result.getId());
+                    }
+                    else
+                    {
+                        Log.i("Error","Elasticsearch was not able to add the user");
+                    }
+                }
+                catch (Exception e) {
+                    Log.i("Error", "The application failed to build and send the user");
+                }
+
+            }
+            return null;
+        }
+    }
+
+    /**
+     * The type Get current habits task.
+     */
+// Gets all habits for the user specified
     public static class GetCurrentHabitsTask extends AsyncTask<String, Void, ArrayList<NormalHabit>> {
         @Override
         protected ArrayList<NormalHabit> doInBackground(String... search_parameters) {
@@ -111,7 +151,51 @@ public class ElasticSearchHabitController {
         }
     }
 
-    // Add Habit to elastic search
+    /**
+     * The type Get current habits task dh.
+     */
+    public static class GetCurrentHabitsTaskDH extends AsyncTask<String, Void, ArrayList<DataHandler>> {
+        @Override
+        protected ArrayList<DataHandler> doInBackground(String... search_parameters) {
+            verifySettings();
+
+            ArrayList<DataHandler> habits;
+            habits = new ArrayList<DataHandler>();
+
+
+            String query = "{\n" +
+                    "    \"query\" : {\n" +
+                    "       \"constant_score\" : {\n" +
+                    "           \"filter\" : {\n" +
+                    "               \"term\" : {\"user\": \"" + search_parameters[0] + "\"}\n" +
+                    "             }\n" +
+                    "         }\n" +
+                    "    }\n" +
+                    "}";
+            Search search = new Search.Builder(query).addIndex("cmput301f17t06").addType("habit").build();
+
+
+            try {
+                // get the results of the query
+                SearchResult result = client.execute(search);
+                if(result.isSucceeded())
+                {
+                    List<DataHandler> foundHabit = result.getSourceAsObjectList(DataHandler.class);
+                    habits.addAll(foundHabit);
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+
+            return habits;
+        }
+    }
+
+    /**
+     * The type Add habit event task.
+     */
+// Add Habit to elastic search
     public static class AddHabitEventTask extends AsyncTask<NormalHabitEvent, Void, Void> {
 
         @Override
@@ -143,7 +227,46 @@ public class ElasticSearchHabitController {
         }
     }
 
-    // Gets all habits for the user specified
+    /**
+     * The type Add habit event task dh.
+     *
+     * @param <T> the type parameter
+     */
+    public static class AddHabitEventTaskDH<T> extends AsyncTask<DataHandler<T>, Void, Void> {
+
+        @Override
+        protected Void doInBackground(DataHandler<T>... habitEvents) {
+            verifySettings();
+
+            for (DataHandler<T> habitEvent : habitEvents) {
+                Index index = new Index.Builder(habitEvent).index("cmput301f17t06").type("habitEvent").build();
+
+                try {
+
+                    DocumentResult result = client.execute(index);
+
+                    if(result.isSucceeded())
+                    {
+                        habitEvent.setJestID(result.getId());
+                    }
+                    else
+                    {
+                        Log.i("Error","Elasticsearch was not able to add the habit event");
+                    }
+                }
+                catch (Exception e) {
+                    Log.i("Error", "The application failed to build and send the habit events");
+                }
+
+            }
+            return null;
+        }
+    }
+
+    /**
+     * The type Get current events task.
+     */
+// Gets all habits for the user specified
     public static class GetCurrentEventsTask extends AsyncTask<String, Void, ArrayList<NormalHabitEvent>> {
         @Override
         protected ArrayList<NormalHabitEvent> doInBackground(String... search_parameters) {
@@ -183,6 +306,11 @@ public class ElasticSearchHabitController {
     }
 
     // Gets all habits for the user specified
+
+
+    /**
+     * The type Get today habits task.
+     */
     public static class GetTodayHabitsTask extends AsyncTask<String, Void, ArrayList<NormalHabit>> {
         @Override
         protected ArrayList<NormalHabit> doInBackground(String... search_parameters) {
@@ -196,7 +324,8 @@ public class ElasticSearchHabitController {
                     "    \"query\" : {\n" +
                     "       \"constant_score\" : {\n" +
                     "           \"filter\" : {\n" +
-                    "               \"term\" : {\"user\": \"" + search_parameters[0] + "\"}\n" +
+                    "               \"term\" : {\"user\": \"" + search_parameters[0] + "\",\n" +
+                    "                           \"date\": \"" + search_parameters[1] + "\"} \n"+
                     "             }\n" +
                     "         }\n" +
                     "    }\n" +
@@ -220,14 +349,16 @@ public class ElasticSearchHabitController {
         }
     }
 
-    // Add new user to elastic search
+    /**
+     * The type Add user task.
+     */
+// Add new user to elastic search
     public static class AddUserTask extends AsyncTask<UserProfile, Void, Void> {
 
         @Override
         protected Void doInBackground(UserProfile... userProfiles) {
             verifySettings();
 
-            //TODO fix Mapping parse error document is full.
             for (UserProfile userProfile : userProfiles) {
                 Index index = new Index.Builder(userProfile).index("cmput301f17t06").type("user").build();
 
@@ -241,11 +372,11 @@ public class ElasticSearchHabitController {
                     }
                     else
                     {
-                        Log.i("Error","Elasticsearch was not able to add the habit");
+                        Log.i("Error","Elasticsearch was not able to add the user");
                     }
                 }
                 catch (Exception e) {
-                    Log.i("Error", "The application failed to build and send the habits");
+                    Log.i("Error", "The application failed to build and send the user");
                 }
 
             }
@@ -253,7 +384,46 @@ public class ElasticSearchHabitController {
         }
     }
 
-    // Get user from elastic search
+    /**
+     * The type Add user task dh.
+     *
+     * @param <T> the type parameter
+     */
+    public static class AddUserTaskDH<T> extends AsyncTask<DataHandler<T>, Void, Void> {
+
+        @Override
+        protected Void doInBackground(DataHandler<T>... userProfiles) {
+            verifySettings();
+
+            for (DataHandler<T> userProfile : userProfiles) {
+                Index index = new Index.Builder(userProfile).index("cmput301f17t06").type("user").build();
+
+                try {
+
+                    DocumentResult result = client.execute(index);
+
+                    if(result.isSucceeded())
+                    {
+                        userProfile.setJestID(result.getId());
+                    }
+                    else
+                    {
+                        Log.i("Error","Elasticsearch was not able to add the user");
+                    }
+                }
+                catch (Exception e) {
+                    Log.i("Error", "The application failed to build and send the user");
+                }
+
+            }
+            return null;
+        }
+    }
+
+    /**
+     * The type Get user task.
+     */
+// Get user from elastic search
     public static class GetUserTask extends AsyncTask<String, Void, UserProfile> {
         private UserProfile userProfile = null;
 
@@ -291,10 +461,63 @@ public class ElasticSearchHabitController {
         }
     }
 
-     static class AddTask<T> extends AsyncTask<ElasticSearchTimestampWrapper<T>, Void, Void> {
+    /**
+     * The type Get user task dh.
+     *
+     * @param <T> the type parameter
+     */
+    public static class GetUserTaskDH<T> extends AsyncTask<String, Void, DataHandler<T>> {
+        private DataHandler<T> userProfile = null;
+
+        @Override
+        protected DataHandler<T> doInBackground(String... search_parameters) {
+            verifySettings();
+
+            String query = "{\n" +
+                    "    \"query\" : {\n" +
+                    "       \"constant_score\" : {\n" +
+                    "           \"filter\" : {\n" +
+                    "               \"term\" : {\"name\": \"" + search_parameters[0] + "\"}\n" +
+                    "             }\n" +
+                    "         }\n" +
+                    "    }\n" +
+                    "}";
+
+            Search search = new Search.Builder(query).addIndex("cmput301f17t06").addType("user").build();
+
+            try {
+                // get the results of the query
+                SearchResult result = client.execute(search);
+                if(result.isSucceeded() && result.getFirstHit(DataHandler.class).source != null)
+                {
+                    userProfile = result.getFirstHit(DataHandler.class).source;
+                } else {
+                    Log.i("Error", "The search query failed to find any Users that matched");
+                }
+            }
+            catch (Exception e) {
+                Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
+            }
+
+            return userProfile;
+        }
+    }
+
+    /**
+     * The type Add task.
+     *
+     * @param <T> the type parameter
+     */
+    static class AddTask<T> extends AsyncTask<ElasticSearchTimestampWrapper<T>, Void, Void> {
         private String username;
         private String typeOfObject;
 
+        /**
+         * Instantiates a new Add task.
+         *
+         * @param username     the username
+         * @param typeOfObject the type of object
+         */
         AddTask(String username, String typeOfObject){
             super();
             this.username = username;
@@ -328,10 +551,21 @@ public class ElasticSearchHabitController {
         }
     }
 
+    /**
+     * The type Get task.
+     *
+     * @param <T> the type parameter
+     */
     static class GetTask<T> extends AsyncTask<String, Void, ElasticSearchTimestampWrapper<T>> {
         private String username;
         private String typeOfObject;
 
+        /**
+         * Instantiates a new Get task.
+         *
+         * @param username     the username
+         * @param typeOfObject the type of object
+         */
         GetTask(String username, String typeOfObject){
             super();
             this.username = username;
@@ -362,6 +596,9 @@ public class ElasticSearchHabitController {
     }
 
 
+    /**
+     * Verify settings.
+     */
     public static void verifySettings() {
         if (client == null) {
             DroidClientConfig.Builder builder = new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080");

@@ -11,8 +11,11 @@
 package com.example.lit.habit;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Base64;
+import android.util.Log;
 
 import com.example.lit.exception.BitmapTooLargeException;
 import com.example.lit.exception.HabitFormatException;
@@ -20,7 +23,10 @@ import com.example.lit.saving.Saveable;
 import com.example.lit.exception.HabitFormatException;
 import io.searchbox.annotations.JestId;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,6 +39,7 @@ import java.util.List;
 public abstract class Habit implements Habitable , Parcelable, Saveable {
 
     private String title;
+    private SimpleDateFormat format;
     private Date date;
     public abstract String habitType();
     private String user;
@@ -40,6 +47,9 @@ public abstract class Habit implements Habitable , Parcelable, Saveable {
     private int titleLength = 20;
     private int reasonLength = 30;
     private List<Calendar> calendars;
+    private List<Date> dates;
+    private String encodedImage;
+
     @JestId
     private String id;
     private Bitmap image;
@@ -116,7 +126,13 @@ public abstract class Habit implements Habitable , Parcelable, Saveable {
     }
 
     public void setDate(Date date) {
-        this.date = date;
+        // Format the current time.
+        SimpleDateFormat format = new SimpleDateFormat ("dd-MM-yyyy");
+        String dateString = format.format(date);
+
+        // Parse the previous string back into a Date.
+        ParsePosition pos = new ParsePosition(0);
+        this.date = format.parse(dateString, pos);
     }
 
     public String getReason() {
@@ -142,23 +158,35 @@ public abstract class Habit implements Habitable , Parcelable, Saveable {
 
 
     public Bitmap getImage() {
-        return image;
+        byte[] decodedString = Base64.decode(this.encodedImage, Base64.DEFAULT);
+        this.image = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        return this.image;
     }
 
     public void setImage(Bitmap image) throws BitmapTooLargeException {
-        if (image.getByteCount() > 65536){
+        if (image == null){
+            this.image = null;
+        }
+        else if (image.getByteCount() > 65536){
             throw new BitmapTooLargeException();
         }
         else {
             this.image = image;
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            image.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
+            byte[] byteArray = baos.toByteArray();
+            this.encodedImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
+            //Log.i("encoded",this.encodedImage);
         }
     }
 
     @Override
     public String toString() {
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
         return "Habit Name: " + this.getTitle() + '\n' +
-                "Started From: " + this.getDate();
+                "Started From: " + format.format(this.getDate());
     }
+
 
     @Override
     public int describeContents() {
@@ -168,18 +196,22 @@ public abstract class Habit implements Habitable , Parcelable, Saveable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.title);
+        dest.writeSerializable(this.format);
         dest.writeLong(this.date != null ? this.date.getTime() : -1);
         dest.writeString(this.user);
         dest.writeString(this.reason);
         dest.writeInt(this.titleLength);
         dest.writeInt(this.reasonLength);
         dest.writeList(this.calendars);
+        dest.writeList(this.dates);
+        dest.writeString(this.encodedImage);
         dest.writeString(this.id);
         dest.writeParcelable(this.image, flags);
     }
 
     protected Habit(Parcel in) {
         this.title = in.readString();
+        this.format = (SimpleDateFormat) in.readSerializable();
         long tmpDate = in.readLong();
         this.date = tmpDate == -1 ? null : new Date(tmpDate);
         this.user = in.readString();
@@ -188,6 +220,9 @@ public abstract class Habit implements Habitable , Parcelable, Saveable {
         this.reasonLength = in.readInt();
         this.calendars = new ArrayList<Calendar>();
         in.readList(this.calendars, Calendar.class.getClassLoader());
+        this.dates = new ArrayList<Date>();
+        in.readList(this.dates, Date.class.getClassLoader());
+        this.encodedImage = in.readString();
         this.id = in.readString();
         this.image = in.readParcelable(Bitmap.class.getClassLoader());
     }
