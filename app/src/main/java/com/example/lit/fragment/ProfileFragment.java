@@ -142,31 +142,13 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.temp_user_profile_layout);
-
-
-
-    }
-
-    @Override
-    protected void onStart(){
-        super.onStart();
-        //Update numFollowers?
-        //Update numFollowing?
-        //Update Habit list?
-    }
-
     /**
      * Starts the activity of showing the appropriate follower/following list
      *
      * @param option "follower" or "following" list to be displayed.
      */
     private void initiateFollowActivity(String option){
-        Intent listOfFollowingers = new Intent(ProfileActivity.this, ProfileFollowActivity.class);
+        Intent listOfFollowingers = new Intent(getActivity(), ProfileFollowActivity.class);
         listOfFollowingers.putExtra(ProfileFollowActivity.ACTIVITY_KEY, currentUser);
 
         //TODO: unnecessary if branch
@@ -196,7 +178,7 @@ public class ProfileFragment extends Fragment {
      * @param modifiedUserProfile The intent from the previous activity
      */
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent modifiedUserProfile){
+    public void onActivityResult(int requestCode, int resultCode, Intent modifiedUserProfile){
         if(requestCode == ProfileEditActivity.EDIT_USERPROFILE_CODE){
             if(resultCode == Activity.RESULT_OK) {
                 UserProfile returnProfile = (UserProfile) modifiedUserProfile
@@ -227,7 +209,7 @@ public class ProfileFragment extends Fragment {
         }else{
             Log.wtf("ProfileActivity", "Invalid requestCode received.");
             //Let user know their edited data was lost.
-            AlertDialog.Builder asdBuilder = new AlertDialog.Builder(this);
+            AlertDialog.Builder asdBuilder = new AlertDialog.Builder(getActivity());
             asdBuilder.setTitle("Edit failed.");
             asdBuilder.setMessage("The edit failed to save and the edited information is lost." +
                     " We are unsure as to why this happened.");
