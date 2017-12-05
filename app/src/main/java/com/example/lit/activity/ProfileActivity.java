@@ -32,6 +32,11 @@ import com.example.lit.userprofile.FollowManager;
 import com.example.lit.userprofile.UserProfile;
 import com.google.gson.reflect.TypeToken;
 
+/**
+ * This activity shows the current user their UserProfile along with the option to view who they
+ * follow or who follows them as well as respond to the follow requests that they receive.
+ * The user may also edit their profile which takes them to a ProfileEditActivity.
+ */
 public class ProfileActivity extends AppCompatActivity{
     public final static String ACTIVITY_KEY = "com.exmample.lit.activity.ProfileActivity";
 
@@ -53,9 +58,11 @@ public class ProfileActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.temp_user_profile_layout);
 
+        //Get the username from the main activity
         Intent getUserIntent = getIntent();
         String username = getUserIntent.getStringExtra("username");
 
+        //load the view
         profileImageView = (ImageView) findViewById(R.id.profileImageView);
         usernameView = (TextView) findViewById(R.id.usernameView);
         userDescriptionView = (TextView) findViewById(R.id.profileDescriptionView);
@@ -69,6 +76,7 @@ public class ProfileActivity extends AppCompatActivity{
         dataHandler = new DataHandler<>(username, "UserProfile", this, new TypeToken<UserProfile>(){}.getType());
         setTitle(username + "'s Profile");
 
+        //Attempt to load data. If no data is found assume the user is new and create a new user
         try {
             currentUser = dataHandler.loadData();
         } catch (NoDataException e) {
@@ -76,17 +84,8 @@ public class ProfileActivity extends AppCompatActivity{
             currentUser = new UserProfile(username);
             dataHandler.saveData(currentUser);
         }
-/*
-        FollowManager fm = currentUser.getFollowManager();
-        fm.getFollowingUsers().add("max");
-        fm.getFollowingUsers().add("ammar");
-        fm.getFollowedUsers().add("steven");
-        fm.getFollowedUsers().add("damon");
-        fm.getFollowedUsers().add("riley");
-*/
-        //currentUser.getFollowManager().getFollowingUsers().add("r");
 
-
+        //Update the view
         usernameView.setText(currentUser.getName());
         userDescriptionView.setText(currentUser.getProfileDescription());
         numFollowingView.setText(String.valueOf(currentUser.getFollowManager().getFollowingUsers().size()));
@@ -96,6 +95,7 @@ public class ProfileActivity extends AppCompatActivity{
             profileImageView.setImageBitmap(currentUser.getProfileImage());
         }
 
+        //Edit profile button pressed
         editProfileView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,6 +106,8 @@ public class ProfileActivity extends AppCompatActivity{
             }
         });
 
+        //The following 4 buttons work in pairs. It was decided that there would be two
+        //TextViews to mak updating the view as easy as possible.
         numFollowersView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -144,10 +146,16 @@ public class ProfileActivity extends AppCompatActivity{
         //Update Habit list?
     }
 
+    /**
+     * Starts the activity of showing the appropriate follower/following list
+     *
+     * @param option "follower" or "following" list to be displayed.
+     */
     private void initiateFollowActivity(String option){
         Intent listOfFollowingers = new Intent(ProfileActivity.this, ProfileFollowActivity.class);
         listOfFollowingers.putExtra(ProfileFollowActivity.ACTIVITY_KEY, currentUser);
 
+        //TODO: unnecessary if branch
         if(option.equals("following")){
             listOfFollowingers.putExtra(ProfileFollowActivity.OPERATION_MODE, option);
             Log.d("ProfileActivity", "Viewing followers of user: " + currentUser.getName());
@@ -165,29 +173,43 @@ public class ProfileActivity extends AppCompatActivity{
         }
     }
 
+    /**
+     * When returning from the ProfileFollow activity or ProfileEdit activity,
+     * update the current view and save the changes.
+     *
+     * @param requestCode What "sub"-activity did this activity call
+     * @param resultCode How did the "sub"-activity complete
+     * @param modifiedUserProfile The intent from the previous activity
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent modifiedUserProfile){
         if(requestCode == ProfileEditActivity.EDIT_USERPROFILE_CODE){
             if(resultCode == Activity.RESULT_OK) {
                 UserProfile returnProfile = (UserProfile) modifiedUserProfile
                         .getSerializableExtra(ACTIVITY_KEY);
+
                 currentUser.setProfileDescription(returnProfile.getProfileDescription());
                 userDescriptionView.setText(currentUser.getProfileDescription());
+                //If the profile image isn't null, update it. However if the profile image is
+                //null just ignore it.
                 if (returnProfile.getProfileImage() != null){
                     currentUser.setProfileImage(returnProfile.getProfileImage());
                     profileImageView.setImageBitmap(currentUser.getProfileImage());
                 }
+
                 dataHandler.saveData(currentUser);
 
             }else if(resultCode == Activity.RESULT_CANCELED){
                 Log.d("ProfileActivity", "Cancelled edit complete.");
             }
         }else if(requestCode == ProfileFollowActivity.FOLLOW_REQUEST_CODE){
-            if(resultCode == Activity.RESULT_OK){
+            //No action required at this time as modifying follow status is saved at the time
+            //the follow status is changed.
+            /*if(resultCode == Activity.RESULT_OK){
                 dataHandler.saveData(currentUser);
             }else if(resultCode == Activity.RESULT_CANCELED){
                 dataHandler.saveData(currentUser);
-            }
+            }*/
         }else{
             Log.wtf("ProfileActivity", "Invalid requestCode received.");
             //Let user know their edited data was lost.

@@ -36,6 +36,10 @@ import java.util.ArrayList;
  * Created by Riley Dixon on 02/12/2017.
  */
 
+/**
+ * This activity is used for viewing the ArrayLists in FollowManager from UserProfile.
+ * This allows a user to select their list to show their profile.
+ */
 public class ProfileFollowActivity extends AppCompatActivity {
     public final static int FOLLOW_REQUEST_CODE = 65; //random number
     public final static String ACTIVITY_KEY = "com.example.lit.activity.ProfileFollowActivity";
@@ -55,14 +59,19 @@ public class ProfileFollowActivity extends AppCompatActivity {
         super.onCreate(savedBundleInstance);
         setContentView(R.layout.temp_user_following_follower_layout);
 
-        //get currentUser intent
+        //Setup the view
+        followListView = (ListView)findViewById(R.id.followListView);
+        followArray = getFollowArray();
+        followAdapter = new ArrayAdapter<String>(this, R.layout.list_item, followArray);
+        followListView.setAdapter(followAdapter);
+
+        //get working data
         Intent ourUserIntent = getIntent();
         currentUser = (UserProfile)ourUserIntent.getSerializableExtra(ACTIVITY_KEY);
         option = ourUserIntent.getStringExtra(OPERATION_MODE);
 
-        followListView = (ListView)findViewById(R.id.followListView);
-        followArray = getFollowArray();
-
+        //A user from the list was selected. This validates if the user exists or not.
+        //If user does not exist, removes them from the list when selected.
         followListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
@@ -76,6 +85,8 @@ public class ProfileFollowActivity extends AppCompatActivity {
                     startActivityForResult(viewOtherUserProfile, OtherProfileActivity.OTHER_REQUEST_CODE);
                 } catch (NoDataException e) {
                     Toast.makeText(getApplicationContext(),"User Doesn't exist.",Toast.LENGTH_LONG).show();
+                    followArray.remove(selectedUser);
+                    followAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -84,8 +95,6 @@ public class ProfileFollowActivity extends AppCompatActivity {
     @Override
     protected void onStart(){
         super.onStart();
-        followAdapter = new ArrayAdapter<String>(this, R.layout.list_item, followArray);
-        followListView.setAdapter(followAdapter);
     }
 
     @Override
@@ -99,6 +108,11 @@ public class ProfileFollowActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Returns which array we should be looking at based on the option provided on activity create.
+     *
+     * @return The following user list
+     */
     private ArrayList<String> getFollowArray(){
         if(option.equals("following")){
             setTitle("Following"); //Not necessary for getFollowArray but a convenient place

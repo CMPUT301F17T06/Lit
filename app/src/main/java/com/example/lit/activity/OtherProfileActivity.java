@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.example.lit.R;
 import com.example.lit.saving.DataHandler;
+import com.example.lit.userprofile.FollowManager;
 import com.example.lit.userprofile.UserProfile;
 import com.google.gson.reflect.TypeToken;
 
@@ -31,6 +32,15 @@ import com.google.gson.reflect.TypeToken;
  * Created by Riley Dixon on 04/12/2017.
  */
 
+/**
+ * This activity is to show the user the profile of another user. This view however lacks
+ * some features of the ProfileActivity that shows the user their own profile like the
+ * "Edit Profile" button (for obvious reasons).
+ *
+ * As of right now you cannot view another users followers or who the users follow however
+ * that could be easily added in.
+ *
+ */
 public class OtherProfileActivity extends AppCompatActivity {
     public final static String ACTIVITY_KEY = "com.example.lit.activity.OtherProfileActivity";
     public final static String OTHER_USER = ACTIVITY_KEY + "OTHERUSER";
@@ -57,6 +67,7 @@ public class OtherProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.temp_other_user_profile_layout);
 
+        //Setup view
         profileImageView = (ImageView)findViewById(R.id.profileImageView);
         usernameView = (TextView)findViewById(R.id.usernameView);
         profileDescriptionView = (TextView)findViewById(R.id.profileDescriptionView);
@@ -67,6 +78,7 @@ public class OtherProfileActivity extends AppCompatActivity {
         followingView = (TextView)findViewById(R.id.followingView);
         followButton = (Button)findViewById(R.id.followButton);
 
+        //get working data
         Intent otherProfileIntent = getIntent();
         currentUser = (UserProfile)otherProfileIntent.getSerializableExtra(CURRENT_USER);
         otherUser = (UserProfile)otherProfileIntent.getSerializableExtra(OTHER_USER);
@@ -127,6 +139,7 @@ public class OtherProfileActivity extends AppCompatActivity {
 
     }
 
+    //Returns text based on what state the button should read
     private String setButtonText(){
         String buttonText;
         if(currentUser.getFollowManager().getFollowingUsers().contains(otherUser.getName())){
@@ -141,6 +154,7 @@ public class OtherProfileActivity extends AppCompatActivity {
         return buttonText;
     }
 
+    //This is to be used if the follower and following textiews should support this functionality.
     private void initiateFollowActivity(String option){
         Intent listOfFollowingers = new Intent(OtherProfileActivity.this, ProfileFollowActivity.class);
         listOfFollowingers.putExtra(ProfileFollowActivity.ACTIVITY_KEY, currentUser);
@@ -183,15 +197,17 @@ public class OtherProfileActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Based on the current button state, run the intended method to manipulate the follow lists.
+     */
     private void workOnFollowStatus(){
         String buttonState = followButton.getText().toString();
-
         if(buttonState.equals("Follow")){
-
+            FollowManager.requestToFollowOther(currentUser, otherUser, currentDataHandler, otherDataHandler);
         }else if(buttonState.equals("Requested")){
-
+            FollowManager.cancelRequestToFollowOther(currentUser, otherUser, currentDataHandler, otherDataHandler);
         }else if(buttonState.equals("Following")){
-
+            FollowManager.unFollowUser(currentUser, otherUser, currentDataHandler, otherDataHandler);
         }else{
             Log.wtf("OtherProfileActivity", "Unknown button state.");
             throw new RuntimeException("Crash Me!"); //Crash ourselves since we shouldn't be here

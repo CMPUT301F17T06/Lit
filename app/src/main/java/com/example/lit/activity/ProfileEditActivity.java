@@ -34,6 +34,11 @@ import java.io.IOException;
  * Created by Riley Dixon on 02/12/2017.
  */
 
+/**
+ * This activity allows the user to update their profile description and/or profile image.
+ * The user cannot update their username as that is assumed to be immutable.
+ *
+ */
 public class ProfileEditActivity extends AppCompatActivity {
 
     public final static String ACTIVITY_KEY = "com.example.lit.activity.ProfileEditActivity";
@@ -53,6 +58,7 @@ public class ProfileEditActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.temp_edit_user_profile_layout);
+        //Setup the views
         discardButton = (Button) findViewById(R.id.discardButton);
         saveButton = (Button) findViewById(R.id.saveButton);
         usernameView = (TextView) findViewById(R.id.usernameView);
@@ -60,6 +66,7 @@ public class ProfileEditActivity extends AppCompatActivity {
         profileImageView = (ImageView) findViewById(R.id.profileImageView);
         editProfileImageButton = (Button) findViewById(R.id.editImageButton);
 
+        //get our working data
         Intent editUserProfileIntent = getIntent();
         editingUser = (UserProfile) editUserProfileIntent.getSerializableExtra(ACTIVITY_KEY);
         usernameView.setText(editingUser.getName());
@@ -67,9 +74,9 @@ public class ProfileEditActivity extends AppCompatActivity {
         if(editingUser.getProfileImage() != null) {
             profileImageView.setImageBitmap(editingUser.getProfileImage());
         }
-
         setTitle("Editing " + editingUser.getName() +"'s Profile");
 
+        //Discard any changes
         discardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -79,6 +86,7 @@ public class ProfileEditActivity extends AppCompatActivity {
             }
         });
 
+        //Save all changes made
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -92,6 +100,7 @@ public class ProfileEditActivity extends AppCompatActivity {
             }
         });
 
+        //Go to the image gallery and pick a photo to change
         editProfileImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,8 +113,12 @@ public class ProfileEditActivity extends AppCompatActivity {
             }
         });
 
+        //TODO: Add a button that allows a user to take a picture instead of
+        // exclusively from their gallery.
+
     }
 
+    //Up button pressed, considered equivalent to discarding the changes.
     @Override
     public boolean onOptionsItemSelected(MenuItem selection){
         switch(selection.getItemId()){
@@ -117,6 +130,14 @@ public class ProfileEditActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * When returning from selecting an image, determine whether an image was returned or if the
+     * selection was cancelled.
+     *
+     * @param requestCode What activity was called
+     * @param resultCode What is the result from the activity we just came from
+     * @param selectedImage The data (if applicable) that is returned.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent selectedImage){
         if(requestCode == GET_FROM_GALLERY){
@@ -135,13 +156,15 @@ public class ProfileEditActivity extends AppCompatActivity {
                     Log.e("ProfileEditActivity", "Image failed to load.");
                 }
             }else if(resultCode == Activity.RESULT_CANCELED){
-
+                //Do nothing
             }else{
+                //Invalid result code
                 Log.wtf("ProfileEditActivity", "Unknown resultCode received.");
                 throw new RuntimeException("Crash Me!");
             }
         }else{
-            Log.wtf("ProfileEditActivity", "Came from an unknown activity.");
+            //We came from an unknown activity.
+            Log.wtf("ProfileEditActivity", "Invalid requestCode.");
             throw new RuntimeException("Crash Me!");
         }
     }
