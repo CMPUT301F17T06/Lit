@@ -21,6 +21,8 @@ import android.content.DialogInterface;
 import android.util.AttributeSet;
 import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -143,6 +145,22 @@ public class MultiSelectionSpinner extends android.support.v7.widget.AppCompatSp
     }
 
     public void setSelection(int[] selectedIndicies) {
+        for (int i = 0; i < mSelection.length; i++) {
+            mSelection[i] = false;
+        }
+        for (int index : selectedIndicies) {
+            if (index >= 0 && index < mSelection.length) {
+                mSelection[index] = true;
+            } else {
+                throw new IllegalArgumentException("Index " + index
+                        + " is out of bounds.");
+            }
+        }
+        simple_adapter.clear();
+        simple_adapter.add(buildSelectedItemString());
+    }
+
+    public void setSelection(ArrayList<Integer> selectedIndicies) {
         for (int i = 0; i < mSelection.length; i++) {
             mSelection[i] = false;
         }

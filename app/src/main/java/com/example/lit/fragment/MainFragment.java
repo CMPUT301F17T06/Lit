@@ -152,7 +152,6 @@ public class MainFragment extends Fragment {
         }catch (NoDataException e){
             Toast.makeText(getActivity(), "Error: Can't load data! code:3", Toast.LENGTH_SHORT).show();
         }
-
         habitAdapter.notifyDataSetChanged();
 
     }
