@@ -31,6 +31,7 @@ import com.example.lit.activity.ProfileEditActivity;
 import com.example.lit.activity.ProfileFollowActivity;
 import com.example.lit.saving.DataHandler;
 import com.example.lit.saving.NoDataException;
+import com.example.lit.userprofile.FollowManager;
 import com.example.lit.userprofile.UserProfile;
 import com.google.gson.reflect.TypeToken;
 
@@ -91,6 +92,10 @@ public class ProfileFragment extends Fragment {
             currentUser = new UserProfile(username);
             dataHandler.saveData(currentUser);
         }
+
+        FollowManager fm = currentUser.getFollowManager();
+        fm.getFollowedUsers().add("riley1");
+
 
         //Update the view
         usernameView.setText(currentUser.getName());

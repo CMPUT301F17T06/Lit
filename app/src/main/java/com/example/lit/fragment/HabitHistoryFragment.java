@@ -96,7 +96,6 @@ public class HabitHistoryFragment extends Fragment {
         eventdatahandler = new DataHandler<>(username,"habitevent",getActivity(),new TypeToken<ArrayList<NormalHabitEvent>>(){}.getType());
 
         try{
-
             eventArrayList = eventdatahandler.loadData();
         }catch (NoDataException e) {
             eventArrayList = new ArrayList<>();

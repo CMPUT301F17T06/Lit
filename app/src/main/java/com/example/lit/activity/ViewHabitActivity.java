@@ -193,7 +193,6 @@ public class ViewHabitActivity extends AppCompatActivity {
         startActivityForResult(intent,2);
     }
 
-    //TODO: delete current habit and return to previous activity
     public void deleteHabit(ArrayList<NormalHabit> habitArrayList, int index){
         habitArrayList.remove(index);
         dataHandler.saveData(habitArrayList);
@@ -245,7 +244,7 @@ public class ViewHabitActivity extends AppCompatActivity {
             if (calendarList.size() > 1){
                 for (Calendar calendar : calendarList) {
                     int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-                    selectedWeekdays.add(dayOfWeek);
+                    selectedWeekdays.add(dayOfWeek-1);
                 }
             }
             else {

@@ -137,7 +137,7 @@ public class ViewHabitEventActivity extends AppCompatActivity {
         editHabit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                toEditHabitEventActivity(currentEvent);
+                //toEditHabitEventActivity(currentEvent);
             }
         });
 
@@ -173,11 +173,10 @@ public class ViewHabitEventActivity extends AppCompatActivity {
         startActivityForResult(intent,2);
     }
 
-    //TODO: delete current habitEvent and return to previous activity
+
     public void deleteHabit(ArrayList<NormalHabitEvent> habitArrayList, int index){
         habitArrayList.remove(index);
         dataHandler.saveData(habitArrayList);
-
         Log.i("ViewHabitActivity", "Delete button pressed.");
         finish();
     }
