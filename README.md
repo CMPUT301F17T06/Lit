@@ -1,6 +1,6 @@
 # **Lit** -- Quality is not an act, it is a Habit.
 This is our App: Habit tracker.
-
+https://youtu.be/m5Li0hobjt0
 ### Contributors
 * Steven Weikai Lu
 * Jiaxiong Yang
